@@ -2,6 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
+console.log("Custom JS loaded");
 
 // Hero Animations GSAP
 let tl = gsap.timeline();
