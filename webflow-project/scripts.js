@@ -1,6 +1,8 @@
 // Include external libraries (or load them via HTML <script> tags)
 // Your custom code for animations, cursor, and Barba transitions:
 
+//This is a test to see if it is conected to the webflow project
+
 // Hero Animations GSAP
 let tl = gsap.timeline();
 tl.from(".hero-box", {
