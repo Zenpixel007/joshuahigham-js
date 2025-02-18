@@ -36,7 +36,7 @@ function initGsapAnimations() {
     gsap.from(el, {
       scrollTrigger: {
         trigger: el,
-        start: "top 80%",
+        start: "top 50%",
       },
       y: 50,
       opacity: 0,
@@ -50,7 +50,7 @@ function initGsapAnimations() {
   gsap.from(".work_item", {
     scrollTrigger: {
       trigger: ".work_layout", // can be a container or each element
-      start: "top 80%", // adjust as needed
+      start: "top 50%", // adjust as needed
       // markers: true,      // uncomment for debugging
       toggleActions: "play none none none",
     },
