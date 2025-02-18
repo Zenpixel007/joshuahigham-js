@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: 'auto'
+      behavior: 'instant'
     });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
@@ -234,12 +234,15 @@ document.addEventListener("DOMContentLoaded", function () {
         name: "slide-over",
         async leave(data) {
           // Store the current scroll position for the old page
-          const currentScroll = window.window.scrollY;
+          const currentScroll = window.scrollY;
+          
+          // Immediately scroll to top before transition starts
+          scrollToTop();
           
           // Fix the current page in place
           gsap.set(data.current.container, {
             position: 'fixed',
-            top: -currentScroll,
+            top: 0,
             left: 0,
             width: '100%',
             zIndex: 3
@@ -251,19 +254,20 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         },
         async enter(data) {
-          // Ensure we're at the top of the page for the new content
-          window.scrollTo(0, 0);
+          // Force scroll position to top immediately
+          scrollToTop();
           
-          // Set initial state of new page at the top
+          // Set initial state of new page
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '100%',
             left: 0,
             width: '100%',
-            zIndex: 4
+            zIndex: 4,
+            visibility: 'visible'
           });
           
-          // Animate new page sliding up over the current page
+          // Animate new page sliding up
           await gsap.to(data.next.container, {
             duration: 0.8,
             top: '0%',
@@ -275,34 +279,21 @@ document.addEventListener("DOMContentLoaded", function () {
             clearProps: 'all'
           });
           
-          ScrollTrigger.refresh();
-          initGsapAnimations();
-          initCalendly();
-        },
-        async once(data) {
-          // Initial page load animation
-          gsap.from(data.next.container, {
-            duration: 0.8,
-            y: 100,
-            opacity: 0,
-            ease: "power3.out",
-            clearProps: "all"
-          });
-          
-          await new Promise(resolve => setTimeout(resolve, 800));
+          // Ensure we're still at the top after transition
+          scrollToTop();
           
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
-        },
-      },
+        }
+      }
     ],
     preventScroll: true,
     views: [
       {
         namespace: '*',
         beforeEnter() {
-          window.scrollTo(0, 0);
+          scrollToTop();
         }
       }
     ]
@@ -310,10 +301,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Additional hooks for cleanup
   barba.hooks.beforeLeave(() => {
+    scrollToTop();
     ScrollTrigger.getAll().forEach(st => st.kill());
   });
 
   barba.hooks.after(() => {
+    scrollToTop();
     ScrollTrigger.refresh(true);
   });
 });
