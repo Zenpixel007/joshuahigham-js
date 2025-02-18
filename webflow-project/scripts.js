@@ -95,38 +95,37 @@ function initGsapAnimations() {
   });
 
   // 1. Home Hero Animations
-  if (document.querySelector('.hero-box')) {
-    // Set initial state
-    gsap.set([".hero-box", ".fade-in"], {
-      opacity: 0,
-      y: 50
+  // Set initial states immediately
+  gsap.set(".hero-box", {
+    opacity: 0,
+    y: 50
+  });
+  
+  gsap.set(".fade-in", {
+    opacity: 0,
+    y: 25
+  });
+
+  // Delay the start of animations slightly to ensure initial states are applied
+  setTimeout(() => {
+    let tl = gsap.timeline();
+    tl.to(".hero-box", {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      ease: "power2.out",
+      stagger: 0.3,
     });
 
-    // Create timeline for hero animations
-    const heroTl = gsap.timeline({
-      defaults: {
-        ease: "power2.out"
-      }
+    let tl2 = gsap.timeline();
+    tl2.to(".fade-in", {
+      y: 0,
+      opacity: 0.999, // Using 0.999 instead of 1 to prevent GSAP rounding issues
+      duration: 1,
+      ease: "power2.out",
+      stagger: 0.1,
     });
-
-    heroTl
-      .to(".hero-box", {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.3
-      })
-      .to(".fade-in", {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.1
-      }, "-=0.5"); // Overlap with previous animation
-
-    // Remove the separate timelines
-    // let tl = gsap.timeline();
-    // let tl2 = gsap.timeline();
-  }
+  }, 50);
 
   // 1B. ScrollTrigger "Slide-In" Animation
   gsap.utils.toArray(".slide-in").forEach((el) => {
@@ -277,6 +276,12 @@ document.addEventListener("DOMContentLoaded", function () {
           window.scrollTo(0, 0);
           document.documentElement.scrollTop = 0;
           document.body.scrollTop = 0;
+          
+          // Set initial states for hero elements in the new page
+          gsap.set([".hero-box", ".fade-in"], {
+            opacity: 0,
+            y: 50
+          });
           
           // Prepare new page to slide in from bottom
           gsap.set(data.next.container, {
