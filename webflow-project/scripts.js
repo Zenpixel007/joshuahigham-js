@@ -216,6 +216,17 @@ function initGsapAnimations() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Function to reset scroll position
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }
+
   // Initialize Barba
   barba.init({
     transitions: [
@@ -236,8 +247,8 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         },
         async enter(data) {
-          // Scroll to top immediately when entering new page
-          window.scrollTo(0, 0);
+          // Reset scroll position immediately
+          scrollToTop();
           
           // Clear any existing ScrollTrigger instances
           ScrollTrigger.getAll().forEach(st => st.kill());
@@ -256,6 +267,9 @@ document.addEventListener("DOMContentLoaded", function () {
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly(); // Initialize Calendly after page transition
+          
+          // Reset scroll position again after everything is initialized
+          scrollToTop();
         },
         async once(data) {
           gsap.from(data.next.container, {
@@ -275,16 +289,28 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       },
     ],
-    // Add prevent undesired scroll restoration
-    preventScroll: true
+    preventScroll: true,
+    views: [
+      {
+        namespace: '*',
+        beforeEnter() {
+          scrollToTop();
+        }
+      }
+    ]
   });
 
-  // Additional hooks for cleanup
+  // Additional hooks for cleanup and scroll reset
   barba.hooks.beforeLeave(() => {
     ScrollTrigger.getAll().forEach(st => st.kill());
   });
 
   barba.hooks.after(() => {
     ScrollTrigger.refresh(true);
+    scrollToTop();
+  });
+
+  barba.hooks.enter(() => {
+    scrollToTop();
   });
 });
