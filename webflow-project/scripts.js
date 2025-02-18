@@ -239,12 +239,12 @@ document.addEventListener("DOMContentLoaded", function () {
         name: "slide-over",
         async leave(data) {
           // Store the current scroll position for the old page
-          const currentScroll = window.window.scrollY;
+          const currentScroll = window.pageYOffset;
           
           // Fix the current page in place
           gsap.set(data.current.container, {
             position: 'fixed',
-            top: 0,
+            top: -currentScroll,
             left: 0,
             width: '100%',
             zIndex: 3
@@ -256,33 +256,54 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         },
         async enter(data) {
-          // Force scroll position to top immediately
-          scrollToTop();
+          // Ensure we're at the top of the page for the new content
+          window.scrollTo(0, 0);
           
-          // Set initial state of new page
+          // Set initial state of new page at the top
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '100%',
             left: 0,
             width: '100%',
-            zIndex: 4,
-            visibility: 'visible'
+            zIndex: 4
           });
           
-          // Animate new page sliding up
+          // Set current page to fixed to prevent scroll jump
+          gsap.set(data.current.container, {
+            position: 'fixed',
+            top: -currentScroll,
+            left: 0,
+            width: '100%',
+            zIndex: 3
+          });
+          
+          // Animate new page sliding up over the current page
           await gsap.to(data.next.container, {
             duration: 0.8,
             top: '0%',
             ease: "power3.inOut"
           });
 
-          // Reset positions after animation
+          // Reset positions and scroll after animation
           gsap.set([data.current.container, data.next.container], {
             clearProps: 'all'
           });
           
-          // Ensure we're still at the top after transition
-          scrollToTop();
+          ScrollTrigger.refresh();
+          initGsapAnimations();
+          initCalendly();
+        },
+        async once(data) {
+          // Initial page load animation
+          gsap.from(data.next.container, {
+            duration: 0.8,
+            y: 100,
+            opacity: 0,
+            ease: "power3.out",
+            clearProps: "all"
+          });
+          
+          await new Promise(resolve => setTimeout(resolve, 800));
           
           ScrollTrigger.refresh();
           initGsapAnimations();
@@ -296,13 +317,13 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         namespace: '*',
         beforeEnter() {
-          scrollToTop();
+          window.scrollTo(0, 0);
         }
       }
     ]
   });
 
-  // Additional hooks for cleanup
+  // Additional hooks for cleanup and scroll reset
   barba.hooks.beforeLeave(() => {
     scrollToTop();
     ScrollTrigger.getAll().forEach(st => st.kill());
@@ -312,4 +333,6 @@ document.addEventListener("DOMContentLoaded", function () {
     scrollToTop();
     ScrollTrigger.refresh(true);
   });
+
+  // Removed unnecessary enter hook
 });
