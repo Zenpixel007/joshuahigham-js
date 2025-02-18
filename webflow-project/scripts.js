@@ -32,24 +32,26 @@ function initGsapAnimations() {
       trigger: ".footer",
       start: "top bottom",
       end: "top center",
-      scrub: true,
+      scrub: 1,
+      invalidateOnRefresh: true,
       // markers: true, // Uncomment for debugging
     },
     scale: 0.85,
     ease: "none"
   });
 
-  // gsap.to(".footer", {
-  //   scrollTrigger: {
-  //     trigger: ".footer",
-  //     start: "top bottom",
-  //     end: "top center",
-  //     scrub: true,
-  //     // markers: true, // Uncomment for debugging
-  //   },
-  //   yPercent: -20,
-  //   ease: "none"
-  // });
+  gsap.to(".footer", {
+    scrollTrigger: {
+      trigger: ".footer",
+      start: "top bottom",
+      end: "top center",
+      scrub: 1,
+      invalidateOnRefresh: true,
+      // markers: true, // Uncomment for debugging
+    },
+    yPercent: -20,
+    ease: "none"
+  });
 
   // 1. Hero Animations
   let tl = gsap.timeline();
@@ -71,7 +73,6 @@ function initGsapAnimations() {
   });
 
   // 1B. ScrollTrigger "Slide-In" Animation
-  // Add .slide-in to elements you want to animate on scroll
   gsap.utils.toArray(".slide-in").forEach((el) => {
     gsap.from(el, {
       scrollTrigger: {
@@ -85,13 +86,12 @@ function initGsapAnimations() {
     });
   });
 
-  // 1C. ScrollTrigger "Slide-In" Animation
-  // Add .slide-in to elements you want to animate on scroll
+  // 1C. Work Items Animation
   gsap.from(".work_item", {
     scrollTrigger: {
-      trigger: ".work_layout", // can be a container or each element
-      start: "top 50%", // adjust as needed
-      // markers: true,      // uncomment for debugging
+      trigger: ".work_layout",
+      start: "top 50%",
+      // markers: true,
       toggleActions: "play none none none",
     },
     y: 50,
@@ -233,10 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         name: "shrink-and-fade",
         async leave(data) {
-          // Cleanup footer animations before transition
-          if (window.cleanupFooterAnimations) {
-            window.cleanupFooterAnimations();
-          }
+          // Kill all ScrollTrigger instances before leaving
           ScrollTrigger.getAll().forEach(st => st.kill());
           
           await new Promise((resolve) => {
@@ -252,9 +249,6 @@ document.addEventListener("DOMContentLoaded", function () {
         async enter(data) {
           scrollToTop();
           
-          // Clear any existing ScrollTrigger instances
-          ScrollTrigger.getAll().forEach(st => st.kill());
-          
           gsap.from(data.next.container, {
             duration: 0.5,
             scale: 0.8,
@@ -268,13 +262,10 @@ document.addEventListener("DOMContentLoaded", function () {
           // Refresh ScrollTrigger and reinitialize animations
           ScrollTrigger.refresh();
           initGsapAnimations();
-          initCalendly(); // Initialize Calendly after page transition
+          initCalendly();
           
           // Reset scroll position again after everything is initialized
           scrollToTop();
-
-          // Store cleanup function for next transition
-          window.cleanupFooterAnimations = initGsapAnimations();
         },
         async once(data) {
           gsap.from(data.next.container, {
@@ -290,10 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Initialize animations on first load
           ScrollTrigger.refresh();
           initGsapAnimations();
-          initCalendly(); // Initialize Calendly on first load
-
-          // Store cleanup function on initial load
-          window.cleanupFooterAnimations = initGsapAnimations();
+          initCalendly();
         },
       },
     ],
