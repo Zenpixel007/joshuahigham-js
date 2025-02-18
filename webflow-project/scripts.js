@@ -26,18 +26,18 @@ function initGsapAnimations() {
   // Kill all ScrollTrigger instances before creating new ones
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-  // // Footer Animation
-  // gsap.to(".main-wrapper", {
-  //   scrollTrigger: {
-  //     trigger: ".footer",
-  //     start: "top bottom",
-  //     end: "top center",
-  //     scrub: true,
-  //     // markers: true, // Uncomment for debugging
-  //   },
-  //   scale: 0.85,
-  //   ease: "none"
-  // });
+  // Footer Animation
+  gsap.to(".main-wrapper", {
+    scrollTrigger: {
+      trigger: ".footer",
+      start: "top bottom",
+      end: "top center",
+      scrub: true,
+      // markers: true, // Uncomment for debugging
+    },
+    scale: 0.85,
+    ease: "none"
+  });
 
   // gsap.to(".footer", {
   //   scrollTrigger: {
