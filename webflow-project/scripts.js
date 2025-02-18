@@ -236,6 +236,9 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         },
         async enter(data) {
+          // Scroll to top immediately when entering new page
+          window.scrollTo(0, 0);
+          
           // Clear any existing ScrollTrigger instances
           ScrollTrigger.getAll().forEach(st => st.kill());
           
@@ -272,6 +275,8 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       },
     ],
+    // Add prevent undesired scroll restoration
+    preventScroll: true
   });
 
   // Additional hooks for cleanup
