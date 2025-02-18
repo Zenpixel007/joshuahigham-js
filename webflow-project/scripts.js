@@ -251,6 +251,11 @@ document.addEventListener("DOMContentLoaded", function () {
     transitions: [
       {
         name: "slide-over",
+        from: {
+          custom: ({ trigger }) => {
+            return !(window.location.pathname === '/' && !trigger);
+          }
+        },
         async leave(data) {
           // Store current scroll position
           const scrollPos = window.scrollY;
@@ -317,17 +322,7 @@ document.addEventListener("DOMContentLoaded", function () {
           initCustomCursor();
         },
         async once(data) {
-          // Initial page load animation
-          gsap.from(data.next.container, {
-            duration: 0.8,
-            y: 100,
-            opacity: 0,
-            ease: "power3.out",
-            clearProps: "all"
-          });
-          
-          await new Promise(resolve => setTimeout(resolve, 800));
-          
+          // Simplified once animation for homepage
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
