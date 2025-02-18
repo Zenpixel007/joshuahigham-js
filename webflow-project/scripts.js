@@ -94,24 +94,39 @@ function initGsapAnimations() {
     ease: "none"
   });
 
-  // 1. Hero Animations
-  let tl = gsap.timeline();
-  tl.from(".hero-box", {
-    y: 50,
-    opacity: 0,
-    duration: 1,
-    ease: "power2.out",
-    stagger: 0.3,
-  });
+  // 1. Home Hero Animations
+  if (document.querySelector('.hero-box')) {
+    // Set initial state
+    gsap.set([".hero-box", ".fade-in"], {
+      opacity: 0,
+      y: 50
+    });
 
-  let tl2 = gsap.timeline();
-  tl2.from(".fade-in", {
-    y: 25,
-    opacity: 0,
-    duration: 1,
-    ease: "power2.out",
-    stagger: 0.1,
-  });
+    // Create timeline for hero animations
+    const heroTl = gsap.timeline({
+      defaults: {
+        ease: "power2.out"
+      }
+    });
+
+    heroTl
+      .to(".hero-box", {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.3
+      })
+      .to(".fade-in", {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.1
+      }, "-=0.5"); // Overlap with previous animation
+
+    // Remove the separate timelines
+    // let tl = gsap.timeline();
+    // let tl2 = gsap.timeline();
+  }
 
   // 1B. ScrollTrigger "Slide-In" Animation
   gsap.utils.toArray(".slide-in").forEach((el) => {
