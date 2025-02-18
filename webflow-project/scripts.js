@@ -231,17 +231,16 @@ document.addEventListener("DOMContentLoaded", function () {
   barba.init({
     transitions: [
       {
-        name: "shrink-and-fade",
+        name: "slide-vertical",
         async leave(data) {
           // Kill all ScrollTrigger instances before leaving
           ScrollTrigger.getAll().forEach(st => st.kill());
           
           await new Promise((resolve) => {
             gsap.to(data.current.container, {
-              duration: 0.5,
-              scale: 0.8,
-              opacity: 0,
-              ease: "power3.in",
+              duration: 0.8,
+              y: window.innerHeight, // Slide down by full window height
+              ease: "power3.inOut",
               onComplete: resolve,
             });
           });
@@ -250,35 +249,30 @@ document.addEventListener("DOMContentLoaded", function () {
           scrollToTop();
           
           gsap.from(data.next.container, {
-            duration: 0.5,
-            scale: 0.8,
-            opacity: 0,
-            ease: "power3.out",
+            duration: 0.8,
+            y: -window.innerHeight, // Slide up from above
+            ease: "power3.inOut",
           });
 
-          // Wait for the entrance animation to complete
-          await new Promise(resolve => setTimeout(resolve, 500));
+          // Wait for entrance animation to complete
+          await new Promise(resolve => setTimeout(resolve, 800));
           
           // Refresh ScrollTrigger and reinitialize animations
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
           
-          // Reset scroll position again after everything is initialized
           scrollToTop();
         },
         async once(data) {
           gsap.from(data.next.container, {
-            duration: 0.5,
-            scale: 0.8,
-            opacity: 0,
-            ease: "power3.out",
+            duration: 0.8,
+            y: -window.innerHeight, // Initial page load animation
+            ease: "power3.inOut",
           });
           
-          // Wait for initial animation to complete
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 800));
           
-          // Initialize animations on first load
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
