@@ -4,6 +4,21 @@
 //This is a test to see if it is conected to the webflow project
 console.log("This site is automatically updating");
 
+// Function to reinitialize Calendly
+function initCalendly() {
+  // Remove existing Calendly script if it exists
+  const existingScript = document.querySelector('script[src*="calendly.com/assets/external/widget.js"]');
+  if (existingScript) {
+    existingScript.remove();
+  }
+  
+  // Create and append new Calendly script
+  const script = document.createElement('script');
+  script.src = "https://assets.calendly.com/assets/external/widget.js";
+  script.async = true;
+  document.body.appendChild(script);
+}
+
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
 gsap.registerPlugin(ScrollTrigger);
 
@@ -212,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Refresh ScrollTrigger and reinitialize animations
           ScrollTrigger.refresh();
           initGsapAnimations();
+          initCalendly(); // Initialize Calendly after page transition
         },
         async once(data) {
           gsap.from(data.next.container, {
@@ -227,6 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Initialize animations on first load
           ScrollTrigger.refresh();
           initGsapAnimations();
+          initCalendly(); // Initialize Calendly on first load
         },
       },
     ],
