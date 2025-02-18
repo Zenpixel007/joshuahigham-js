@@ -22,6 +22,47 @@ function initCalendly() {
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
 gsap.registerPlugin(ScrollTrigger);
 
+// Extract cursor initialization into separate function
+function initCustomCursor() {
+  const customCursor = document.querySelector(".custom-cursor");
+  if (customCursor) {
+    const quickX = gsap.quickTo(customCursor, "x", {
+      duration: 0.2,
+      ease: "power3.out",
+    });
+    const quickY = gsap.quickTo(customCursor, "y", {
+      duration: 0.2,
+      ease: "power3.out",
+    });
+
+    document.addEventListener("mousemove", function (e) {
+      quickX(e.clientX);
+      quickY(e.clientY);
+    });
+
+    // Shrink cursor on all links
+    const links = document.querySelectorAll("a");
+    links.forEach((link) => {
+      link.addEventListener("mouseenter", function () {
+        gsap.to(customCursor, {
+          duration: 0.2,
+          scale: 0.5,
+          ease: "power3.out",
+        });
+      });
+      link.addEventListener("mouseleave", function () {
+        gsap.to(customCursor, {
+          duration: 0.2,
+          scale: 1,
+          ease: "power3.out",
+        });
+      });
+    });
+  } else {
+    console.error("Custom cursor element not found!");
+  }
+}
+
 function initGsapAnimations() {
   // Kill all ScrollTrigger instances before creating new ones
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
@@ -100,45 +141,6 @@ function initGsapAnimations() {
     ease: "power2.out",
     stagger: 0.3,
   });
-
-  // 2. Custom Cursor
-  const customCursor = document.querySelector(".custom-cursor");
-  if (customCursor) {
-    const quickX = gsap.quickTo(customCursor, "x", {
-      duration: 0.2,
-      ease: "power3.out",
-    });
-    const quickY = gsap.quickTo(customCursor, "y", {
-      duration: 0.2,
-      ease: "power3.out",
-    });
-
-    document.addEventListener("mousemove", function (e) {
-      quickX(e.clientX);
-      quickY(e.clientY);
-    });
-
-    // Shrink cursor on all links
-    const links = document.querySelectorAll("a");
-    links.forEach((link) => {
-      link.addEventListener("mouseenter", function () {
-        gsap.to(customCursor, {
-          duration: 0.2,
-          scale: 0.5,
-          ease: "power3.out",
-        });
-      });
-      link.addEventListener("mouseleave", function () {
-        gsap.to(customCursor, {
-          duration: 0.2,
-          scale: 1,
-          ease: "power3.out",
-        });
-      });
-    });
-  } else {
-    console.error("Custom cursor element not found!");
-  }
 
   // 3. Button Hover (to Dark)
   const buttonsSecondary = document.querySelectorAll(".button.is-secondary");
@@ -227,6 +229,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.scrollTop = 0;
   }
 
+  // Initialize cursor immediately on first page load
+  initCustomCursor();
+
   // Initialize Barba
   barba.init({
     transitions: [
@@ -282,6 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
+          initCustomCursor(); // Initialize cursor after page transition
         }
       }
     ],
