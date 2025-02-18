@@ -240,15 +240,26 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         },
         async enter(data) {
+          // Store current scroll position
+          const currentScroll = window.pageYOffset;
+          
           // Set initial state of new page
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '100%',
             left: 0,
-            width: '100%'
+            width: '100%',
+            zIndex: 2
           });
           
-          scrollToTop();
+          // Set current page to fixed to prevent scroll jump
+          gsap.set(data.current.container, {
+            position: 'fixed',
+            top: -currentScroll,
+            left: 0,
+            width: '100%',
+            zIndex: 1
+          });
           
           // Animate new page sliding up over the current page
           await gsap.to(data.next.container, {
@@ -257,10 +268,11 @@ document.addEventListener("DOMContentLoaded", function () {
             ease: "power3.inOut"
           });
 
-          // Reset position after animation
-          gsap.set(data.next.container, {
+          // Reset positions and scroll after animation
+          gsap.set([data.current.container, data.next.container], {
             clearProps: 'all'
           });
+          scrollToTop();
           
           ScrollTrigger.refresh();
           initGsapAnimations();
@@ -289,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         namespace: '*',
         beforeEnter() {
-          scrollToTop();
+          // Removed scrollToTop from here
         }
       }
     ]
@@ -302,10 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   barba.hooks.after(() => {
     ScrollTrigger.refresh(true);
-    scrollToTop();
   });
 
-  barba.hooks.enter(() => {
-    scrollToTop();
-  });
+  // Removed unnecessary enter hook
 });
