@@ -231,15 +231,16 @@ document.addEventListener("DOMContentLoaded", function () {
   barba.init({
     transitions: [
       {
-        name: "slide-vertical",
+        name: "shrink-slide",
         async leave(data) {
-          // Kill all ScrollTrigger instances before leaving
           ScrollTrigger.getAll().forEach(st => st.kill());
           
           await new Promise((resolve) => {
             gsap.to(data.current.container, {
               duration: 0.8,
-              y: window.innerHeight, // Slide down by full window height
+              y: 100,              // Slide down
+              scale: 0.9,          // Shrink
+              opacity: 0,          // Fade out
               ease: "power3.inOut",
               onComplete: resolve,
             });
@@ -248,16 +249,17 @@ document.addEventListener("DOMContentLoaded", function () {
         async enter(data) {
           scrollToTop();
           
+          // Start the new container from above and small
           gsap.from(data.next.container, {
             duration: 0.8,
-            y: -window.innerHeight, // Slide up from above
+            y: -100,              // Start from above
+            scale: 0.9,           // Start small
+            opacity: 0,           // Start transparent
             ease: "power3.inOut",
           });
 
-          // Wait for entrance animation to complete
           await new Promise(resolve => setTimeout(resolve, 800));
           
-          // Refresh ScrollTrigger and reinitialize animations
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
@@ -265,9 +267,12 @@ document.addEventListener("DOMContentLoaded", function () {
           scrollToTop();
         },
         async once(data) {
+          // Initial page load animation
           gsap.from(data.next.container, {
             duration: 0.8,
-            y: -window.innerHeight, // Initial page load animation
+            y: -50,
+            scale: 0.95,
+            opacity: 0,
             ease: "power3.inOut",
           });
           
