@@ -231,15 +231,14 @@ document.addEventListener("DOMContentLoaded", function () {
   barba.init({
     transitions: [
       {
-        name: "shrink-slide",
+        name: "slide-up",
         async leave(data) {
           ScrollTrigger.getAll().forEach(st => st.kill());
           
           await new Promise((resolve) => {
             gsap.to(data.current.container, {
-              duration: 0.8,
-              y: 100,
-              scale: 0.9,
+              duration: 0.6,
+              y: -100,
               opacity: 0,
               ease: "power3.inOut",
               onComplete: resolve,
@@ -249,8 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
         async enter(data) {
           // Set initial state immediately
           gsap.set(data.next.container, {
-            y: -100,
-            scale: 0.9,
+            y: 100,
             opacity: 0
           });
           
@@ -260,15 +258,14 @@ document.addEventListener("DOMContentLoaded", function () {
           await new Promise(resolve => setTimeout(resolve, 50));
           
           gsap.to(data.next.container, {
-            duration: 0.8,
+            duration: 0.6,
             y: 0,              
-            scale: 1,           
             opacity: 1,
-            ease: "power3.inOut",
-            clearProps: "all"   // Clean up properties after animation
+            ease: "power3.out",
+            clearProps: "all"
           });
 
-          await new Promise(resolve => setTimeout(resolve, 800));
+          await new Promise(resolve => setTimeout(resolve, 600));
           
           ScrollTrigger.refresh();
           initGsapAnimations();
@@ -277,21 +274,19 @@ document.addEventListener("DOMContentLoaded", function () {
         async once(data) {
           // Set initial state
           gsap.set(data.next.container, {
-            y: -50,
-            scale: 0.95,
+            y: 100,
             opacity: 0
           });
           
           gsap.to(data.next.container, {
-            duration: 0.8,
+            duration: 0.6,
             y: 0,
-            scale: 1,
             opacity: 1,
-            ease: "power3.inOut",
+            ease: "power3.out",
             clearProps: "all"
           });
           
-          await new Promise(resolve => setTimeout(resolve, 800));
+          await new Promise(resolve => setTimeout(resolve, 600));
           
           ScrollTrigger.refresh();
           initGsapAnimations();
