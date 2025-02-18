@@ -26,74 +26,30 @@ function initGsapAnimations() {
   // Kill all ScrollTrigger instances before creating new ones
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-  // Footer Animation - Modified with better cleanup and scroll handling
-  const footerAnimations = [
-    gsap.to(".main-wrapper", {
-      scrollTrigger: {
-        trigger: ".footer",
-        start: "top bottom",
-        end: "top center",
-        scrub: 1,
-        invalidateOnRefresh: true,
-        // markers: true, // Uncomment for debugging
-      },
-      scale: 0.85,
-      ease: "none"
-    }),
+  // // Footer Animation
+  // gsap.to(".main-wrapper", {
+  //   scrollTrigger: {
+  //     trigger: ".footer",
+  //     start: "top bottom",
+  //     end: "top center",
+  //     scrub: true,
+  //     // markers: true, // Uncomment for debugging
+  //   },
+  //   scale: 0.85,
+  //   ease: "none"
+  // });
 
-    gsap.to(".footer", {
-      scrollTrigger: {
-        trigger: ".footer",
-        start: "top bottom",
-        end: "top center",
-        scrub: 1,
-        invalidateOnRefresh: true,
-        // markers: true, // Uncomment for debugging
-      },
-      yPercent: -20,
-      ease: "none"
-    })
-  ];
-
-  // Add cleanup function to remove animations when needed
-  return () => {
-    footerAnimations.forEach(anim => {
-      if (anim.scrollTrigger) {
-        anim.scrollTrigger.kill();
-      }
-      anim.kill();
-    });
-  };
-}
-
-function initGsapAnimations() {
-  // Kill all ScrollTrigger instances before creating new ones
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-
-  // Footer Animation
-  gsap.to(".main-wrapper", {
-    scrollTrigger: {
-      trigger: ".footer",
-      start: "top bottom",
-      end: "top center",
-      scrub: true,
-      // markers: true, // Uncomment for debugging
-    },
-    scale: 0.85,
-    ease: "none"
-  });
-
-  gsap.to(".footer", {
-    scrollTrigger: {
-      trigger: ".footer",
-      start: "top bottom",
-      end: "top center",
-      scrub: true,
-      // markers: true, // Uncomment for debugging
-    },
-    yPercent: -20,
-    ease: "none"
-  });
+  // gsap.to(".footer", {
+  //   scrollTrigger: {
+  //     trigger: ".footer",
+  //     start: "top bottom",
+  //     end: "top center",
+  //     scrub: true,
+  //     // markers: true, // Uncomment for debugging
+  //   },
+  //   yPercent: -20,
+  //   ease: "none"
+  // });
 
   // 1. Hero Animations
   let tl = gsap.timeline();
