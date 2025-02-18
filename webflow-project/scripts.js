@@ -238,24 +238,34 @@ document.addEventListener("DOMContentLoaded", function () {
           await new Promise((resolve) => {
             gsap.to(data.current.container, {
               duration: 0.8,
-              y: 100,              // Slide down
-              scale: 0.9,          // Shrink
-              opacity: 0,          // Fade out
+              y: 100,
+              scale: 0.9,
+              opacity: 0,
               ease: "power3.inOut",
               onComplete: resolve,
             });
           });
         },
         async enter(data) {
+          // Set initial state immediately
+          gsap.set(data.next.container, {
+            y: -100,
+            scale: 0.9,
+            opacity: 0
+          });
+          
           scrollToTop();
           
-          // Start the new container from above and small
-          gsap.from(data.next.container, {
+          // Small delay before starting enter animation
+          await new Promise(resolve => setTimeout(resolve, 50));
+          
+          gsap.to(data.next.container, {
             duration: 0.8,
-            y: -100,              // Start from above
-            scale: 0.9,           // Start small
-            opacity: 0,           // Start transparent
+            y: 0,              
+            scale: 1,           
+            opacity: 1,
             ease: "power3.inOut",
+            clearProps: "all"   // Clean up properties after animation
           });
 
           await new Promise(resolve => setTimeout(resolve, 800));
@@ -263,17 +273,22 @@ document.addEventListener("DOMContentLoaded", function () {
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
-          
-          scrollToTop();
         },
         async once(data) {
-          // Initial page load animation
-          gsap.from(data.next.container, {
-            duration: 0.8,
+          // Set initial state
+          gsap.set(data.next.container, {
             y: -50,
             scale: 0.95,
-            opacity: 0,
+            opacity: 0
+          });
+          
+          gsap.to(data.next.container, {
+            duration: 0.8,
+            y: 0,
+            scale: 1,
+            opacity: 1,
             ease: "power3.inOut",
+            clearProps: "all"
           });
           
           await new Promise(resolve => setTimeout(resolve, 800));
