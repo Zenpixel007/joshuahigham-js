@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("Custom JS loaded");
+console.log("THis site is automatically updating");
 
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
 gsap.registerPlugin(ScrollTrigger);
