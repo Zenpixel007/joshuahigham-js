@@ -132,7 +132,7 @@ function initGsapAnimations() {
     gsap.from(el, {
       scrollTrigger: {
         trigger: el,
-        start: "top 50%",
+        start: "top 75%",
       },
       y: 50,
       opacity: 0,
