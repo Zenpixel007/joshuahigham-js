@@ -234,10 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
         name: "slide-over",
         async leave(data) {
           // Store the current scroll position for the old page
-          const currentScroll = window.scrollY;
-          
-          // Immediately scroll to top before transition starts
-          scrollToTop();
+          const currentScroll = window.window.scrollY;
           
           // Fix the current page in place
           gsap.set(data.current.container, {
