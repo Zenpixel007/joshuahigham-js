@@ -238,60 +238,47 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         name: "slide-over",
         async leave(data) {
-          // Store the current scroll position for the old page
-          const currentScroll = window.pageYOffset;
-          
-          // Fix the current page in place
+          // Keep current page fixed in place
           gsap.set(data.current.container, {
             position: 'fixed',
-            top: -currentScroll,
-            left: 0,
             width: '100%',
-            zIndex: 3
+            top: -window.scrollY,
+            left: 0
           });
-
+          
           return gsap.to(data.current.container, {
             duration: 0,
             opacity: 1
           });
         },
         async enter(data) {
-          // Ensure we're at the top of the page for the new content
-          window.scrollTo(0, 0);
-          
-          // Set initial state of new page at the top
+          // Prepare new page to slide in from bottom
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '100%',
             left: 0,
             width: '100%',
-            zIndex: 4
+            zIndex: 10 // Ensure new page is above current page
           });
           
-          // Set current page to fixed to prevent scroll jump
-          gsap.set(data.current.container, {
-            position: 'fixed',
-            top: -currentScroll,
-            left: 0,
-            width: '100%',
-            zIndex: 3
-          });
-          
-          // Animate new page sliding up over the current page
+          // Slide new page up
           await gsap.to(data.next.container, {
             duration: 0.8,
             top: '0%',
             ease: "power3.inOut"
           });
 
-          // Reset positions and scroll after animation
+          // Reset container properties after animation
           gsap.set([data.current.container, data.next.container], {
             clearProps: 'all'
           });
           
+          // Reset scroll position and initialize components
+          window.scrollTo(0, 0);
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
+          initCustomCursor();
         },
         async once(data) {
           // Initial page load animation
@@ -308,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
-          initCustomCursor(); // Initialize cursor after page transition
+          initCustomCursor();
         }
       }
     ],
@@ -323,14 +310,12 @@ document.addEventListener("DOMContentLoaded", function () {
     ]
   });
 
-  // Additional hooks for cleanup and scroll reset
+  // Additional hooks for cleanup
   barba.hooks.beforeLeave(() => {
-    scrollToTop();
     ScrollTrigger.getAll().forEach(st => st.kill());
   });
 
   barba.hooks.after(() => {
-    scrollToTop();
     ScrollTrigger.refresh(true);
   });
 
