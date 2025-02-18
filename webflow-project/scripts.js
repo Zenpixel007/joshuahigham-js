@@ -231,57 +231,52 @@ document.addEventListener("DOMContentLoaded", function () {
   barba.init({
     transitions: [
       {
-        name: "slide-up",
+        name: "slide-over",
         async leave(data) {
-          ScrollTrigger.getAll().forEach(st => st.kill());
-          
-          await new Promise((resolve) => {
-            gsap.to(data.current.container, {
-              duration: 0.6,
-              y: -100,
-              ease: "power3.inOut",
-              onComplete: resolve,
-            });
+          // Don't animate the current container out, just keep it in place
+          return gsap.to(data.current.container, {
+            duration: 0,
+            opacity: 1
           });
         },
         async enter(data) {
-          // Set initial state immediately
+          // Set initial state of new page
           gsap.set(data.next.container, {
-            y: 100
+            position: 'fixed',
+            top: '100%',
+            left: 0,
+            width: '100%'
           });
           
           scrollToTop();
           
-          // Small delay before starting enter animation
-          await new Promise(resolve => setTimeout(resolve, 50));
-          
-          gsap.to(data.next.container, {
-            duration: 0.6,
-            y: 0,              
-            ease: "power3.out",
-            clearProps: "all"
+          // Animate new page sliding up over the current page
+          await gsap.to(data.next.container, {
+            duration: 0.8,
+            top: '0%',
+            ease: "power3.inOut"
           });
 
-          await new Promise(resolve => setTimeout(resolve, 600));
+          // Reset position after animation
+          gsap.set(data.next.container, {
+            clearProps: 'all'
+          });
           
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
         },
         async once(data) {
-          // Set initial state
-          gsap.set(data.next.container, {
-            y: 100
-          });
-          
-          gsap.to(data.next.container, {
-            duration: 0.6,
-            y: 0,
+          // Initial page load animation
+          gsap.from(data.next.container, {
+            duration: 0.8,
+            y: 100,
+            opacity: 0,
             ease: "power3.out",
             clearProps: "all"
           });
           
-          await new Promise(resolve => setTimeout(resolve, 600));
+          await new Promise(resolve => setTimeout(resolve, 800));
           
           ScrollTrigger.refresh();
           initGsapAnimations();
