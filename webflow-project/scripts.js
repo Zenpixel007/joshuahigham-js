@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
         name: "slide-over",
         async leave(data) {
           // Store the current scroll position for the old page
-          const currentScroll = window.pageYOffset;
+          const currentScroll = window.window.scrollY;
           
           // Fix the current page in place
           gsap.set(data.current.container, {
