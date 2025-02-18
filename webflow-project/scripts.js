@@ -27,7 +27,7 @@ function initGsapAnimations() {
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
   // Footer Animation
-  gsap.to(".page-main", {
+  gsap.to(".main-wrapper", {
     scrollTrigger: {
       trigger: ".footer",
       start: "top bottom",
