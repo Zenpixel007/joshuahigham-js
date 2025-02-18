@@ -238,13 +238,19 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         name: "slide-over",
         async leave(data) {
+          // Store current scroll position
+          const scrollPos = window.scrollY;
+          
           // Keep current page fixed in place
           gsap.set(data.current.container, {
             position: 'fixed',
             width: '100%',
-            top: -window.scrollY,
+            top: -scrollPos,
             left: 0
           });
+          
+          // Prevent scroll during transition
+          document.body.style.overflow = 'hidden';
           
           return gsap.to(data.current.container, {
             duration: 0,
@@ -252,13 +258,19 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         },
         async enter(data) {
+          // Force the next container to start at top
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          
           // Prepare new page to slide in from bottom
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '100%',
             left: 0,
             width: '100%',
-            zIndex: 10 // Ensure new page is above current page
+            zIndex: 10,
+            visibility: 'visible'
           });
           
           // Slide new page up
@@ -268,13 +280,17 @@ document.addEventListener("DOMContentLoaded", function () {
             ease: "power3.inOut"
           });
 
-          // Reset container properties after animation
+          // Reset container properties and scroll behavior
           gsap.set([data.current.container, data.next.container], {
             clearProps: 'all'
           });
           
-          // Reset scroll position and initialize components
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+          
+          // Ensure we stay at top of new page
           window.scrollTo(0, 0);
+          
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCalendly();
@@ -310,14 +326,18 @@ document.addEventListener("DOMContentLoaded", function () {
     ]
   });
 
-  // Additional hooks for cleanup
+  // Additional hooks for cleanup and scroll management
+  barba.hooks.before(() => {
+    document.body.style.overflow = 'hidden';
+  });
+
   barba.hooks.beforeLeave(() => {
     ScrollTrigger.getAll().forEach(st => st.kill());
   });
 
   barba.hooks.after(() => {
+    document.body.style.overflow = '';
+    window.scrollTo(0, 0);
     ScrollTrigger.refresh(true);
   });
-
-  // Removed unnecessary enter hook
 });
