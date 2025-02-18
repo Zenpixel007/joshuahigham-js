@@ -2,12 +2,15 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("THis site is automatically updating");
+console.log("This site is automatically updating");
 
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
 gsap.registerPlugin(ScrollTrigger);
 
 function initGsapAnimations() {
+  // Kill all ScrollTrigger instances before creating new ones
+  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
   // 1. Hero Animations
   let tl = gsap.timeline();
   tl.from(".hero-box", {
@@ -211,5 +214,10 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       },
     ],
+  });
+
+  // Kill all ScrollTrigger instances when leaving the page
+  barba.hooks.beforeLeave(() => {
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
   });
 });
