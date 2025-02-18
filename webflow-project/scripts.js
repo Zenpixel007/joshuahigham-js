@@ -182,6 +182,9 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         name: "shrink-and-fade",
         async leave(data) {
+          // Kill all ScrollTrigger instances before leaving
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          
           await new Promise((resolve) => {
             gsap.to(data.current.container, {
               duration: 0.5,
@@ -192,32 +195,49 @@ document.addEventListener("DOMContentLoaded", function () {
             });
           });
         },
-        enter(data) {
+        async enter(data) {
+          // Clear any existing ScrollTrigger instances
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          
           gsap.from(data.next.container, {
             duration: 0.5,
             scale: 0.8,
             opacity: 0,
             ease: "power3.out",
           });
-          // Re-initialize GSAP animations on the new page
+
+          // Wait for the entrance animation to complete
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Refresh ScrollTrigger and reinitialize animations
+          ScrollTrigger.refresh();
           initGsapAnimations();
         },
-        once(data) {
+        async once(data) {
           gsap.from(data.next.container, {
             duration: 0.5,
             scale: 0.8,
             opacity: 0,
             ease: "power3.out",
           });
-          // Run GSAP animations on the very first page load
+          
+          // Wait for initial animation to complete
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Initialize animations on first load
+          ScrollTrigger.refresh();
           initGsapAnimations();
         },
       },
     ],
   });
 
-  // Kill all ScrollTrigger instances when leaving the page
+  // Additional hooks for cleanup
   barba.hooks.beforeLeave(() => {
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    ScrollTrigger.getAll().forEach(st => st.kill());
+  });
+
+  barba.hooks.after(() => {
+    ScrollTrigger.refresh(true);
   });
 });
