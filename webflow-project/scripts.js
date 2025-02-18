@@ -239,7 +239,6 @@ document.addEventListener("DOMContentLoaded", function () {
             gsap.to(data.current.container, {
               duration: 0.6,
               y: -100,
-              opacity: 0,
               ease: "power3.inOut",
               onComplete: resolve,
             });
@@ -248,8 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
         async enter(data) {
           // Set initial state immediately
           gsap.set(data.next.container, {
-            y: 100,
-            opacity: 0
+            y: 100
           });
           
           scrollToTop();
@@ -260,7 +258,6 @@ document.addEventListener("DOMContentLoaded", function () {
           gsap.to(data.next.container, {
             duration: 0.6,
             y: 0,              
-            opacity: 1,
             ease: "power3.out",
             clearProps: "all"
           });
@@ -274,14 +271,12 @@ document.addEventListener("DOMContentLoaded", function () {
         async once(data) {
           // Set initial state
           gsap.set(data.next.container, {
-            y: 100,
-            opacity: 0
+            y: 100
           });
           
           gsap.to(data.next.container, {
             duration: 0.6,
             y: 0,
-            opacity: 1,
             ease: "power3.out",
             clearProps: "all"
           });
