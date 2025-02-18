@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
             top: '100%',
             left: 0,
             width: '100%',
-            zIndex: 2
+            zIndex: 4
           });
           
           // Set current page to fixed to prevent scroll jump
@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
             top: -currentScroll,
             left: 0,
             width: '100%',
-            zIndex: 1
+            zIndex: 3
           });
           
           // Animate new page sliding up over the current page
