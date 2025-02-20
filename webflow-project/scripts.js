@@ -90,6 +90,10 @@ function initGsapAnimations() {
       y: 20
     });
 
+    gsap.set('.section_hero-animation', {
+      opacity: 100
+    });
+
     // Create main timeline
     const heroTl = gsap.timeline({
       defaults: {
