@@ -142,7 +142,7 @@ function initGsapAnimations() {
       },'-=1')
       //Fade out Hero Animation Wrapper
       .to('.section_hero-animation', {
-        opacity: 0,
+        autoAlpha: 0,
         duration: .5
       },'-=.5');
   }
