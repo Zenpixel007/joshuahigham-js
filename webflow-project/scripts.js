@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("latest version");
+console.log("latest version??");
 
 // Function to reinitialize Calendly
 function initCalendly() {
@@ -112,7 +112,7 @@ function initGsapAnimations() {
         opacity: 1,
         scale: 1,
         duration: 0.5
-      }, '-=0.5')
+      }, '-=0.75')
       // Scale up center circle to fill viewport
       .to('.circle_hero.is-3', {
         scale: 20,
@@ -147,7 +147,7 @@ function initGsapAnimations() {
       },'-=.5')
       // Slide in new elements with stagger
       .from('.hero-slide-in', {
-        y: 100,
+        y: 50,
         opacity: 0,
         duration: 0.8,
         stagger: {
@@ -155,7 +155,7 @@ function initGsapAnimations() {
           ease: "power2.out"
         },
         ease: "power2.out"
-      });
+      }, '-=0.5');
   }
 
   // Footer Animation
