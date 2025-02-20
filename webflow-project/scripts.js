@@ -153,11 +153,11 @@ function initGsapAnimations() {
         autoAlpha: 0,
         duration: .5
       },'-=.5')
-      //Fade in Hero Wrapper 
+      //Fade in Hero Section 
       .to('.section_hero', {
         opacity: 100,
         duration: 1
-      },'-=.5')
+      })
       // Slide in new elements with stagger
       .from('.hero-slide-in', {
         y: 50,
