@@ -76,18 +76,23 @@ function initGsapAnimations() {
         start: "top top",
         end: "+=500%",
         pin: true,
-        scrub: .75,
-        anticipatePin: 1
+        scrub: true,
+        anticipatePin: 1,
+        snap: {
+          snapTo: "labels",
+          duration: {min: 0.2, max: 0.5},
+          ease: "power1.inOut"
+        }
       },
       defaults: {
         ease: "none",
-        duration: 1 // Adding consistent duration for smoother reversing
+        duration: 1
       }
     });
 
     // Set initial states
     gsap.set(['.circle_hero.is-1', '.circle_hero.is-2', '.circle_hero.is-3', '.hero-animation_text', '.section_hero-animation'], {
-      clearProps: 'all' // Clear any existing GSAP properties
+      clearProps: 'all'
     });
     
     gsap.set('.circle_hero.is-1', {
@@ -110,10 +115,13 @@ function initGsapAnimations() {
       y: 20
     });
 
+    // Add labels for snapping points
     heroTl
+      .addLabel('start')
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
         x: '0vw'
       })
+      .addLabel('circles-meet')
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
         opacity: 0
       })
@@ -121,13 +129,16 @@ function initGsapAnimations() {
         { opacity: 0, scale: 0 },
         { opacity: 1, scale: 1 }
       )
+      .addLabel('circle-appears')
       .to('.circle_hero.is-3', {
         scale: 20
       })
+      .addLabel('circle-full')
       .fromTo('.hero-animation_text',
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0 }
       )
+      .addLabel('text-visible')
       .to({}, {
         duration: 0.2
       })
@@ -136,9 +147,28 @@ function initGsapAnimations() {
         opacity: 0,
         y: -20
       })
+      .addLabel('elements-gone')
       .to('.section_hero-animation', {
         autoAlpha: 0
-      });
+      })
+      .addLabel('end');
+
+    // Add ScrollTrigger event listeners for better control
+    ScrollTrigger.create({
+      trigger: '.hero-animation_wrapper',
+      start: 'top top',
+      end: '+=500%',
+      onLeaveBack: self => {
+        // Reset animation when scrolling back to top
+        heroTl.scrollTrigger.refresh();
+      },
+      onUpdate: self => {
+        // Ensure smooth playback in both directions
+        if (self.direction === -1) {
+          heroTl.reversed(!heroTl.reversed());
+        }
+      }
+    });
   }
 
   // Footer Animation
