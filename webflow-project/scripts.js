@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("This site is automatically updating");
+console.log("test");
 
 // Function to reinitialize Calendly
 function initCalendly() {
@@ -139,7 +139,7 @@ function initGsapAnimations() {
         opacity: 0,
         y: -20,
         duration: 0.8
-      },'-=0.5');
+      },'-=2');
   }
 
   // Footer Animation
