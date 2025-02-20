@@ -144,7 +144,18 @@ function initGsapAnimations() {
       .to('.section_hero-animation', {
         autoAlpha: 0,
         duration: .5
-      },'-=.5');
+      },'-=.5')
+      // Slide in new elements with stagger
+      .from('.hero-slide-in', {
+        y: 100,
+        opacity: 0,
+        duration: 0.8,
+        stagger: {
+          amount: 0.5,    // Total amount of time to stagger over
+          ease: "power2.out"
+        },
+        ease: "power2.out"
+      });
   }
 
   // Footer Animation
