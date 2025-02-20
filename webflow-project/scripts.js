@@ -71,12 +71,12 @@ function initGsapAnimations() {
   if (document.querySelector('.hero-animation_wrapper')) {
     // Set initial states
     gsap.set('.circle_hero.is-1', {
-      x: -50%,
+      x: '-50%',
       opacity: 1
     });
     
     gsap.set('.circle_hero.is-2', {
-      x: 50%,
+      x: '50%',
       opacity: 1
     });
     
@@ -100,7 +100,7 @@ function initGsapAnimations() {
     heroTl
       // Move circles to center
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-        x: 0%,
+        x: '0%',
         duration: 1.5
       })
       // Hide initial circles and show center circle
