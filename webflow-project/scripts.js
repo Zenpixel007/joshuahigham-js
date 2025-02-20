@@ -112,7 +112,7 @@ function initGsapAnimations() {
         opacity: 1,
         scale: 1,
         duration: 0.5
-      }, '-=1')
+      }, '-=0.75')
       // Scale up center circle to fill viewport
       .to('.circle_hero.is-3', {
         scale: 20,
@@ -136,7 +136,7 @@ function initGsapAnimations() {
       })
       // Scale down center circle
       .to('.circle_hero.is-3', {
-        scale: 1,
+        scale: 0,
         duration: 1
       });
   }
