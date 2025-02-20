@@ -100,7 +100,7 @@ function initGsapAnimations() {
     heroTl
       // Move circles to center
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-        xPercent: 0,
+        x: 0%,
         duration: 1.5
       })
       // Hide initial circles and show center circle
