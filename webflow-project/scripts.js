@@ -90,61 +90,59 @@ function initGsapAnimations() {
       y: 20
     });
 
-    // Create main timeline
+    // Create main timeline with ScrollTrigger
     const heroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.hero-animation_wrapper',
+        start: "top top", // Starts when the top of section hits top of viewport
+        end: "+=300%",    // Animation plays over 3x the height of viewport
+        pin: true,        // Pins the section while animation plays
+        scrub: 1,         // Smooth scrubbing effect (adjust value for speed)
+        anticipatePin: 1  // Helps prevent jerking of pinned elements
+      },
       defaults: {
-        ease: "power2.inOut"
+        ease: "none"      // Changed to none for smoother scrubbing
       }
     });
 
     heroTl
-      // Move circles to center
+      // Move circles to center (0-15% of scroll)
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
         x: '0vw',
-        duration: 1.5
       })
-      // Hide initial circles and show center circle
+      // Hide initial circles and show center circle (15-20% of scroll)
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
         opacity: 0,
-        duration: 0.1
       })
       .to('.circle_hero.is-3', {
         opacity: 1,
         scale: 1,
-        duration: 0.5
-      }, '-=0.5')
-      // Scale up center circle to fill viewport
+      })
+      // Scale up center circle (20-40% of scroll)
       .to('.circle_hero.is-3', {
         scale: 20,
-        duration: 1,
-        delay: 0.5
       })
-      // Animate in text
+      // Animate in text (40-50% of scroll)
       .to('.hero-animation_text', {
         opacity: 1,
         y: 0,
-        duration: 0.8
       })
-      // Hold for a moment
+      // Hold for a moment (50-60% of scroll)
       .to({}, {
-        duration: 0.5
+        duration: 0.2
       })
-      // Scale down center circle
+      // Scale down circle and fade out text (60-90% of scroll)
       .to('.circle_hero.is-3', {
         scale: 0,
-        duration: 1
       })
-      // Fade out text
       .to('.hero-animation_text', {
         opacity: 0,
         y: -20,
-        duration: 1.5
-      },'-=1')
-      //Fade out Hero Animation Wrapper
+      }, '<')
+      // Fade out wrapper (90-100% of scroll)
       .to('.section_hero-animation', {
         autoAlpha: 0,
-        duration: .5
-      },'-=.5');
+      });
   }
 
   // Footer Animation
