@@ -129,17 +129,17 @@ function initGsapAnimations() {
       .to({}, {
         duration: 0.5
       })
+      // Scale down center circle
+      .to('.circle_hero.is-3', {
+        scale: 0,
+        duration: 1
+      })
       // Fade out text
       .to('.hero-animation_text', {
         opacity: 0,
         y: -20,
         duration: 0.8
-      })
-      // Scale down center circle
-      .to('.circle_hero.is-3', {
-        scale: 0,
-        duration: 1
-      });
+      },'-=0.5');
   }
 
   // Footer Animation
