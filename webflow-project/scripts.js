@@ -71,12 +71,12 @@ function initGsapAnimations() {
   if (document.querySelector('.hero-animation_wrapper')) {
     // Set initial states
     gsap.set('.circle_hero.is-1', {
-      xPercent: -100,
+      x: -50%,
       opacity: 1
     });
     
     gsap.set('.circle_hero.is-2', {
-      xPercent: 100,
+      x: 50%,
       opacity: 1
     });
     
@@ -112,7 +112,7 @@ function initGsapAnimations() {
         opacity: 1,
         scale: 1,
         duration: 0.5
-      }, '-=0.75')
+      }, '-=0.9')
       // Scale up center circle to fill viewport
       .to('.circle_hero.is-3', {
         scale: 20,
