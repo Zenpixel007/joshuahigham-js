@@ -94,6 +94,10 @@ function initGsapAnimations() {
       opacity: 100
     });
 
+    gsap.set('.hero-background', {
+      opacity: 0
+    });
+
 
     // Create main timeline
     const heroTl = gsap.timeline({
