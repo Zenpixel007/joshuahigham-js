@@ -116,7 +116,8 @@ function initGsapAnimations() {
       // Scale up center circle to fill viewport
       .to('.circle_hero.is-3', {
         scale: 20,
-        duration: 1
+        duration: 1,
+        delay: 0.5
       })
       // Animate in text
       .to('.hero-animation_text', {
