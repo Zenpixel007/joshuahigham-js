@@ -94,7 +94,7 @@ function initGsapAnimations() {
       opacity: 100
     });
 
-    gsap.set('.section_hero', {
+    gsap.set('.hero-background', {
       opacity: 0
     });
 
@@ -154,7 +154,7 @@ function initGsapAnimations() {
         duration: .5
       },'-=.5')
       //Fade in Hero Section 
-      .to('.section_hero', {
+      .to('.hero-background', {
         opacity: 100,
         duration: 1
       })
