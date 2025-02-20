@@ -70,17 +70,17 @@ function initGsapAnimations() {
   // Hero Animation
   if (document.querySelector('.hero-animation_wrapper')) {
     // Set initial states
-    gsap.set('.circle_hero._is-1', {
+    gsap.set('.circle_hero.is-1', {
       xPercent: -100,
       opacity: 1
     });
     
-    gsap.set('.circle_hero._is-2', {
+    gsap.set('.circle_hero.is-2', {
       xPercent: 100,
       opacity: 1
     });
     
-    gsap.set('.circle_hero._is-3', {
+    gsap.set('.circle_hero.is-3', {
       scale: 0,
       opacity: 0
     });
@@ -99,22 +99,22 @@ function initGsapAnimations() {
 
     heroTl
       // Move circles to center
-      .to(['.circle_hero._is-1', '.circle_hero._is-2'], {
+      .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
         xPercent: 0,
         duration: 1.5
       })
       // Hide initial circles and show center circle
-      .to(['.circle_hero._is-1', '.circle_hero._is-2'], {
+      .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
         opacity: 0,
         duration: 0.1
       })
-      .to('.circle_hero._is-3', {
+      .to('.circle_hero.is-3', {
         opacity: 1,
         scale: 1,
         duration: 0.5
       }, '-=0.1')
       // Scale up center circle to fill viewport
-      .to('.circle_hero._is-3', {
+      .to('.circle_hero.is-3', {
         scale: 20,
         duration: 1
       })
@@ -135,7 +135,7 @@ function initGsapAnimations() {
         duration: 0.8
       })
       // Scale down center circle
-      .to('.circle_hero._is-3', {
+      .to('.circle_hero.is-3', {
         scale: 1,
         duration: 1
       });
