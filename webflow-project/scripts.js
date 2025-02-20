@@ -94,6 +94,10 @@ function initGsapAnimations() {
       opacity: 100
     });
 
+    gsap.set('.section_hero', {
+      opacity: 0
+    });
+
     // Create main timeline
     const heroTl = gsap.timeline({
       defaults: {
@@ -148,6 +152,11 @@ function initGsapAnimations() {
       .to('.section_hero-animation', {
         autoAlpha: 0,
         duration: .5
+      },'-=.5')
+      //Fade in Hero Wrapper 
+      .to('.section_hero', {
+        opacity: 100,
+        duration: 1
       },'-=.5')
       // Slide in new elements with stagger
       .from('.hero-slide-in', {
