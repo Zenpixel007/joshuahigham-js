@@ -69,33 +69,7 @@ function initGsapAnimations() {
 
   // Hero Animation
   if (document.querySelector('.hero-animation_wrapper')) {
-    // Create main timeline with ScrollTrigger
-    const heroTl = gsap.timeline({
-      scrollTrigger: {
-        id: "hero-animation",
-        trigger: '.hero-animation_wrapper',
-        start: "top top",
-        end: "+=500%",
-        pin: true,
-        scrub: true,
-        anticipatePin: 1,
-        snap: {
-          snapTo: "labels",
-          duration: {min: 0.2, max: 0.5},
-          ease: "power1.inOut"
-        }
-      },
-      defaults: {
-        ease: "none",
-        duration: 1
-      }
-    });
-
     // Set initial states
-    gsap.set(['.circle_hero.is-1', '.circle_hero.is-2', '.circle_hero.is-3', '.hero-animation_text', '.section_hero-animation'], {
-      clearProps: 'all'
-    });
-    
     gsap.set('.circle_hero.is-1', {
       x: '-50vw',
       opacity: 1
@@ -116,92 +90,89 @@ function initGsapAnimations() {
       y: 20
     });
 
-    // Add labels for snapping points
+    // Create main timeline
+    const heroTl = gsap.timeline({
+      defaults: {
+        ease: "power2.inOut"
+      }
+    });
+
     heroTl
-      .addLabel('start')
+      // Move circles to center
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-        x: '0vw'
+        x: '0vw',
+        duration: 1.5
       })
-      .addLabel('circles-meet')
+      // Hide initial circles and show center circle
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-        opacity: 0
-      })
-      .fromTo('.circle_hero.is-3', 
-        { opacity: 0, scale: 0 },
-        { opacity: 1, scale: 1 }
-      )
-      .addLabel('circle-appears')
-      .to('.circle_hero.is-3', {
-        scale: 20
-      })
-      .addLabel('circle-full')
-      .fromTo('.hero-animation_text',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0 }
-      )
-      .addLabel('text-visible')
-      .to({}, {
-        duration: 0.2
-      })
-      .to(['.circle_hero.is-3', '.hero-animation_text'], {
-        scale: 0,
         opacity: 0,
-        y: -20
+        duration: 0.1
       })
-      .addLabel('elements-gone')
+      .to('.circle_hero.is-3', {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5
+      }, '-=0.5')
+      // Scale up center circle to fill viewport
+      .to('.circle_hero.is-3', {
+        scale: 20,
+        duration: 1,
+        delay: 0.5
+      })
+      // Animate in text
+      .to('.hero-animation_text', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8
+      })
+      // Hold for a moment
+      .to({}, {
+        duration: 0.5
+      })
+      // Scale down center circle
+      .to('.circle_hero.is-3', {
+        scale: 0,
+        duration: 1
+      })
+      // Fade out text
+      .to('.hero-animation_text', {
+        opacity: 0,
+        y: -20,
+        duration: 1.5
+      },'-=1')
+      //Fade out Hero Animation Wrapper
       .to('.section_hero-animation', {
-        autoAlpha: 0
-      })
-      .addLabel('end');
-
-    // Add ScrollTrigger event listeners for better control
-    ScrollTrigger.create({
-      trigger: '.hero-animation_wrapper',
-      start: 'top top',
-      end: '+=500%',
-      onLeaveBack: self => {
-        // Reset animation when scrolling back to top
-        heroTl.scrollTrigger.refresh();
-      },
-      onUpdate: self => {
-        // Ensure smooth playback in both directions
-        if (self.direction === -1) {
-          heroTl.reversed(!heroTl.reversed());
-        }
-      }
-    });
+        autoAlpha: 0,
+        duration: .5
+      },'-=.5');
   }
 
-  // Footer Animation - Modified to respect hero section
-  if (document.querySelector('.footer')) {
-    let footerTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".footer",
-        start: "top bottom",
-        end: "top center",
-        scrub: 1,
-        invalidateOnRefresh: true,
-        // markers: true,
-        onEnter: () => {
-          // Kill hero ScrollTrigger if it exists when footer animation starts
-          const heroTrigger = ScrollTrigger.getById("hero-animation");
-          if (heroTrigger) {
-            heroTrigger.kill();
-          }
-        }
-      }
-    });
+  // Footer Animation
+  gsap.to(".main-wrapper", {
+    scrollTrigger: {
+      trigger: ".footer",
+      start: "top bottom",
+      end: "top center",
+      scrub: 1,
+      invalidateOnRefresh: true,
+      // markers: true, // Uncomment for debugging
+    },
+    scale: 0.85,
+    ease: "none"
+  });
 
-    footerTl
-      .to(".main-wrapper", {
-        scale: 0.85,
-        ease: "none"
-      })
-      .to(".footer", {
-        yPercent: -20,
-        ease: "none"
-      }, "<");
-  }
+  gsap.to(".footer", {
+    scrollTrigger: {
+      trigger: ".footer",
+      start: "top bottom",
+      end: "top center",
+      scrub: 1,
+      invalidateOnRefresh: true,
+      // markers: true, // Uncomment for debugging
+    },
+    yPercent: -20,
+    ease: "none"
+  });
 
   // 1. Home Hero Animations
   // Set initial states immediately
