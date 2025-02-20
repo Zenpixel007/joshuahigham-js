@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("test");
+console.log("latest version");
 
 // Function to reinitialize Calendly
 function initCalendly() {
