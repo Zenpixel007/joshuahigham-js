@@ -171,32 +171,24 @@ function initGsapAnimations() {
     });
   }
 
-  // // Footer Animation
-  // gsap.to(".main-wrapper", {
-  //   scrollTrigger: {
-  //     trigger: ".footer",
-  //     start: "top bottom",
-  //     end: "top center",
-  //     scrub: 1,
-  //     invalidateOnRefresh: true,
-  //     // markers: true, // Uncomment for debugging
-  //   },
-  //   scale: 0.85,
-  //   ease: "none"
-  // });
-
-  // gsap.to(".footer", {
-  //   scrollTrigger: {
-  //     trigger: ".footer",
-  //     start: "top bottom",
-  //     end: "top center",
-  //     scrub: 1,
-  //     invalidateOnRefresh: true,
-  //     // markers: true, // Uncomment for debugging
-  //   },
-  //   yPercent: -20,
-  //   ease: "none"
-  // });
+  // Footer Animation - Modified to work with Hero Animation
+  ScrollTrigger.create({
+    trigger: ".footer",
+    start: "top bottom",
+    end: "top center",
+    scrub: 1,
+    invalidateOnRefresh: true,
+    // markers: true, // Uncomment for debugging
+    animation: gsap.timeline()
+      .to(".main-wrapper", {
+        scale: 0.85,
+        ease: "none"
+      })
+      .to(".footer", {
+        yPercent: -20,
+        ease: "none"
+      }, "<") // Start at the same time as main-wrapper animation
+  });
 
   // 1. Home Hero Animations
   // Set initial states immediately
