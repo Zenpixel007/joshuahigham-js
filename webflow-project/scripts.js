@@ -155,7 +155,7 @@ function initGsapAnimations() {
           ease: "power2.out"
         },
         ease: "power2.out"
-      }, '-=0.5');
+      }, '-=0.25');
   }
 
   // Footer Animation
