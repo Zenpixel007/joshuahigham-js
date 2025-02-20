@@ -69,7 +69,27 @@ function initGsapAnimations() {
 
   // Hero Animation
   if (document.querySelector('.hero-animation_wrapper')) {
+    // Create main timeline with ScrollTrigger
+    const heroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.hero-animation_wrapper',
+        start: "top top",
+        end: "+=500%",
+        pin: true,
+        scrub: .75,
+        anticipatePin: 1
+      },
+      defaults: {
+        ease: "none",
+        duration: 1 // Adding consistent duration for smoother reversing
+      }
+    });
+
     // Set initial states
+    gsap.set(['.circle_hero.is-1', '.circle_hero.is-2', '.circle_hero.is-3', '.hero-animation_text', '.section_hero-animation'], {
+      clearProps: 'all' // Clear any existing GSAP properties
+    });
+    
     gsap.set('.circle_hero.is-1', {
       x: '-50vw',
       opacity: 1
@@ -90,58 +110,34 @@ function initGsapAnimations() {
       y: 20
     });
 
-    // Create main timeline with ScrollTrigger
-    const heroTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.hero-animation_wrapper',
-        start: "top top", // Starts when the top of section hits top of viewport
-        end: "+=300%",    // Animation plays over 3x the height of viewport
-        pin: true,        // Pins the section while animation plays
-        scrub: 1,         // Smooth scrubbing effect (adjust value for speed)
-        anticipatePin: 1  // Helps prevent jerking of pinned elements
-      },
-      defaults: {
-        ease: "none"      // Changed to none for smoother scrubbing
-      }
-    });
-
     heroTl
-      // Move circles to center (0-15% of scroll)
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-        x: '0vw',
+        x: '0vw'
       })
-      // Hide initial circles and show center circle (15-20% of scroll)
       .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-        opacity: 0,
+        opacity: 0
       })
+      .fromTo('.circle_hero.is-3', 
+        { opacity: 0, scale: 0 },
+        { opacity: 1, scale: 1 }
+      )
       .to('.circle_hero.is-3', {
-        opacity: 1,
-        scale: 1,
+        scale: 20
       })
-      // Scale up center circle (20-40% of scroll)
-      .to('.circle_hero.is-3', {
-        scale: 20,
-      })
-      // Animate in text (40-50% of scroll)
-      .to('.hero-animation_text', {
-        opacity: 1,
-        y: 0,
-      })
-      // Hold for a moment (50-60% of scroll)
+      .fromTo('.hero-animation_text',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0 }
+      )
       .to({}, {
         duration: 0.2
       })
-      // Scale down circle and fade out text (60-90% of scroll)
-      .to('.circle_hero.is-3', {
+      .to(['.circle_hero.is-3', '.hero-animation_text'], {
         scale: 0,
-      })
-      .to('.hero-animation_text', {
         opacity: 0,
-        y: -20,
-      }, '<')
-      // Fade out wrapper (90-100% of scroll)
+        y: -20
+      })
       .to('.section_hero-animation', {
-        autoAlpha: 0,
+        autoAlpha: 0
       });
   }
 
