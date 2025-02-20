@@ -141,7 +141,7 @@ function initGsapAnimations() {
         duration: 1.5
       },'-=1')
       //Fade out Hero Animation Wrapper
-      .to('.hero-animation_wrapper', {
+      .to('.section_hero-animation', {
         opacity: 0,
         duration: .5
       },'-=1');
