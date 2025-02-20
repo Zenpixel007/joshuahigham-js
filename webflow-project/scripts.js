@@ -144,7 +144,7 @@ function initGsapAnimations() {
       .to('.section_hero-animation', {
         opacity: 0,
         duration: .5
-      },'-=1');
+      },'-=.5');
   }
 
   // Footer Animation
