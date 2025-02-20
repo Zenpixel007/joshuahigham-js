@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("latest version??");
+console.log("latest versionsdbfui");
 
 // Function to reinitialize Calendly
 function initCalendly() {
@@ -94,9 +94,6 @@ function initGsapAnimations() {
       opacity: 100
     });
 
-    gsap.set('.hero-background', {
-      opacity: 0
-    });
 
     // Create main timeline
     const heroTl = gsap.timeline({
