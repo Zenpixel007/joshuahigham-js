@@ -157,7 +157,7 @@ function initGsapAnimations() {
       //Fade in Hero Section 
       .to('.hero-background', {
         opacity: 100,
-        duration: 1
+        duration: 5
       })
       // Slide in new elements with stagger
       .from('.hero-slide-in', {
