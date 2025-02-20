@@ -139,7 +139,7 @@ function initGsapAnimations() {
         opacity: 0,
         y: -20,
         duration: 0.8
-      },'-=2');
+      },'-=1');
   }
 
   // Footer Animation
