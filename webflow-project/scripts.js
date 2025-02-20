@@ -171,32 +171,32 @@ function initGsapAnimations() {
     });
   }
 
-  // Footer Animation
-  gsap.to(".main-wrapper", {
-    scrollTrigger: {
-      trigger: ".footer",
-      start: "top bottom",
-      end: "top center",
-      scrub: 1,
-      invalidateOnRefresh: true,
-      // markers: true, // Uncomment for debugging
-    },
-    scale: 0.85,
-    ease: "none"
-  });
+  // // Footer Animation
+  // gsap.to(".main-wrapper", {
+  //   scrollTrigger: {
+  //     trigger: ".footer",
+  //     start: "top bottom",
+  //     end: "top center",
+  //     scrub: 1,
+  //     invalidateOnRefresh: true,
+  //     // markers: true, // Uncomment for debugging
+  //   },
+  //   scale: 0.85,
+  //   ease: "none"
+  // });
 
-  gsap.to(".footer", {
-    scrollTrigger: {
-      trigger: ".footer",
-      start: "top bottom",
-      end: "top center",
-      scrub: 1,
-      invalidateOnRefresh: true,
-      // markers: true, // Uncomment for debugging
-    },
-    yPercent: -20,
-    ease: "none"
-  });
+  // gsap.to(".footer", {
+  //   scrollTrigger: {
+  //     trigger: ".footer",
+  //     start: "top bottom",
+  //     end: "top center",
+  //     scrub: 1,
+  //     invalidateOnRefresh: true,
+  //     // markers: true, // Uncomment for debugging
+  //   },
+  //   yPercent: -20,
+  //   ease: "none"
+  // });
 
   // 1. Home Hero Animations
   // Set initial states immediately
