@@ -112,7 +112,7 @@ function initGsapAnimations() {
         opacity: 1,
         scale: 1,
         duration: 0.75
-      }, '-=0.5')
+      }, '-=0.75')
       // Scale up center circle to fill viewport
       .to('.circle_hero.is-3', {
         scale: 20,
@@ -138,7 +138,7 @@ function initGsapAnimations() {
       .to('.hero-animation_text', {
         opacity: 0,
         y: -20,
-        duration: 1.5
+        duration: 1
       },'-=1')
       //Fade out Hero Animation Wrapper
       .to('.section_hero-animation', {
