@@ -67,6 +67,80 @@ function initGsapAnimations() {
   // Kill all ScrollTrigger instances before creating new ones
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
+  // Hero Animation
+  if (document.querySelector('.hero-animation_wrapper')) {
+    // Set initial states
+    gsap.set('.circle_hero._is-1', {
+      xPercent: -100,
+      opacity: 1
+    });
+    
+    gsap.set('.circle_hero._is-2', {
+      xPercent: 100,
+      opacity: 1
+    });
+    
+    gsap.set('.circle_hero._is-3', {
+      scale: 0,
+      opacity: 0
+    });
+    
+    gsap.set('.hero-animation_text', {
+      opacity: 0,
+      y: 20
+    });
+
+    // Create main timeline
+    const heroTl = gsap.timeline({
+      defaults: {
+        ease: "power2.inOut"
+      }
+    });
+
+    heroTl
+      // Move circles to center
+      .to(['.circle_hero._is-1', '.circle_hero._is-2'], {
+        xPercent: 0,
+        duration: 1.5
+      })
+      // Hide initial circles and show center circle
+      .to(['.circle_hero._is-1', '.circle_hero._is-2'], {
+        opacity: 0,
+        duration: 0.1
+      })
+      .to('.circle_hero._is-3', {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5
+      }, '-=0.1')
+      // Scale up center circle to fill viewport
+      .to('.circle_hero._is-3', {
+        scale: 20,
+        duration: 1
+      })
+      // Animate in text
+      .to('.hero-animation_text', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8
+      })
+      // Hold for a moment
+      .to({}, {
+        duration: 0.5
+      })
+      // Fade out text
+      .to('.hero-animation_text', {
+        opacity: 0,
+        y: -20,
+        duration: 0.8
+      })
+      // Scale down center circle
+      .to('.circle_hero._is-3', {
+        scale: 1,
+        duration: 1
+      });
+  }
+
   // Footer Animation
   gsap.to(".main-wrapper", {
     scrollTrigger: {
