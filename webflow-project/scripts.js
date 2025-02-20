@@ -185,38 +185,38 @@ function initGsapAnimations() {
     ease: "none"
   });
 
-  // 1. Home Hero Animations
-  // Set initial states immediately
-  gsap.set(".hero-box", {
-    opacity: 0,
-    y: 50
-  });
+  // // 1. Home Hero Animations
+  // // Set initial states immediately
+  // gsap.set(".hero-box", {
+  //   opacity: 0,
+  //   y: 50
+  // });
   
-  gsap.set(".fade-in", {
-    opacity: 0,
-    y: 25
-  });
+  // gsap.set(".fade-in", {
+  //   opacity: 0,
+  //   y: 25
+  // });
 
-  // Delay the start of animations slightly to ensure initial states are applied
-  setTimeout(() => {
-    let tl = gsap.timeline();
-    tl.to(".hero-box", {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: "power2.out",
-      stagger: 0.3,
-    });
+  // // Delay the start of animations slightly to ensure initial states are applied
+  // setTimeout(() => {
+  //   let tl = gsap.timeline();
+  //   tl.to(".hero-box", {
+  //     y: 0,
+  //     opacity: 1,
+  //     duration: 1,
+  //     ease: "power2.out",
+  //     stagger: 0.3,
+  //   });
 
-    let tl2 = gsap.timeline();
-    tl2.to(".fade-in", {
-      y: 0,
-      opacity: 0.999, // Using 0.999 instead of 1 to prevent GSAP rounding issues
-      duration: 1,
-      ease: "power2.out",
-      stagger: 0.1,
-    });
-  }, 50);
+  //   let tl2 = gsap.timeline();
+  //   tl2.to(".fade-in", {
+  //     y: 0,
+  //     opacity: 0.999, // Using 0.999 instead of 1 to prevent GSAP rounding issues
+  //     duration: 1,
+  //     ease: "power2.out",
+  //     stagger: 0.1,
+  //   });
+  // }, 50);
 
   // 1B. ScrollTrigger "Slide-In" Animation
   gsap.utils.toArray(".slide-in").forEach((el) => {
@@ -236,15 +236,18 @@ function initGsapAnimations() {
   gsap.from(".work_item", {
     scrollTrigger: {
       trigger: ".work_layout",
-      start: "top 50%",
-      // markers: true,
-      toggleActions: "play none none none",
+      start: "top 80%",
+      end: "bottom 20%",
+      scrub: 1,
+      toggleActions: "restart pause reverse pause"
     },
-    y: 50,
+    y: 100,
     opacity: 0,
-    duration: 1,
-    ease: "power2.out",
-    stagger: 0.3,
+    stagger: {
+      each: 0.2,
+      from: "start"
+    },
+    ease: "power2.out"
   });
 
   // 3. Button Hover (to Dark)
