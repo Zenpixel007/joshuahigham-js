@@ -72,6 +72,7 @@ function initGsapAnimations() {
     // Create main timeline with ScrollTrigger
     const heroTl = gsap.timeline({
       scrollTrigger: {
+        id: "hero-animation",
         trigger: '.hero-animation_wrapper',
         start: "top top",
         end: "+=500%",
@@ -171,15 +172,27 @@ function initGsapAnimations() {
     });
   }
 
-  // Footer Animation - Modified to work with Hero Animation
-  ScrollTrigger.create({
-    trigger: ".footer",
-    start: "top bottom",
-    end: "top center",
-    scrub: 1,
-    invalidateOnRefresh: true,
-    // markers: true, // Uncomment for debugging
-    animation: gsap.timeline()
+  // Footer Animation - Modified to respect hero section
+  if (document.querySelector('.footer')) {
+    let footerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".footer",
+        start: "top bottom",
+        end: "top center",
+        scrub: 1,
+        invalidateOnRefresh: true,
+        // markers: true,
+        onEnter: () => {
+          // Kill hero ScrollTrigger if it exists when footer animation starts
+          const heroTrigger = ScrollTrigger.getById("hero-animation");
+          if (heroTrigger) {
+            heroTrigger.kill();
+          }
+        }
+      }
+    });
+
+    footerTl
       .to(".main-wrapper", {
         scale: 0.85,
         ease: "none"
@@ -187,8 +200,8 @@ function initGsapAnimations() {
       .to(".footer", {
         yPercent: -20,
         ease: "none"
-      }, "<") // Start at the same time as main-wrapper animation
-  });
+      }, "<");
+  }
 
   // 1. Home Hero Animations
   // Set initial states immediately
