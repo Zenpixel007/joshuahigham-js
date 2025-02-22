@@ -177,7 +177,7 @@ function initGsapAnimations() {
     scrollTrigger: {
       trigger: ".section_hero",
       start: "top top",
-      end: "+=100%",
+      end: "+=200%",
       scrub: 1,
       invalidateOnRefresh: true,
       // markers: true // Uncomment for debugging
