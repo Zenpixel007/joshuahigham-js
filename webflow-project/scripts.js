@@ -172,6 +172,31 @@ function initGsapAnimations() {
       }, '-=0.25');
   }
 
+  // Hero Scroll Animation
+  const heroScrollTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".section_hero",
+      start: "top top",
+      end: "+=100%",
+      scrub: 1,
+      invalidateOnRefresh: true,
+      // markers: true // Uncomment for debugging
+    }
+  });
+
+  heroScrollTl
+    .to(".hero_layout-centered", {
+      opacity: 0,
+      duration: 1,
+      ease: "power2.out"
+    })
+    .to(".hero-background", {
+      opacity: 0,
+      scale: 1.1,
+      duration: 1,
+      ease: "power2.out"
+    }, "-=0.5");
+
   // Footer Animation
   gsap.to(".main-wrapper", {
     scrollTrigger: {
