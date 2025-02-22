@@ -237,23 +237,20 @@ function initGsapAnimations() {
     });
   });
 
-  // 1C. Work Items Animation
-  gsap.from(".work_item", {
-    scrollTrigger: {
-      trigger: ".work_layout",
-      start: "top 80%",
-      end: "bottom 20%",
-      scrub: 1,
-      toggleActions: "restart pause reverse pause"
-    },
-    y: 100,
-    opacity: 0,
-    stagger: {
-      each: 0.2,
-      from: "start"
-    },
-    ease: "power2.out"
-  });
+    // 1C. Work Items Animation
+    gsap.from(".work_item", {
+      scrollTrigger: {
+        trigger: ".work_layout",
+        start: "top 50%",
+        // markers: true,
+        toggleActions: "play none none none",
+      },
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      ease: "power2.out",
+      stagger: 0.3,
+    });
 
   // 3. Button Hover (to Dark)
   const buttonsSecondary = document.querySelectorAll(".button.is-secondary");
