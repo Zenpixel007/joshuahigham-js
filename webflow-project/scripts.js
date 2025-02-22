@@ -383,6 +383,105 @@ document.addEventListener("DOMContentLoaded", function () {
   barba.init({
     transitions: [
       {
+        name: "work-to-project",
+        from: {
+          namespace: ["home", "work"]
+        },
+        to: {
+          namespace: ["project"]
+        },
+        custom: ({ trigger }) => {
+          return trigger && trigger.classList && trigger.classList.contains('work_item');
+        },
+        async leave(data) {
+          const clickedItem = data.trigger;
+          const allWorkItems = document.querySelectorAll('.work_item');
+          
+          // Get the clicked item's position and dimensions
+          const rect = clickedItem.getBoundingClientRect();
+          const viewportCenter = {
+            x: window.innerWidth / 2 - rect.width / 2,
+            y: window.innerHeight / 2 - rect.height / 2
+          };
+          
+          // Calculate the transform needed to center the clicked item
+          const moveX = viewportCenter.x - rect.left;
+          const moveY = viewportCenter.y - rect.top;
+          
+          // Create timeline for the transition
+          const tl = gsap.timeline();
+          
+          // Fade out all other work items
+          tl.to([...allWorkItems].filter(item => item !== clickedItem), {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.inOut"
+          });
+          
+          // Move clicked item to center and scale it up
+          tl.to(clickedItem, {
+            x: moveX,
+            y: moveY,
+            scale: 1.2,
+            duration: 0.8,
+            ease: "power2.inOut"
+          }, "-=0.3");
+          
+          // Fade out the centered item
+          tl.to(clickedItem, {
+            opacity: 0,
+            duration: 0.3,
+            ease: "power2.inOut"
+          });
+          
+          await tl;
+          
+          // Set up for slide-over transition
+          gsap.set(data.current.container, {
+            position: 'fixed',
+            width: '100%',
+            top: -window.scrollY,
+            left: 0
+          });
+          
+          document.body.style.overflow = 'hidden';
+        },
+        async enter(data) {
+          // Prepare new page to slide in from bottom
+          gsap.set(data.next.container, {
+            position: 'fixed',
+            top: '100%',
+            left: 0,
+            width: '100%',
+            zIndex: 10,
+            visibility: 'visible'
+          });
+          
+          // Slide new page up
+          await gsap.to(data.next.container, {
+            duration: 0.8,
+            top: '0%',
+            ease: "power3.inOut"
+          });
+          
+          // Reset container properties
+          gsap.set([data.current.container, data.next.container], {
+            clearProps: 'all'
+          });
+          
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+          
+          // Ensure we're at top of new page
+          window.scrollTo(0, 0);
+          
+          ScrollTrigger.refresh();
+          initGsapAnimations();
+          initCalendly();
+          initCustomCursor();
+        }
+      },
+      {
         name: "slide-over",
         from: {
           custom: ({ trigger }) => {
