@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("checking connection hsdsad");
+console.log("checking psuh");
 
 // Function to reinitialize Calendly
 function initCalendly() {
@@ -71,8 +71,8 @@ function initGsapAnimations() {
   if (document.querySelector('.project_hero-lower')) {
     // Set initial state
     gsap.set('.project_main-img', {
-      width: '50vw',
-      maxWidth: '50vw'
+      width: '50%',
+      maxWidth: '50%'
     });
 
     const projectHeroTl = gsap.timeline({
@@ -91,8 +91,8 @@ function initGsapAnimations() {
 
     projectHeroTl
       .to('.project_main-img', {
-        width: '100vw',
-        maxWidth: '100vw',
+        width: '100%',
+        maxWidth: '100%',
         duration: 1,
         ease: 'none'
       });
