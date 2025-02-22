@@ -384,7 +384,6 @@ document.addEventListener("DOMContentLoaded", function () {
     transitions: [
       {
         name: "work-item-transition",
-        // Only run this transition if clicking work items or work buttons
         from: {
           namespace: "home"
         },
@@ -392,7 +391,10 @@ document.addEventListener("DOMContentLoaded", function () {
           namespace: "project"
         },
         async beforeLeave(data) {
-          // Store the clicked element's position and dimensions for the transition
+          // Kill all GSAP animations and ScrollTriggers
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          gsap.killTweensOf("*");
+
           const trigger = data.trigger;
           if (!trigger) return;
           
@@ -404,21 +406,17 @@ document.addEventListener("DOMContentLoaded", function () {
           
           if (!isWorkItem && !isWorkButton) return;
 
-          // Find the source image
           const workItem = isWorkItem ? trigger.closest('.work_item') : 
                           trigger.closest('.work_item');
           const sourceImg = workItem.querySelector('.work_item-img_img');
           if (!sourceImg) return;
 
-          // Store the image source for the transition
           const rect = sourceImg.getBoundingClientRect();
           data.sourceRect = rect;
           data.sourceImage = sourceImg.src;
 
-          // Create timeline for leaving animation
           const leaveTl = gsap.timeline();
           
-          // Fade out other work items
           leaveTl.to('.work_item', {
             opacity: 0,
             duration: 0.5,
@@ -429,20 +427,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
           await leaveTl.play();
         },
+        async leave(data) {
+          // Clear any remaining animations
+          gsap.killTweensOf("*");
+        },
         async enter(data) {
-          // Find the target image in the project page
+          // Kill any existing ScrollTriggers
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          
           const targetImg = document.querySelector('.project_main-img .work_item-img_img');
           if (!targetImg || !data.sourceRect) return;
 
-          // Create the enter timeline
           const enterTl = gsap.timeline();
 
-          // Set initial position of project hero section
           gsap.set('.section_project-hero', {
             opacity: 0
           });
 
-          // Position the target image to match the source position
           gsap.set(targetImg, {
             position: 'fixed',
             top: data.sourceRect.top + 'px',
@@ -452,7 +453,6 @@ document.addEventListener("DOMContentLoaded", function () {
             zIndex: 100
           });
 
-          // Animate to final position
           enterTl
             .to(targetImg, {
               duration: 1,
@@ -470,10 +470,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
           await enterTl.play();
 
-          // Reset any inline styles after animation
           gsap.set(targetImg, {
             clearProps: "all"
           });
+
+          // Initialize new animations after transition
+          ScrollTrigger.refresh(true);
+          initGsapAnimations();
+        },
+        async afterEnter() {
+          // Final refresh of ScrollTrigger
+          ScrollTrigger.refresh(true);
         }
       },
       {
@@ -483,11 +490,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return !(window.location.pathname === '/' && !trigger);
           }
         },
+        async beforeLeave() {
+          // Kill all GSAP animations and ScrollTriggers
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          gsap.killTweensOf("*");
+        },
         async leave(data) {
-          // Store current scroll position
           const scrollPos = window.scrollY;
           
-          // Keep current page fixed in place
           gsap.set(data.current.container, {
             position: 'fixed',
             width: '100%',
@@ -495,7 +505,6 @@ document.addEventListener("DOMContentLoaded", function () {
             left: 0
           });
           
-          // Prevent scroll during transition
           document.body.style.overflow = 'hidden';
           
           return gsap.to(data.current.container, {
@@ -504,18 +513,18 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         },
         async enter(data) {
-          // Force the next container to start at top
+          // Kill any existing ScrollTriggers
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          
           window.scrollTo(0, 0);
           document.documentElement.scrollTop = 0;
           document.body.scrollTop = 0;
           
-          // Set initial states for hero elements in the new page
           gsap.set([".hero-box", ".fade-in"], {
             opacity: 0,
             y: 50
           });
           
-          // Prepare new page to slide in from bottom
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '100%',
@@ -525,35 +534,28 @@ document.addEventListener("DOMContentLoaded", function () {
             visibility: 'visible'
           });
           
-          // Slide new page up
           await gsap.to(data.next.container, {
             duration: 0.8,
             top: '0%',
             ease: "power3.inOut"
           });
 
-          // Reset container properties and scroll behavior
           gsap.set([data.current.container, data.next.container], {
             clearProps: 'all'
           });
           
-          // Re-enable scrolling
           document.body.style.overflow = '';
-          
-          // Ensure we stay at top of new page
           window.scrollTo(0, 0);
           
-          ScrollTrigger.refresh();
+          // Initialize new animations after transition
+          ScrollTrigger.refresh(true);
           initGsapAnimations();
           initCalendly();
           initCustomCursor();
         },
-        async once(data) {
-          // Simplified once animation for homepage
-          ScrollTrigger.refresh();
-          initGsapAnimations();
-          initCalendly();
-          initCustomCursor();
+        async afterEnter() {
+          // Final refresh of ScrollTrigger
+          ScrollTrigger.refresh(true);
         }
       }
     ],
@@ -562,15 +564,21 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         namespace: 'home',
         beforeEnter() {
-          // Initialize home page specific animations
+          ScrollTrigger.refresh(true);
           initGsapAnimations();
+        },
+        afterEnter() {
+          ScrollTrigger.refresh(true);
         }
       },
       {
         namespace: 'project',
         beforeEnter() {
-          // Initialize project page specific animations
+          ScrollTrigger.refresh(true);
           initGsapAnimations();
+        },
+        afterEnter() {
+          ScrollTrigger.refresh(true);
         }
       },
       {
@@ -589,11 +597,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   barba.hooks.beforeLeave(() => {
     ScrollTrigger.getAll().forEach(st => st.kill());
+    gsap.killTweensOf("*");
   });
 
   barba.hooks.after(() => {
     document.body.style.overflow = '';
-    window.scrollTo(0, 0);
     ScrollTrigger.refresh(true);
   });
 });
