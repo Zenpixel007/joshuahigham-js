@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("checking connection hero background");
+console.log("checking connection hsdsad");
 
 // Function to reinitialize Calendly
 function initCalendly() {
@@ -177,7 +177,7 @@ function initGsapAnimations() {
     scrollTrigger: {
       trigger: ".section_hero",
       start: "top top",
-      end: "+=200%",
+      end: "+=100%",
       pin: true,           // Pin the section during animation
       pinSpacing: true,    // Maintains the space in the document
       scrub: 1,
