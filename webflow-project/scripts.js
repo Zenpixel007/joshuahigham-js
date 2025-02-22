@@ -383,6 +383,100 @@ document.addEventListener("DOMContentLoaded", function () {
   barba.init({
     transitions: [
       {
+        name: "work-item-transition",
+        // Only run this transition if clicking work items or work buttons
+        from: {
+          namespace: "home"
+        },
+        to: {
+          namespace: "project"
+        },
+        async beforeLeave(data) {
+          // Store the clicked element's position and dimensions for the transition
+          const trigger = data.trigger;
+          if (!trigger) return;
+          
+          const isWorkItem = trigger.classList.contains('work_item-img') || 
+                            trigger.closest('.work_item-img');
+          const isWorkButton = trigger.classList.contains('button') && 
+                             trigger.classList.contains('is-secondary') && 
+                             trigger.classList.contains('_is-work');
+          
+          if (!isWorkItem && !isWorkButton) return;
+
+          // Find the source image
+          const workItem = isWorkItem ? trigger.closest('.work_item') : 
+                          trigger.closest('.work_item');
+          const sourceImg = workItem.querySelector('.work_item-img_img');
+          if (!sourceImg) return;
+
+          // Store the image source for the transition
+          const rect = sourceImg.getBoundingClientRect();
+          data.sourceRect = rect;
+          data.sourceImage = sourceImg.src;
+
+          // Create timeline for leaving animation
+          const leaveTl = gsap.timeline();
+          
+          // Fade out other work items
+          leaveTl.to('.work_item', {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.inOut",
+            stagger: 0.1,
+            filter: el => el !== workItem
+          });
+
+          await leaveTl.play();
+        },
+        async enter(data) {
+          // Find the target image in the project page
+          const targetImg = document.querySelector('.project_main-img .work_item-img_img');
+          if (!targetImg || !data.sourceRect) return;
+
+          // Create the enter timeline
+          const enterTl = gsap.timeline();
+
+          // Set initial position of project hero section
+          gsap.set('.section_project-hero', {
+            opacity: 0
+          });
+
+          // Position the target image to match the source position
+          gsap.set(targetImg, {
+            position: 'fixed',
+            top: data.sourceRect.top + 'px',
+            left: data.sourceRect.left + 'px',
+            width: data.sourceRect.width + 'px',
+            height: data.sourceRect.height + 'px',
+            zIndex: 100
+          });
+
+          // Animate to final position
+          enterTl
+            .to(targetImg, {
+              duration: 1,
+              top: 'auto',
+              bottom: '0',
+              left: '0',
+              width: '100%',
+              height: 'auto',
+              ease: "power2.inOut"
+            })
+            .to('.section_project-hero', {
+              opacity: 1,
+              duration: 0.5
+            }, "-=0.3");
+
+          await enterTl.play();
+
+          // Reset any inline styles after animation
+          gsap.set(targetImg, {
+            clearProps: "all"
+          });
+        }
+      },
+      {
         name: "slide-over",
         from: {
           custom: ({ trigger }) => {
@@ -465,6 +559,20 @@ document.addEventListener("DOMContentLoaded", function () {
     ],
     preventScroll: true,
     views: [
+      {
+        namespace: 'home',
+        beforeEnter() {
+          // Initialize home page specific animations
+          initGsapAnimations();
+        }
+      },
+      {
+        namespace: 'project',
+        beforeEnter() {
+          // Initialize project page specific animations
+          initGsapAnimations();
+        }
+      },
       {
         namespace: '*',
         beforeEnter() {
