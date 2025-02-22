@@ -390,6 +390,14 @@ document.addEventListener("DOMContentLoaded", function () {
         to: {
           namespace: "project"
         },
+        custom: ({ trigger }) => {
+          if (!trigger) return false;
+          return trigger.classList.contains('work_item-img') || 
+                 trigger.closest('.work_item-img') ||
+                 (trigger.classList.contains('button') && 
+                  trigger.classList.contains('is-secondary') && 
+                  trigger.classList.contains('_is-work'));
+        },
         async beforeLeave(data) {
           // Kill all GSAP animations and ScrollTriggers
           ScrollTrigger.getAll().forEach(st => st.kill());
@@ -485,10 +493,17 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         name: "slide-over",
-        from: {
-          custom: ({ trigger }) => {
-            return !(window.location.pathname === '/' && !trigger);
-          }
+        custom: ({ trigger }) => {
+          if (!trigger) return true;
+          
+          // Don't run slide-over if this is a work item transition
+          const isWorkItem = trigger.classList.contains('work_item-img') || 
+                           trigger.closest('.work_item-img');
+          const isWorkButton = trigger.classList.contains('button') && 
+                             trigger.classList.contains('is-secondary') && 
+                             trigger.classList.contains('_is-work');
+          
+          return !(isWorkItem || isWorkButton);
         },
         async beforeLeave() {
           // Kill all GSAP animations and ScrollTriggers
