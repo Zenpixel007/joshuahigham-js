@@ -67,6 +67,37 @@ function initGsapAnimations() {
   // Kill all ScrollTrigger instances before creating new ones
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
+  // Project Hero Image Scale Animation
+  if (document.querySelector('.project_hero-lower')) {
+    // Set initial state
+    gsap.set('.project_main-img', {
+      width: '50vw',
+      maxWidth: '50vw'
+    });
+
+    const projectHeroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.project_hero-lower',
+        start: 'top top',
+        end: '+=100%',
+        pin: true,
+        pinSpacing: true,
+        scrub: 1,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        // markers: true, // Uncomment for debugging
+      }
+    });
+
+    projectHeroTl
+      .to('.project_main-img', {
+        width: '100vw',
+        maxWidth: '100vw',
+        duration: 1,
+        ease: 'none'
+      });
+  }
+
   // Hero Animation
   if (document.querySelector('.hero-animation_wrapper')) {
     // Set initial states
