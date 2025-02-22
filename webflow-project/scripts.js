@@ -178,24 +178,27 @@ function initGsapAnimations() {
       trigger: ".section_hero",
       start: "top top",
       end: "+=200%",
+      pin: true,           // Pin the section during animation
+      pinSpacing: true,    // Maintains the space in the document
       scrub: 1,
+      anticipatePin: 1,    // Improves pin performance
       invalidateOnRefresh: true,
-      // markers: true // Uncomment for debugging
+      // markers: true     // Uncomment for debugging
     }
   });
 
   heroScrollTl
     .to(".hero_layout-centered", {
       opacity: 0,
-      duration: 1,
-      ease: "power2.out"
+      duration: 0.3,
+      ease: "power2.inOut"
     })
     .to(".hero-background", {
       opacity: 0,
       scale: 1.1,
-      duration: 1,
-      ease: "power2.out"
-    }, "-=0.5");
+      duration: 0.3,
+      ease: "power2.inOut"
+    }, "-=0.2");
 
   // Footer Animation
   gsap.to(".main-wrapper", {
