@@ -198,7 +198,7 @@ function initGsapAnimations() {
       scale: 1.1,
       duration: 0.3,
       ease: "power2.inOut"
-    }, "-=0.5");
+    }, "-=0.2");
 
   // Footer Animation
   gsap.to(".main-wrapper", {
