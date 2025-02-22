@@ -158,7 +158,7 @@ function initGsapAnimations() {
       .to('.hero-background-img', {
         opacity: 1,
         duration: 1
-      })
+      }, '-=.5')
       // Slide in new elements with stagger
       .from('.hero-slide-in', {
         y: 50,
