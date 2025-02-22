@@ -94,7 +94,7 @@ function initGsapAnimations() {
       opacity: 100
     });
 
-    gsap.set('.hero-background-img', {
+    gsap.set('.hero-background', {
       opacity: 0
     });
 
@@ -148,14 +148,14 @@ function initGsapAnimations() {
         opacity: 0,
         y: -20,
         duration: 1
-      },'-=1')
+      },'-=1')  
       //Fade out Hero Animation Wrapper
       .to('.section_hero-animation', {
         autoAlpha: 0,
         duration: .5
       },'-=.5')
       //Fade in Hero Background Image
-      .to('.hero-background-img', {
+      .to('.hero-background', {
         opacity: 1,
         duration: 1
       }, '-=.5')
