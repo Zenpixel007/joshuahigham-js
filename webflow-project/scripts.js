@@ -133,7 +133,7 @@ function initGsapAnimations() {
         opacity: 1,
         y: 0,
         duration: 0.8
-      })
+      },'-=0.5')
       // Hold for a moment
       .to({}, {
         duration: 0.5
