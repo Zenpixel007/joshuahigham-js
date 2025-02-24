@@ -425,6 +425,12 @@ document.addEventListener("DOMContentLoaded", function () {
           // Store current scroll position
           const scrollPos = window.scrollY;
           
+          // Get click position from the trigger element
+          const trigger = data.trigger;
+          const clickRect = trigger.getBoundingClientRect();
+          const clickX = clickRect.left + (clickRect.width / 2);
+          const clickY = clickRect.top + (clickRect.height / 2);
+          
           // Create and append the transition circle if it doesn't exist
           let transitionCircle = document.querySelector('.transition-circle');
           if (!transitionCircle) {
@@ -432,11 +438,11 @@ document.addEventListener("DOMContentLoaded", function () {
             transitionCircle.className = 'transition-circle';
             document.body.appendChild(transitionCircle);
             
-            // Add styles to the circle
+            // Add styles to the circle, positioning it at the click position
             gsap.set(transitionCircle, {
               position: 'fixed',
-              top: '50%',
-              left: '50%',
+              top: clickY + 'px',
+              left: clickX + 'px',
               width: '50px',
               height: '50px',
               borderRadius: '50%',
@@ -446,16 +452,17 @@ document.addEventListener("DOMContentLoaded", function () {
             });
           }
 
-          // Fix the container in place at current scroll position
+          // Fix both the current container and body at current scroll
+          document.body.style.position = 'fixed';
+          document.body.style.top = -scrollPos + 'px';
+          document.body.style.width = '100%';
+          
           gsap.set(data.current.container, {
             position: 'fixed',
             width: '100%',
             top: -scrollPos,
             left: 0
           });
-
-          // Prevent scroll during transition
-          document.body.style.overflow = 'hidden';
 
           // Create the leave animation timeline
           const tl = gsap.timeline();
@@ -469,6 +476,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         async enter(data) {
           const transitionCircle = document.querySelector('.transition-circle');
+          const scrollPos = parseInt(document.body.style.top || '0') * -1;
           
           // Prepare new page but keep it hidden
           gsap.set(data.next.container, {
@@ -504,15 +512,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 clearProps: 'all'
               });
               
+              // Reset body position and scroll
+              document.body.style.position = '';
+              document.body.style.top = '';
+              document.body.style.width = '';
+              window.scrollTo(0, 0);
+              
               // Re-enable scrolling
               document.body.style.overflow = '';
-              
-              // Now scroll to top after transition is complete
-              window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: 'instant'
-              });
               
               // Refresh ScrollTrigger and reinitialize animations
               ScrollTrigger.refresh();
