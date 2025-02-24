@@ -489,8 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Fade out the circle with a slight delay
           await tl.to(transitionCircle, {
             opacity: 0,
-            duration: 0.2,
-            delay: 0.1,
+            duration: 0.3,
             onComplete: () => {
               // Remove the transition circle
               transitionCircle.remove();
