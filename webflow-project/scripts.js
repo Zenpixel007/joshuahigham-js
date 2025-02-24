@@ -231,6 +231,51 @@ function initGsapAnimations() {
       ease: "power2.inOut"
     }, "-=0.2");
 
+  // CTA Scroll Animation
+  const ctaScrollTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".section_cta-centered",
+      start: "top top",
+      end: "+=100%",
+      pin: true,
+      pinSpacing: true,
+      scrub: 1,
+      anticipatePin: 1,
+      invalidateOnRefresh: true
+    }
+  });
+
+  // Set initial states
+  gsap.set(".cta-background", {
+    opacity: 0,
+    scale: 0.9
+  });
+  
+  gsap.set(".cta-slide-in", {
+    opacity: 0,
+    y: 30
+  });
+
+  ctaScrollTl
+    // Fade in and scale up the background
+    .to(".cta-background", {
+      opacity: 1,
+      scale: 1,
+      duration: 0.5,
+      ease: "power2.inOut"
+    })
+    // Animate in CTA elements with stagger
+    .to(".cta-slide-in", {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      stagger: {
+        amount: 0.3,
+        ease: "power2.out"
+      },
+      ease: "power2.out"
+    });
+
   // Footer Animation - Simple slide-up reveal
   const footer = document.querySelector(".footer");
   
