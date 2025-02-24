@@ -422,6 +422,9 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         priority: 2,
         async leave(data) {
+          // Store current scroll position
+          const scrollPos = window.scrollY;
+          
           // Create and append the transition circle if it doesn't exist
           let transitionCircle = document.querySelector('.transition-circle');
           if (!transitionCircle) {
@@ -437,14 +440,13 @@ document.addEventListener("DOMContentLoaded", function () {
               width: '50px',
               height: '50px',
               borderRadius: '50%',
-              backgroundColor: '#FF0000',
+              backgroundColor: '#ef0107',
               transform: 'translate(-50%, -50%) scale(0)',
               zIndex: 9999
             });
           }
 
-          // Store current scroll position and fix the container
-          const scrollPos = window.scrollY;
+          // Fix the container in place at current scroll position
           gsap.set(data.current.container, {
             position: 'fixed',
             width: '100%',
@@ -468,26 +470,28 @@ document.addEventListener("DOMContentLoaded", function () {
         async enter(data) {
           const transitionCircle = document.querySelector('.transition-circle');
           
-          // Prepare new page
+          // Prepare new page but keep it hidden
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '0',
             left: 0,
             width: '100%',
             opacity: 0,
-            zIndex: 1
+            zIndex: 1,
+            visibility: 'hidden' // Hide initially
           });
 
           // Create enter animation timeline
           const tl = gsap.timeline();
 
-          // Fade in the new content
+          // First fade in the new content while keeping it hidden
           tl.to(data.next.container, {
             opacity: 1,
-            duration: 0.5
+            duration: 0.5,
+            visibility: 'visible' // Make visible as it fades in
           });
 
-          // Clean up the transition
+          // Then fade out the circle and clean up
           tl.to(transitionCircle, {
             opacity: 0,
             duration: 0.3,
@@ -503,8 +507,12 @@ document.addEventListener("DOMContentLoaded", function () {
               // Re-enable scrolling
               document.body.style.overflow = '';
               
-              // Ensure we're at top of new page
-              window.scrollTo(0, 0);
+              // Now scroll to top after transition is complete
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'instant'
+              });
               
               // Refresh ScrollTrigger and reinitialize animations
               ScrollTrigger.refresh();
