@@ -231,65 +231,40 @@ function initGsapAnimations() {
       ease: "power2.inOut"
     }, "-=0.2");
 
-  // Footer Animation
-  gsap.to(".main-wrapper", {
-    scrollTrigger: {
-      trigger: ".footer",
-      start: "top bottom",
-      end: "top center",
-      scrub: 1,
-      invalidateOnRefresh: true,
-      // markers: true, // Uncomment for debugging
-    },
-    scale: 0.85,
-    ease: "none"
-  });
-
-  gsap.to(".footer", {
-    scrollTrigger: {
-      trigger: ".footer",
-      start: "top bottom",
-      end: "top center",
-      scrub: 1,
-      invalidateOnRefresh: true,
-      // markers: true, // Uncomment for debugging
-    },
-    yPercent: -20,
-    ease: "none"
-  });
-
-  // // 1. Home Hero Animations
-  // // Set initial states immediately
-  // gsap.set(".hero-box", {
-  //   opacity: 0,
-  //   y: 50
-  // });
+  // Footer Animation - Modified to be transition-friendly
+  const footer = document.querySelector(".footer");
+  const mainWrapper = document.querySelector(".main-wrapper");
   
-  // gsap.set(".fade-in", {
-  //   opacity: 0,
-  //   y: 25
-  // });
+  if (footer && mainWrapper) {
+    // Create a timeline for footer animations
+    const footerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: footer,
+        start: "top bottom",
+        end: "top center",
+        scrub: 1,
+        invalidateOnRefresh: true,
+        onLeave: () => {
+          // Reset transforms when leaving view
+          gsap.set([mainWrapper, footer], { clearProps: "all" });
+        },
+        onEnterBack: () => {
+          // Re-enable the animation when scrolling back
+          ScrollTrigger.refresh();
+        }
+      }
+    });
 
-  // // Delay the start of animations slightly to ensure initial states are applied
-  // setTimeout(() => {
-  //   let tl = gsap.timeline();
-  //   tl.to(".hero-box", {
-  //     y: 0,
-  //     opacity: 1,
-  //     duration: 1,
-  //     ease: "power2.out",
-  //     stagger: 0.3,
-  //   });
-
-  //   let tl2 = gsap.timeline();
-  //   tl2.to(".fade-in", {
-  //     y: 0,
-  //     opacity: 0.999, // Using 0.999 instead of 1 to prevent GSAP rounding issues
-  //     duration: 1,
-  //     ease: "power2.out",
-  //     stagger: 0.1,
-  //   });
-  // }, 50);
+    footerTl
+      .to(mainWrapper, {
+        scale: 0.85,
+        ease: "none",
+      })
+      .to(footer, {
+        yPercent: -20,
+        ease: "none",
+      }, "<");
+  }
 
   // 1B. ScrollTrigger "Slide-In" Animation
   gsap.utils.toArray(".slide-in").forEach((el) => {
@@ -305,20 +280,19 @@ function initGsapAnimations() {
     });
   });
 
-    // 1C. Work Items Animation
-    gsap.from(".work_item", {
-      scrollTrigger: {
-        trigger: ".work_layout",
-        start: "top 50%",
-        // markers: true,
-        toggleActions: "play none none none",
-      },
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      ease: "power2.out",
-      stagger: 0.3,
-    });
+  // 1C. Work Items Animation
+  gsap.from(".work_item", {
+    scrollTrigger: {
+      trigger: ".work_layout",
+      start: "top 50%",
+      toggleActions: "play none none none",
+    },
+    y: 50,
+    opacity: 0,
+    duration: 1,
+    ease: "power2.out",
+    stagger: 0.3,
+  });
 
   // 3. Button Hover (to Dark)
   const buttonsSecondary = document.querySelectorAll(".button.is-secondary");
