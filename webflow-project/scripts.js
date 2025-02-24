@@ -337,17 +337,33 @@ function initGsapAnimations() {
   const hamburgerBtn = document.querySelector('.hamburger-icon');
   const mobileMenu = document.querySelector('.mobile-menu');
   const mobileLinks = document.querySelectorAll('.mobile-link');
-  const hamburgerLottie = document.querySelector('.hamburger-lottie');
   let isMenuOpen = false;
 
-  // Initialize Lottie animation
-  if (hamburgerLottie && hamburgerLottie.getLottie) {
-    const lottieInstance = hamburgerLottie.getLottie();
-    // Stop any current animation and go to first frame
-    lottieInstance.stop();
-    lottieInstance.goToAndStop(0, true);
-    // Ensure it doesn't loop
-    lottieInstance.loop = false;
+  // Create hamburger icon structure
+  if (hamburgerBtn) {
+    hamburgerBtn.innerHTML = `
+      <div class="hamburger-line line-1"></div>
+      <div class="hamburger-line line-2"></div>
+      <div class="hamburger-line line-3"></div>
+    `;
+
+    // Style the lines
+    const lines = hamburgerBtn.querySelectorAll('.hamburger-line');
+    lines.forEach(line => {
+      gsap.set(line, {
+        width: '24px',
+        height: '2px',
+        backgroundColor: '#ffffff', // Initial white color
+        marginBottom: '6px',
+        transformOrigin: 'center',
+        position: 'relative'
+      });
+    });
+    
+    // Remove margin from last line
+    gsap.set('.line-3', {
+      marginBottom: 0
+    });
   }
 
   // Clean up existing event listeners if any
@@ -382,6 +398,40 @@ function initGsapAnimations() {
     opacity: 0,
     x: 20
   });
+
+  // Create hamburger animation timeline
+  const hamburgerTl = gsap.timeline({ paused: true });
+  
+  hamburgerTl
+    .to('.line-1', {
+      y: 8,
+      duration: 0.2,
+      ease: "power2.inOut"
+    })
+    .to('.line-3', {
+      y: -8,
+      duration: 0.2,
+      ease: "power2.inOut"
+    }, "<")
+    .to('.line-2', {
+      opacity: 0,
+      duration: 0.2,
+      ease: "power2.inOut"
+    }, "<")
+    .to(['.line-1', '.line-2', '.line-3'], {
+      backgroundColor: '#000000', // Change to black
+      duration: 0.2
+    }, "<")
+    .to('.line-1', {
+      rotation: 45,
+      duration: 0.2,
+      ease: "power2.inOut"
+    })
+    .to('.line-3', {
+      rotation: -45,
+      duration: 0.2,
+      ease: "power2.inOut"
+    }, "<");
 
   // Create menu animation timeline
   const menuTl = gsap.timeline({
@@ -422,21 +472,11 @@ function initGsapAnimations() {
       if (isMenuOpen) {
         // Play forward
         menuTl.play();
-        // Play Lottie animation if it exists
-        if (hamburgerLottie && hamburgerLottie.getLottie) {
-          const lottieInstance = hamburgerLottie.getLottie();
-          lottieInstance.setDirection(1);
-          lottieInstance.goToAndPlay(0, true);
-        }
+        hamburgerTl.play();
       } else {
         // Reverse animations
         menuTl.reverse();
-        // Reverse Lottie animation if it exists
-        if (hamburgerLottie && hamburgerLottie.getLottie) {
-          const lottieInstance = hamburgerLottie.getLottie();
-          lottieInstance.setDirection(-1);
-          lottieInstance.play();
-        }
+        hamburgerTl.reverse();
       }
     };
 
@@ -450,11 +490,7 @@ function initGsapAnimations() {
         if (isMenuOpen) {
           isMenuOpen = false;
           menuTl.reverse();
-          if (hamburgerLottie && hamburgerLottie.getLottie) {
-            const lottieInstance = hamburgerLottie.getLottie();
-            lottieInstance.setDirection(-1);
-            lottieInstance.play();
-          }
+          hamburgerTl.reverse();
         }
       };
 
@@ -469,11 +505,7 @@ function initGsapAnimations() {
     if (isMenuOpen && window.innerWidth > 768) { // Adjust breakpoint as needed
       isMenuOpen = false;
       menuTl.reverse();
-      if (hamburgerLottie && hamburgerLottie.getLottie) {
-        const lottieInstance = hamburgerLottie.getLottie();
-        lottieInstance.setDirection(-1);
-        lottieInstance.play();
-      }
+      hamburgerTl.reverse();
     }
   };
 
