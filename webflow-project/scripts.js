@@ -264,6 +264,20 @@ function initGsapAnimations() {
         yPercent: -20,
         ease: "none",
       }, "<");
+
+    // Store the ScrollTrigger instance
+    const footerScrollTrigger = footerTl.scrollTrigger;
+
+    // Add click handler to all links to cleanup footer animation
+    document.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        // Immediately kill the ScrollTrigger and reset transforms
+        if (footerScrollTrigger) {
+          footerScrollTrigger.kill();
+          gsap.set([mainWrapper, footer], { clearProps: "all" });
+        }
+      });
+    });
   }
 
   // 1B. ScrollTrigger "Slide-In" Animation
