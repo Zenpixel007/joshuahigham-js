@@ -339,6 +339,18 @@ function initGsapAnimations() {
   const mobileLinks = document.querySelectorAll('.mobile-link');
   const hamburgerLottie = document.querySelector('.hamburger-lottie');
   let isMenuOpen = false;
+  let hamburgerAnimation = null;
+
+  // Initialize Lottie animation if element exists
+  if (hamburgerLottie) {
+    hamburgerAnimation = lottie.loadAnimation({
+      container: hamburgerLottie,
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: hamburgerLottie.dataset.animation // Make sure to add data-animation attribute with path to your JSON
+    });
+  }
 
   // Clean up existing event listeners if any
   if (hamburgerBtn) {
@@ -405,19 +417,20 @@ function initGsapAnimations() {
     });
 
   // Handle menu toggle
-  if (hamburgerBtn && hamburgerLottie) {
+  if (hamburgerBtn && hamburgerAnimation) {
     const clickHandler = () => {
       isMenuOpen = !isMenuOpen;
       
       if (isMenuOpen) {
         // Play forward
         menuTl.play();
-        hamburgerLottie.play();
+        hamburgerAnimation.setDirection(1);
+        hamburgerAnimation.play();
       } else {
         // Reverse animations
         menuTl.reverse();
-        hamburgerLottie.setDirection(-1);
-        hamburgerLottie.play();
+        hamburgerAnimation.setDirection(-1);
+        hamburgerAnimation.play();
       }
     };
 
@@ -431,8 +444,8 @@ function initGsapAnimations() {
         if (isMenuOpen) {
           isMenuOpen = false;
           menuTl.reverse();
-          hamburgerLottie.setDirection(-1);
-          hamburgerLottie.play();
+          hamburgerAnimation.setDirection(-1);
+          hamburgerAnimation.play();
         }
       };
 
@@ -447,8 +460,10 @@ function initGsapAnimations() {
     if (isMenuOpen && window.innerWidth > 768) { // Adjust breakpoint as needed
       isMenuOpen = false;
       menuTl.reverse();
-      hamburgerLottie.setDirection(-1);
-      hamburgerLottie.play();
+      if (hamburgerAnimation) {
+        hamburgerAnimation.setDirection(-1);
+        hamburgerAnimation.play();
+      }
     }
   };
 
