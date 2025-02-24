@@ -231,52 +231,32 @@ function initGsapAnimations() {
       ease: "power2.inOut"
     }, "-=0.2");
 
-  // Footer Animation - Modified to be transition-friendly
+  // Footer Animation - Simple slide-up reveal
   const footer = document.querySelector(".footer");
-  const mainWrapper = document.querySelector(".main-wrapper");
   
-  if (footer && mainWrapper) {
-    // Create a timeline for footer animations
-    const footerTl = gsap.timeline({
+  if (footer) {
+    // Set initial state
+    gsap.set(footer, {
+      yPercent: 20,
+      opacity: 0
+    });
+
+    // Create a timeline for footer animation
+    gsap.timeline({
       scrollTrigger: {
         trigger: footer,
         start: "top bottom",
         end: "top center",
-        scrub: 1,
+        scrub: 0.5,
         invalidateOnRefresh: true,
-        onLeave: () => {
-          // Reset transforms when leaving view
-          gsap.set([mainWrapper, footer], { clearProps: "all" });
-        },
-        onEnterBack: () => {
-          // Re-enable the animation when scrolling back
-          ScrollTrigger.refresh();
-        }
+        toggleActions: "play none none reverse"
       }
-    });
-
-    footerTl
-      .to(mainWrapper, {
-        scale: 0.85,
-        ease: "none",
-      })
-      .to(footer, {
-        yPercent: -20,
-        ease: "none",
-      }, "<");
-
-    // Store the ScrollTrigger instance
-    const footerScrollTrigger = footerTl.scrollTrigger;
-
-    // Add click handler to all links to cleanup footer animation
-    document.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        // Immediately kill the ScrollTrigger and reset transforms
-        if (footerScrollTrigger) {
-          footerScrollTrigger.kill();
-          gsap.set([mainWrapper, footer], { clearProps: "all" });
-        }
-      });
+    })
+    .to(footer, {
+      yPercent: 0,
+      opacity: 1,
+      ease: "power2.out",
+      duration: 1
     });
   }
 
