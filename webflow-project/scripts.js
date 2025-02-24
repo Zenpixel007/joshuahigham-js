@@ -237,7 +237,7 @@ function initGsapAnimations() {
   if (footer) {
     // Set initial state
     gsap.set(footer, {
-      yPercent: -40,
+      yPercent: 30,
       opacity: 0
     });
 
