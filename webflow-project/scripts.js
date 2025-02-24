@@ -443,6 +443,7 @@ document.addEventListener("DOMContentLoaded", function () {
         to: {
           namespace: ["contact"]
         },
+        priority: 2,
         async leave(data) {
           // Create and append the transition circle if it doesn't exist
           let transitionCircle = document.querySelector('.transition-circle');
@@ -638,6 +639,7 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         name: "slide-over",
+        priority: 1,
         from: {
           custom: ({ trigger }) => {
             return !(window.location.pathname === '/' && !trigger);
