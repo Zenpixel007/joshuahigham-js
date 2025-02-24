@@ -396,6 +396,31 @@ function initGsapAnimations() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Function to handle email link copying
+  const emailLink = document.getElementById('email-link');
+  if (emailLink) {
+    emailLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      const emailAddress = this.href.replace('mailto:', '');
+      
+      // Copy email to clipboard
+      navigator.clipboard.writeText(emailAddress).then(() => {
+        // Store original text
+        const originalText = this.textContent;
+        
+        // Change text to indicate success
+        this.textContent = 'Email Copied!';
+        
+        // Reset text after 2 seconds
+        setTimeout(() => {
+          this.textContent = originalText;
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy email:', err);
+      });
+    });
+  }
+
   // Function to reset scroll position
   function scrollToTop() {
     window.scrollTo({
