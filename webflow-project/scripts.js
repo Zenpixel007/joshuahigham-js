@@ -432,11 +432,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.scrollTop = 0;
   }
 
-  // Initialize cursor immediately on first page load
+  // Initialize GSAP animations for the first page load
+  initGsapAnimations();
   initCustomCursor();
 
   // Initialize Barba
   barba.init({
+    debug: true, // Helps with debugging
+    preventRunning: true,
     transitions: [
       {
         name: "contact-transition",
@@ -720,29 +723,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     ],
-    preventScroll: true,
     views: [
       {
         namespace: '*',
-        beforeEnter() {
+        beforeEnter(data) {
+          // Kill all existing ScrollTrigger instances
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          
+          // Kill all GSAP animations
+          gsap.killTweensOf("*");
+          
+          // Initialize new animations
+          initGsapAnimations();
+          initCustomCursor();
+          
+          // Scroll to top
           window.scrollTo(0, 0);
         }
       }
     ]
   });
 
-  // Additional hooks for cleanup and scroll management
-  barba.hooks.before(() => {
-    document.body.style.overflow = 'hidden';
-  });
-
+  // Additional Barba hooks for proper cleanup and initialization
   barba.hooks.beforeLeave(() => {
+    // Kill all ScrollTrigger instances before leaving
     ScrollTrigger.getAll().forEach(st => st.kill());
+    gsap.killTweensOf("*");
   });
 
   barba.hooks.after(() => {
+    // Re-enable scrolling
     document.body.style.overflow = '';
+    
+    // Ensure we're at top of page
     window.scrollTo(0, 0);
+    
+    // Refresh ScrollTrigger and reinitialize animations
     ScrollTrigger.refresh(true);
+    initGsapAnimations();
+    initCalendly();
+    initCustomCursor();
+  });
+
+  // Remove individual reinitializations from transition enter functions
+  const transitions = barba.transitions;
+  transitions.forEach(transition => {
+    if (transition.enter) {
+      const originalEnter = transition.enter;
+      transition.enter = async function(data) {
+        await originalEnter.call(this, data);
+        // Don't reinitialize here as it's handled by hooks
+      };
+    }
   });
 });
