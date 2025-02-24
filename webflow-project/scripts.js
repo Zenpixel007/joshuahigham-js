@@ -2,7 +2,7 @@
 // Your custom code for animations, cursor, and Barba transitions:
 
 //This is a test to see if it is conected to the webflow project
-console.log("checking psuh");
+console.log("checking Barba");
 
 // Function to reinitialize Calendly
 function initCalendly() {
@@ -641,9 +641,10 @@ document.addEventListener("DOMContentLoaded", function () {
         name: "slide-over",
         priority: 1,
         from: {
-          custom: ({ trigger }) => {
-            return !(window.location.pathname === '/' && !trigger);
-          }
+          namespace: ["home", "work", "project", "contact"]
+        },
+        to: {
+          namespace: ["slide-over"]
         },
         async leave(data) {
           // Store current scroll position
