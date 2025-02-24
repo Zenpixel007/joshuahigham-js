@@ -468,31 +468,29 @@ document.addEventListener("DOMContentLoaded", function () {
             duration: 1,
             ease: "power2.inOut"
           });
-        },
-        async enter(data) {
-          const transitionCircle = document.querySelector('.transition-circle');
-          const scrollPos = parseInt(document.documentElement.style.top || '0') * -1;
-          
-          // Prepare new page and make it visible immediately but hidden behind the circle
+
+          // Prepare the next container before the transition completes
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '0',
             left: 0,
             width: '100%',
             opacity: 1,
-            zIndex: 1
+            zIndex: 1,
+            y: 0
           });
-
-          // Small delay to ensure new page is rendered
-          await new Promise(resolve => setTimeout(resolve, 100));
-
+        },
+        async enter(data) {
+          const transitionCircle = document.querySelector('.transition-circle');
+          
           // Create enter animation timeline
           const tl = gsap.timeline();
 
-          // Fade out the circle
+          // Fade out the circle with a slight delay
           await tl.to(transitionCircle, {
             opacity: 0,
-            duration: 0.3,
+            duration: 0.2,
+            delay: 0.1,
             onComplete: () => {
               // Remove the transition circle
               transitionCircle.remove();
@@ -507,7 +505,11 @@ document.addEventListener("DOMContentLoaded", function () {
               document.documentElement.style.top = '';
               document.documentElement.style.width = '';
               document.documentElement.style.overflowY = '';
+              
+              // Force scroll to top for the contact page
               window.scrollTo(0, 0);
+              document.documentElement.scrollTop = 0;
+              document.body.scrollTop = 0;
               
               // Refresh ScrollTrigger and reinitialize animations
               ScrollTrigger.refresh();
