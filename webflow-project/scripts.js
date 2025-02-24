@@ -419,7 +419,6 @@ function initGsapAnimations() {
       ease: "power2.inOut"
     }, "<")
     .to(['.line-1', '.line-2', '.line-3'], {
-      backgroundColor: '#000000', // Change to black
       duration: 0.2
     }, "<")
     .to('.line-1', {
@@ -441,33 +440,17 @@ function initGsapAnimations() {
     }
   });
 
-  // Set initial states for nav backgrounds
-  const navBgDarker = document.querySelector('.nav-bg-darker-mobile');
-  const navGrainy = document.querySelector('.grainy-background._is-nav-mobile');
-  
-  if (navBgDarker && navGrainy) {
-    gsap.set([navBgDarker, navGrainy], {
-      opacity: 1
-    });
-  }
-
   // Build the timeline
   menuTl
     // Make menu visible and slide in from right
     .set(mobileMenu, {
       visibility: 'visible'
     })
-    // Fade out nav backgrounds
-    .to([navBgDarker, navGrainy], {
-      opacity: 0,
-      duration: 0.3,
-      ease: "power2.inOut"
-    })
     .to(mobileMenu, {
       xPercent: 0,
       duration: 0.6,
       ease: "power3.out"
-    }, "<") // Start at same time as background fade
+    })
     // Animate in links with stagger
     .to(mobileLinks, {
       opacity: 1,
