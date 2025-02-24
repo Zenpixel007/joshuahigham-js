@@ -439,6 +439,105 @@ document.addEventListener("DOMContentLoaded", function () {
   barba.init({
     transitions: [
       {
+        name: "contact-transition",
+        to: {
+          namespace: ["contact"]
+        },
+        async leave(data) {
+          // Create and append the transition circle if it doesn't exist
+          let transitionCircle = document.querySelector('.transition-circle');
+          if (!transitionCircle) {
+            transitionCircle = document.createElement('div');
+            transitionCircle.className = 'transition-circle';
+            document.body.appendChild(transitionCircle);
+            
+            // Add styles to the circle
+            gsap.set(transitionCircle, {
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              backgroundColor: '#FF0000',
+              transform: 'translate(-50%, -50%) scale(0)',
+              zIndex: 9999
+            });
+          }
+
+          // Store current scroll position and fix the container
+          const scrollPos = window.scrollY;
+          gsap.set(data.current.container, {
+            position: 'fixed',
+            width: '100%',
+            top: -scrollPos,
+            left: 0
+          });
+
+          // Prevent scroll during transition
+          document.body.style.overflow = 'hidden';
+
+          // Create the leave animation timeline
+          const tl = gsap.timeline();
+          
+          // Scale up the circle to cover the screen
+          await tl.to(transitionCircle, {
+            scale: 50,
+            duration: 1,
+            ease: "power2.inOut"
+          });
+        },
+        async enter(data) {
+          const transitionCircle = document.querySelector('.transition-circle');
+          
+          // Prepare new page
+          gsap.set(data.next.container, {
+            position: 'fixed',
+            top: '0',
+            left: 0,
+            width: '100%',
+            opacity: 0,
+            zIndex: 1
+          });
+
+          // Create enter animation timeline
+          const tl = gsap.timeline();
+
+          // Fade in the new content
+          tl.to(data.next.container, {
+            opacity: 1,
+            duration: 0.5
+          });
+
+          // Clean up the transition
+          tl.to(transitionCircle, {
+            opacity: 0,
+            duration: 0.3,
+            onComplete: () => {
+              // Remove the transition circle
+              transitionCircle.remove();
+              
+              // Reset container properties
+              gsap.set([data.current.container, data.next.container], {
+                clearProps: 'all'
+              });
+              
+              // Re-enable scrolling
+              document.body.style.overflow = '';
+              
+              // Ensure we're at top of new page
+              window.scrollTo(0, 0);
+              
+              // Refresh ScrollTrigger and reinitialize animations
+              ScrollTrigger.refresh();
+              initGsapAnimations();
+              initCalendly();
+              initCustomCursor();
+            }
+          });
+        }
+      },
+      {
         name: "work-to-project",
         from: {
           namespace: ["home", "work"]
