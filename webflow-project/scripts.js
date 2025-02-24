@@ -486,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
           
           // Scale up the circle to cover the screen
           await tl.to(transitionCircle, {
-            scale: 50,
+            scale: 100,
             duration: 1,
             ease: "power2.inOut"
           });
