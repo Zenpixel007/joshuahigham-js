@@ -430,7 +430,6 @@ function initGsapAnimations() {
       ease: "power2.inOut"
     }, "<")
     .to(['.line-1', '.line-2', '.line-3'], {
-      backgroundColor: '#000000', // Change to black
       duration: 0.2
     }, "<")
     .to('.line-1', {
