@@ -340,6 +340,16 @@ function initGsapAnimations() {
   const hamburgerLottie = document.querySelector('.hamburger-lottie');
   let isMenuOpen = false;
 
+  // Initialize Lottie animation
+  if (hamburgerLottie && hamburgerLottie.getLottie) {
+    const lottieInstance = hamburgerLottie.getLottie();
+    // Stop any current animation and go to first frame
+    lottieInstance.stop();
+    lottieInstance.goToAndStop(0, true);
+    // Ensure it doesn't loop
+    lottieInstance.loop = false;
+  }
+
   // Clean up existing event listeners if any
   if (hamburgerBtn) {
     const oldClickListener = hamburgerBtn._clickListener;
@@ -412,18 +422,20 @@ function initGsapAnimations() {
       if (isMenuOpen) {
         // Play forward
         menuTl.play();
-        // Play Lottie animation if it exists (using Webflow's data attribute)
+        // Play Lottie animation if it exists
         if (hamburgerLottie && hamburgerLottie.getLottie) {
-          hamburgerLottie.getLottie().setDirection(1);
-          hamburgerLottie.getLottie().play();
+          const lottieInstance = hamburgerLottie.getLottie();
+          lottieInstance.setDirection(1);
+          lottieInstance.goToAndPlay(0, true);
         }
       } else {
         // Reverse animations
         menuTl.reverse();
         // Reverse Lottie animation if it exists
         if (hamburgerLottie && hamburgerLottie.getLottie) {
-          hamburgerLottie.getLottie().setDirection(-1);
-          hamburgerLottie.getLottie().play();
+          const lottieInstance = hamburgerLottie.getLottie();
+          lottieInstance.setDirection(-1);
+          lottieInstance.play();
         }
       }
     };
@@ -439,8 +451,9 @@ function initGsapAnimations() {
           isMenuOpen = false;
           menuTl.reverse();
           if (hamburgerLottie && hamburgerLottie.getLottie) {
-            hamburgerLottie.getLottie().setDirection(-1);
-            hamburgerLottie.getLottie().play();
+            const lottieInstance = hamburgerLottie.getLottie();
+            lottieInstance.setDirection(-1);
+            lottieInstance.play();
           }
         }
       };
@@ -457,8 +470,9 @@ function initGsapAnimations() {
       isMenuOpen = false;
       menuTl.reverse();
       if (hamburgerLottie && hamburgerLottie.getLottie) {
-        hamburgerLottie.getLottie().setDirection(-1);
-        hamburgerLottie.getLottie().play();
+        const lottieInstance = hamburgerLottie.getLottie();
+        lottieInstance.setDirection(-1);
+        lottieInstance.play();
       }
     }
   };
