@@ -440,14 +440,9 @@ document.addEventListener("DOMContentLoaded", function () {
     transitions: [
       {
         name: "contact-transition",
-        from: {
-          namespace: ["home", "work", "project"]
-        },
         to: {
           namespace: ["contact"]
         },
-        // Add priority to ensure this transition takes precedence
-        priority: 2,
         async leave(data) {
           // Create and append the transition circle if it doesn't exist
           let transitionCircle = document.querySelector('.transition-circle');
@@ -643,12 +638,9 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         name: "slide-over",
-        priority: 1,
         from: {
           custom: ({ trigger }) => {
-            // Exclude transitions to contact pages
-            const nextNamespace = trigger?.getAttribute('data-barba-namespace');
-            return !(window.location.pathname === '/' && !trigger) && nextNamespace !== 'contact';
+            return !(window.location.pathname === '/' && !trigger);
           }
         },
         async leave(data) {
