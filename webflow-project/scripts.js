@@ -333,6 +333,95 @@ function initGsapAnimations() {
     stagger: 0.3,
   });
 
+  // Mobile Navigation Animation System
+  const hamburgerBtn = document.querySelector('.hamburger-icon');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  const hamburgerLottie = document.querySelector('.hamburger-lottie');
+  let isMenuOpen = false;
+
+  // Set initial states
+  gsap.set(mobileMenu, {
+    xPercent: 100,
+    visibility: 'hidden'
+  });
+
+  gsap.set(mobileLinks, {
+    opacity: 0,
+    x: 20
+  });
+
+  // Create menu animation timeline
+  const menuTl = gsap.timeline({
+    paused: true,
+    onReverseComplete: () => {
+      gsap.set(mobileMenu, { visibility: 'hidden' });
+    }
+  });
+
+  // Build the timeline
+  menuTl
+    // Make menu visible and slide in from right
+    .set(mobileMenu, {
+      visibility: 'visible'
+    })
+    .to(mobileMenu, {
+      xPercent: 0,
+      duration: 0.6,
+      ease: "power3.out"
+    })
+    // Animate in links with stagger
+    .to(mobileLinks, {
+      opacity: 1,
+      x: 0,
+      duration: 0.4,
+      stagger: {
+        amount: 0.3,
+        ease: "power2.out"
+      },
+      ease: "power2.out"
+    });
+
+  // Handle menu toggle
+  if (hamburgerBtn && hamburgerLottie) {
+    hamburgerBtn.addEventListener('click', () => {
+      isMenuOpen = !isMenuOpen;
+      
+      if (isMenuOpen) {
+        // Play forward
+        menuTl.play();
+        hamburgerLottie.play();
+      } else {
+        // Reverse animations
+        menuTl.reverse();
+        hamburgerLottie.setDirection(-1);
+        hamburgerLottie.play();
+      }
+    });
+
+    // Handle mobile link clicks (close menu when a link is clicked)
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (isMenuOpen) {
+          isMenuOpen = false;
+          menuTl.reverse();
+          hamburgerLottie.setDirection(-1);
+          hamburgerLottie.play();
+        }
+      });
+    });
+  }
+
+  // Close menu on window resize (if open)
+  window.addEventListener('resize', () => {
+    if (isMenuOpen && window.innerWidth > 768) { // Adjust breakpoint as needed
+      isMenuOpen = false;
+      menuTl.reverse();
+      hamburgerLottie.setDirection(-1);
+      hamburgerLottie.play();
+    }
+  });
+
   // 3. Button Hover (to Dark)
   const buttonsSecondary = document.querySelectorAll(".button.is-secondary");
   buttonsSecondary.forEach((button) => {
@@ -787,95 +876,6 @@ document.addEventListener("DOMContentLoaded", function () {
         await originalEnter.call(this, data);
         // Don't reinitialize here as it's handled by hooks
       };
-    }
-  });
-
-  // Mobile Navigation Animation System
-  const hamburgerBtn = document.querySelector('.hamburger-icon');
-  const mobileMenu = document.querySelector('.mobile-menu');
-  const mobileLinks = document.querySelectorAll('.mobile-link');
-  const hamburgerLottie = document.querySelector('.hamburger-lottie');
-  let isMenuOpen = false;
-
-  // Set initial states
-  gsap.set(mobileMenu, {
-    xPercent: 100,
-    visibility: 'hidden'
-  });
-
-  gsap.set(mobileLinks, {
-    opacity: 0,
-    x: 20
-  });
-
-  // Create menu animation timeline
-  const menuTl = gsap.timeline({
-    paused: true,
-    onReverseComplete: () => {
-      gsap.set(mobileMenu, { visibility: 'hidden' });
-    }
-  });
-
-  // Build the timeline
-  menuTl
-    // Make menu visible and slide in from right
-    .set(mobileMenu, {
-      visibility: 'visible'
-    })
-    .to(mobileMenu, {
-      xPercent: 0,
-      duration: 0.6,
-      ease: "power3.out"
-    })
-    // Animate in links with stagger
-    .to(mobileLinks, {
-      opacity: 1,
-      x: 0,
-      duration: 0.4,
-      stagger: {
-        amount: 0.3,
-        ease: "power2.out"
-      },
-      ease: "power2.out"
-    });
-
-  // Handle menu toggle
-  if (hamburgerBtn && hamburgerLottie) {
-    hamburgerBtn.addEventListener('click', () => {
-      isMenuOpen = !isMenuOpen;
-      
-      if (isMenuOpen) {
-        // Play forward
-        menuTl.play();
-        hamburgerLottie.play();
-      } else {
-        // Reverse animations
-        menuTl.reverse();
-        hamburgerLottie.setDirection(-1);
-        hamburgerLottie.play();
-      }
-    });
-
-    // Handle mobile link clicks (close menu when a link is clicked)
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        if (isMenuOpen) {
-          isMenuOpen = false;
-          menuTl.reverse();
-          hamburgerLottie.setDirection(-1);
-          hamburgerLottie.play();
-        }
-      });
-    });
-  }
-
-  // Close menu on window resize (if open)
-  window.addEventListener('resize', () => {
-    if (isMenuOpen && window.innerWidth > 768) { // Adjust breakpoint as needed
-      isMenuOpen = false;
-      menuTl.reverse();
-      hamburgerLottie.setDirection(-1);
-      hamburgerLottie.play();
     }
   });
 });
