@@ -1,0 +1,46 @@
+# Cursor Rules File for Webflow JavaScript Project
+# This file provides guidelines to ensure that AI-generated code aligns with project standards.
+
+[General]
+# The project is a Webflow custom code integration.
+# Use modern JavaScript (ES6+), maintain readability, and include clear comments.
+project_type = "Webflow Custom Code"
+language = "JavaScript"
+style = "ES6, modular, and well-commented"
+
+[Libraries]
+# GSAP for animations and Barba.js for page transitions.
+# Ensure usage follows best practices.
+libraries = "GSAP, Barba.js"
+
+[GSAP]
+# When generating code involving animations:
+# - Use GSAP's timeline where possible.
+# - Optimize for performance and smooth transitions.
+default_timeline = true
+use_plugins = "ScrollTrigger if needed"
+
+[BarbaJS]
+# When dealing with page transitions:
+# - Utilize Barba.js's lifecycle hooks.
+# - Ensure transitions are smooth and transitions are easily maintained.
+transition_logic = "modular and easy to extend"
+
+[CodeQuality]
+# All code should:
+# - Use clear, consistent naming conventions.
+# - Include inline comments explaining complex logic.
+# - Be structured in a modular fashion for reusability.
+naming_convention = "camelCase for variables and functions"
+comments = "extensive and clear"
+error_handling = "include basic error handling where applicable"
+
+[Deployment]
+# The code is eventually deployed as custom code on a Webflow project.
+# Ensure that relative paths are correctly referenced.
+deployment = "Webflow Embed/Custom Code"
+
+[Integration]
+# Code should be easy to integrate with Netlify continuous deployment.
+# When generating code, assume that it might be part of a larger Git-based workflow.
+git_integration = true
