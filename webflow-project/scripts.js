@@ -340,6 +340,28 @@ function initGsapAnimations() {
   const hamburgerLottie = document.querySelector('.hamburger-lottie');
   let isMenuOpen = false;
 
+  // Clean up existing event listeners if any
+  if (hamburgerBtn) {
+    const oldClickListener = hamburgerBtn._clickListener;
+    if (oldClickListener) {
+      hamburgerBtn.removeEventListener('click', oldClickListener);
+    }
+  }
+
+  if (mobileLinks) {
+    mobileLinks.forEach(link => {
+      const oldClickListener = link._clickListener;
+      if (oldClickListener) {
+        link.removeEventListener('click', oldClickListener);
+      }
+    });
+  }
+
+  // Remove existing resize listener if any
+  if (window._resizeListener) {
+    window.removeEventListener('resize', window._resizeListener);
+  }
+
   // Set initial states
   gsap.set(mobileMenu, {
     xPercent: 100,
@@ -384,7 +406,7 @@ function initGsapAnimations() {
 
   // Handle menu toggle
   if (hamburgerBtn && hamburgerLottie) {
-    hamburgerBtn.addEventListener('click', () => {
+    const clickHandler = () => {
       isMenuOpen = !isMenuOpen;
       
       if (isMenuOpen) {
@@ -397,30 +419,42 @@ function initGsapAnimations() {
         hamburgerLottie.setDirection(-1);
         hamburgerLottie.play();
       }
-    });
+    };
+
+    // Store the listener for future cleanup
+    hamburgerBtn._clickListener = clickHandler;
+    hamburgerBtn.addEventListener('click', clickHandler);
 
     // Handle mobile link clicks (close menu when a link is clicked)
     mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
+      const linkClickHandler = () => {
         if (isMenuOpen) {
           isMenuOpen = false;
           menuTl.reverse();
           hamburgerLottie.setDirection(-1);
           hamburgerLottie.play();
         }
-      });
+      };
+
+      // Store the listener for future cleanup
+      link._clickListener = linkClickHandler;
+      link.addEventListener('click', linkClickHandler);
     });
   }
 
   // Close menu on window resize (if open)
-  window.addEventListener('resize', () => {
+  const resizeHandler = () => {
     if (isMenuOpen && window.innerWidth > 768) { // Adjust breakpoint as needed
       isMenuOpen = false;
       menuTl.reverse();
       hamburgerLottie.setDirection(-1);
       hamburgerLottie.play();
     }
-  });
+  };
+
+  // Store the listener for future cleanup
+  window._resizeListener = resizeHandler;
+  window.addEventListener('resize', resizeHandler);
 
   // 3. Button Hover (to Dark)
   const buttonsSecondary = document.querySelectorAll(".button.is-secondary");
