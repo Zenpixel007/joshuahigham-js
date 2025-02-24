@@ -389,14 +389,25 @@ function initGsapAnimations() {
   }
 
   // Set initial states
-  gsap.set(mobileMenu, {
-    xPercent: 100,
-    visibility: 'hidden'
-  });
+  if (mobileMenu) {
+    // Force immediate update to prevent flicker
+    gsap.set(mobileMenu, {
+      x: '100%',
+      visibility: 'hidden',
+      immediateRender: true
+    });
+
+    // Ensure menu is ready for animations
+    requestAnimationFrame(() => {
+      mobileMenu.style.transform = 'translateX(100%)';
+      mobileMenu.style.visibility = 'hidden';
+    });
+  }
 
   gsap.set(mobileLinks, {
     opacity: 0,
-    x: 20
+    x: 20,
+    immediateRender: true
   });
 
   // Create hamburger animation timeline
@@ -419,6 +430,7 @@ function initGsapAnimations() {
       ease: "power2.inOut"
     }, "<")
     .to(['.line-1', '.line-2', '.line-3'], {
+      backgroundColor: '#000000', // Change to black
       duration: 0.2
     }, "<")
     .to('.line-1', {
@@ -444,10 +456,11 @@ function initGsapAnimations() {
   menuTl
     // Make menu visible and slide in from right
     .set(mobileMenu, {
-      visibility: 'visible'
+      visibility: 'visible',
+      x: '100%'
     })
     .to(mobileMenu, {
-      xPercent: 0,
+      x: '0%',
       duration: 0.6,
       ease: "power3.out"
     })
