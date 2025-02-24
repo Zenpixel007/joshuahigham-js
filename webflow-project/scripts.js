@@ -448,22 +448,17 @@ document.addEventListener("DOMContentLoaded", function () {
               borderRadius: '50%',
               backgroundColor: '#ef0107',
               transform: 'translate(-50%, -50%) scale(0)',
-              zIndex: 9999
+              zIndex: 9999,
+              pointerEvents: 'none'
             });
           }
 
           // Fix both the current container and body at current scroll
-          document.body.style.position = 'fixed';
-          document.body.style.top = -scrollPos + 'px';
-          document.body.style.width = '100%';
+          document.documentElement.style.position = 'fixed';
+          document.documentElement.style.top = -scrollPos + 'px';
+          document.documentElement.style.width = '100%';
+          document.documentElement.style.overflowY = 'scroll';
           
-          gsap.set(data.current.container, {
-            position: 'fixed',
-            width: '100%',
-            top: -scrollPos,
-            left: 0
-          });
-
           // Create the leave animation timeline
           const tl = gsap.timeline();
           
@@ -476,31 +471,26 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         async enter(data) {
           const transitionCircle = document.querySelector('.transition-circle');
-          const scrollPos = parseInt(document.body.style.top || '0') * -1;
+          const scrollPos = parseInt(document.documentElement.style.top || '0') * -1;
           
-          // Prepare new page but keep it hidden
+          // Prepare new page and make it visible immediately but hidden behind the circle
           gsap.set(data.next.container, {
             position: 'fixed',
             top: '0',
             left: 0,
             width: '100%',
-            opacity: 0,
-            zIndex: 1,
-            visibility: 'hidden' // Hide initially
+            opacity: 1,
+            zIndex: 1
           });
+
+          // Small delay to ensure new page is rendered
+          await new Promise(resolve => setTimeout(resolve, 100));
 
           // Create enter animation timeline
           const tl = gsap.timeline();
 
-          // First fade in the new content while keeping it hidden
-          tl.to(data.next.container, {
-            opacity: 1,
-            duration: 0.5,
-            visibility: 'visible' // Make visible as it fades in
-          });
-
-          // Then fade out the circle and clean up
-          tl.to(transitionCircle, {
+          // Fade out the circle
+          await tl.to(transitionCircle, {
             opacity: 0,
             duration: 0.3,
             onComplete: () => {
@@ -512,14 +502,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 clearProps: 'all'
               });
               
-              // Reset body position and scroll
-              document.body.style.position = '';
-              document.body.style.top = '';
-              document.body.style.width = '';
+              // Reset document position and scroll
+              document.documentElement.style.position = '';
+              document.documentElement.style.top = '';
+              document.documentElement.style.width = '';
+              document.documentElement.style.overflowY = '';
               window.scrollTo(0, 0);
-              
-              // Re-enable scrolling
-              document.body.style.overflow = '';
               
               // Refresh ScrollTrigger and reinitialize animations
               ScrollTrigger.refresh();
@@ -716,6 +704,11 @@ document.addEventListener("DOMContentLoaded", function () {
       {
         namespace: '*',
         beforeEnter(data) {
+          // Only handle scroll reset for non-contact transitions
+          if (!data.next.namespace.includes('contact')) {
+            window.scrollTo(0, 0);
+          }
+          
           // Kill all existing ScrollTrigger instances
           ScrollTrigger.getAll().forEach(st => st.kill());
           
@@ -725,9 +718,6 @@ document.addEventListener("DOMContentLoaded", function () {
           // Initialize new animations
           initGsapAnimations();
           initCustomCursor();
-          
-          // Scroll to top
-          window.scrollTo(0, 0);
         }
       }
     ]
@@ -735,19 +725,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Additional Barba hooks for proper cleanup and initialization
   barba.hooks.beforeLeave(() => {
-    // Kill all ScrollTrigger instances before leaving
     ScrollTrigger.getAll().forEach(st => st.kill());
     gsap.killTweensOf("*");
   });
 
-  barba.hooks.after(() => {
-    // Re-enable scrolling
-    document.body.style.overflow = '';
+  barba.hooks.after((data) => {
+    // Only handle scroll reset for non-contact transitions
+    if (!data.next.namespace.includes('contact')) {
+      document.body.style.overflow = '';
+      window.scrollTo(0, 0);
+    }
     
-    // Ensure we're at top of page
-    window.scrollTo(0, 0);
-    
-    // Refresh ScrollTrigger and reinitialize animations
     ScrollTrigger.refresh(true);
     initGsapAnimations();
     initCalendly();
