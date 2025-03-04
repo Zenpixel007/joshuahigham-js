@@ -29,7 +29,7 @@ async function initRive() {
       canvas: canvas,
       stateMachines: ['BlobFollow'],
       autoplay: true,
-      renderer: 'webgl', // Explicitly set WebGL renderer
+      renderer: 'rive', // Explicitly set WebGL renderer
       useOffscreenRenderer: false, // Disable offscreen rendering for better feathering support
       layout: new rive.Layout({
         fit: rive.Fit.cover,
