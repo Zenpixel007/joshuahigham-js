@@ -18,8 +18,20 @@ async function initRive() {
 
     // Set canvas size to match container
     const container = canvas.parentElement;
-    canvas.width = container.offsetWidth;
-    canvas.height = container.offsetHeight;
+    
+    // Function to update canvas size
+    const updateCanvasSize = () => {
+      // Set canvas size to viewport dimensions
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      // Update container size to match viewport
+      container.style.width = '100vw';
+      container.style.height = '100vh';
+    };
+    
+    // Initial size setup
+    updateCanvasSize();
 
     const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67c6ef7fbe4810c35443a3f8_Test.riv';
     
@@ -30,11 +42,12 @@ async function initRive() {
       stateMachines: ['BlobFollow'],
       autoplay: true,
       layout: new rive.Layout({
-        fit: rive.Fit.cover,
+        fit: rive.Fit.fill, // Changed from cover to fill
         alignment: rive.Alignment.center,
       }),
       onLoad: () => {
         console.log('Rive animation loaded successfully');
+        updateCanvasSize(); // Ensure correct size after loading
       },
       onError: (err) => {
         console.error('Error loading Rive animation:', err);
@@ -43,11 +56,10 @@ async function initRive() {
 
     // Handle window resize
     window.addEventListener('resize', () => {
-      if (canvas && container) {
-        canvas.width = container.offsetWidth;
-        canvas.height = container.offsetHeight;
+      updateCanvasSize();
+      if (riveInstance) {
         riveInstance.layout = new rive.Layout({
-          fit: rive.Fit.cover,
+          fit: rive.Fit.fill,
           alignment: rive.Alignment.center,
         });
       }
