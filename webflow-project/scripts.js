@@ -980,4 +980,16 @@ document.addEventListener("DOMContentLoaded", function () {
       };
     }
   });
+
+  // Initialize Rive with WebGL renderer
+  const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67c6ef7fbe4810c35443a3f8_Test.riv';
+  
+  // Load Rive runtime
+  const rive = new rive.Rive({
+    src: riveURL,
+    canvas: document.getElementById('rive-canvas'), // Make sure to add this ID to your canvas element in Webflow
+    stateMachines: 'BlobFollow', // Update this to match your state machine name if different
+    rendererType: rive.RenderType.webGL, // Explicitly set WebGL renderer
+    useOffscreenRenderer: true, // Enable for better performance
+  });
 });
