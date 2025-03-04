@@ -29,12 +29,16 @@ async function initRive() {
       canvas: canvas,
       stateMachines: ['BlobFollow'],
       autoplay: true,
+      renderer: 'webgl', // Explicitly set WebGL renderer
+      useOffscreenRenderer: false, // Disable offscreen rendering for better feathering support
       layout: new rive.Layout({
         fit: rive.Fit.cover,
         alignment: rive.Alignment.center,
       }),
       onLoad: () => {
         console.log('Rive animation loaded successfully');
+        // Force a redraw to ensure feathering is applied
+        riveInstance.resizeDrawingSurface();
       },
       onError: (err) => {
         console.error('Error loading Rive animation:', err);
