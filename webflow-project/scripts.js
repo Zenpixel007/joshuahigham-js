@@ -30,7 +30,7 @@ async function initRive() {
       stateMachines: ['BlobFollow'],
       autoplay: true,
       layout: new rive.Layout({
-        fit: rive.Fit.cover,
+        fit: rive.Fit.fill,
         alignment: rive.Alignment.center,
       }),
       onLoad: () => {
@@ -47,7 +47,7 @@ async function initRive() {
         canvas.width = container.offsetWidth;
         canvas.height = container.offsetHeight;
         riveInstance.layout = new rive.Layout({
-          fit: rive.Fit.cover,
+          fit: rive.Fit.fill,
           alignment: rive.Alignment.center,
         });
       }
