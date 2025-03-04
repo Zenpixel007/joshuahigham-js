@@ -981,15 +981,56 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Initialize Rive with WebGL renderer
-  const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67c6ef7fbe4810c35443a3f8_Test.riv';
-  
-  // Load Rive runtime
-  const rive = new rive.Rive({
-    src: riveURL,
-    canvas: document.getElementById('rive-canvas'), // Make sure to add this ID to your canvas element in Webflow
-    stateMachines: 'BlobFollow', // Update this to match your state machine name if different
-    rendererType: rive.RenderType.webGL, // Explicitly set WebGL renderer
-    useOffscreenRenderer: true, // Enable for better performance
-  });
+  // Initialize Rive animation
+  async function initRive() {
+    try {
+      const canvas = document.getElementById('rive-canvas');
+      
+      if (!canvas) {
+        console.warn('Rive canvas element not found');
+        return;
+      }
+
+      // Set canvas size to match container
+      const container = canvas.parentElement;
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
+
+      const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67c6ef7fbe4810c35443a3f8_Test.riv';
+      
+      // Create new Rive instance
+      const riveInstance = new rive.Rive({
+        src: riveURL,
+        canvas: canvas,
+        stateMachines: 'BlobFollow',
+        rendererType: rive.RenderType.webGL,
+        useOffscreenRenderer: true,
+        layout: new rive.Layout({
+          fit: rive.Fit.contain,
+          alignment: rive.Alignment.center,
+        }),
+        onLoad: () => {
+          console.log('Rive animation loaded successfully');
+        },
+        onError: (err) => {
+          console.error('Error loading Rive animation:', err);
+        }
+      });
+
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        if (canvas && container) {
+          canvas.width = container.offsetWidth;
+          canvas.height = container.offsetHeight;
+        }
+      });
+
+      return riveInstance;
+    } catch (error) {
+      console.error('Failed to initialize Rive:', error);
+    }
+  }
+
+  // Initialize Rive after a short delay to ensure DOM is ready
+  setTimeout(initRive, 100);
 });
