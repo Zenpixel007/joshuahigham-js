@@ -37,8 +37,6 @@ async function initRive() {
       }),
       onLoad: () => {
         console.log('Rive animation loaded successfully');
-        // Force a redraw to ensure feathering is applied
-        riveInstance.resizeDrawingSurface();
       },
       onError: (err) => {
         console.error('Error loading Rive animation:', err);
