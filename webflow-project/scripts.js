@@ -23,44 +23,37 @@ async function initRive() {
 
     const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67c6ef7fbe4810c35443a3f8_Test.riv';
     
-    // Create new Rive instance
-    const riveInstance = new rive.Runtime({
-      locateFile: (file) => 'https://unpkg.com/@rive-app/canvas@2.7.0/' + file,
+    // Create new Rive instance using the current API
+    const riveInstance = new rive.Rive({
+      src: riveURL,
+      canvas: canvas,
+      stateMachines: ['BlobFollow'],
+      autoplay: true,
+      layout: new rive.Layout({
+        fit: rive.Fit.cover,
+        alignment: rive.Alignment.center,
+      }),
+      onLoad: () => {
+        console.log('Rive animation loaded successfully');
+      },
+      onError: (err) => {
+        console.error('Error loading Rive animation:', err);
+      }
     });
 
-    // Load the Rive file
-    const req = new Request(riveURL);
-    const resp = await fetch(req);
-    const buffer = await resp.arrayBuffer();
-
-    // Load the animation
-    const file = await riveInstance.load(buffer);
-    const artboard = file.defaultArtboard();
-    const renderer = new rive.CanvasRenderer(canvas);
-
-    // Create and start the animation
-    const animation = new rive.LinearAnimation(artboard, 'BlobFollow');
-    const instance = new rive.LinearAnimationInstance(animation);
-
-    // Start the animation loop
-    let lastTime = 0;
-    function draw(time) {
-      if (!lastTime) {
-        lastTime = time;
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (canvas && container) {
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+        riveInstance.layout = new rive.Layout({
+          fit: rive.Fit.cover,
+          alignment: rive.Alignment.center,
+        });
       }
-      const elapsed = (time - lastTime) / 1000;
-      lastTime = time;
+    });
 
-      instance.advance(elapsed);
-      instance.apply(artboard, 1.0);
-
-      renderer.clear();
-      artboard.draw(renderer);
-      requestAnimationFrame(draw);
-    }
-    requestAnimationFrame(draw);
-
-    console.log('Rive animation loaded successfully');
+    console.log('Rive instance created successfully');
     return riveInstance;
   } catch (error) {
     console.error('Failed to initialize Rive:', error);
