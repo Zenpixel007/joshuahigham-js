@@ -42,47 +42,27 @@ async function initRive() {
       stateMachines: ['BlobFollow'],
       autoplay: true,
       layout: new rive.Layout({
-        fit: rive.Fit.cover,
-        alignment: rive.Alignment.center
+        fit: rive.Fit.fill, // Changed from cover to fill
+        alignment: rive.Alignment.center,
       }),
       onLoad: () => {
         console.log('Rive animation loaded successfully');
-        adjustCanvasScale();
+        updateCanvasSize(); // Ensure correct size after loading
       },
       onError: (err) => {
         console.error('Error loading Rive animation:', err);
       }
     });
 
-    // Function to adjust canvas scale based on viewport
-    const adjustCanvasScale = () => {
-      if (!riveInstance || !riveInstance.activeArtboard) return;
-
-      const artboard = riveInstance.activeArtboard;
-      const bounds = artboard.bounds;
-      const viewportAspect = window.innerWidth / window.innerHeight;
-      const artboardAspect = bounds.width / bounds.height;
-      
-      let scale;
-      if (viewportAspect > artboardAspect) {
-        // Viewport is wider than artboard
-        scale = (window.innerWidth / bounds.width) * 1.1; // Add 10% extra scale
-      } else {
-        // Viewport is taller than artboard
-        scale = (window.innerHeight / bounds.height) * 1.1; // Add 10% extra scale
-      }
-
-      riveInstance.layout = new rive.Layout({
-        fit: rive.Fit.cover,
-        alignment: rive.Alignment.center,
-        scale: scale
-      });
-    };
-
     // Handle window resize
     window.addEventListener('resize', () => {
       updateCanvasSize();
-      adjustCanvasScale();
+      if (riveInstance) {
+        riveInstance.layout = new rive.Layout({
+          fit: rive.Fit.fill,
+          alignment: rive.Alignment.center,
+        });
+      }
     });
 
     console.log('Rive instance created successfully');
