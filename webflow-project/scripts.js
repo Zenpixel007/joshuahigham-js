@@ -33,16 +33,29 @@ async function initRive() {
     // Initial size setup
     updateCanvasSize();
 
-    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67c6ef7fbe4810c35443a3f8_Test.riv';
+    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67c82c8a0631f5ac92d56c73_responsive-hero-animation.riv';
+    
+    // Function to determine which artboard to use
+    const getArtboardConfig = () => {
+      const isMobile = window.innerWidth < 768;
+      return {
+        artboard: isMobile ? 'Mobile' : 'Desktop',
+        stateMachines: isMobile ? ['State Machine 1'] : ['BlobFollow']
+      };
+    };
+
+    // Get initial configuration
+    const initialConfig = getArtboardConfig();
     
     // Create new Rive instance using the current API
     const riveInstance = new rive.Rive({
       src: riveURL,
       canvas: canvas,
-      stateMachines: ['BlobFollow'],
+      artboard: initialConfig.artboard,
+      stateMachines: initialConfig.stateMachines,
       autoplay: true,
       layout: new rive.Layout({
-        fit: rive.Fit.fill, // Changed from cover to fill
+        fit: rive.Fit.fill,
         alignment: rive.Alignment.center,
       }),
       onLoad: () => {
@@ -55,14 +68,32 @@ async function initRive() {
     });
 
     // Handle window resize
+    let resizeTimeout;
     window.addEventListener('resize', () => {
       updateCanvasSize();
-      if (riveInstance) {
-        riveInstance.layout = new rive.Layout({
-          fit: rive.Fit.fill,
-          alignment: rive.Alignment.center,
-        });
-      }
+      
+      // Debounce the resize event
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (riveInstance) {
+          // Update layout
+          riveInstance.layout = new rive.Layout({
+            fit: rive.Fit.fill,
+            alignment: rive.Alignment.center,
+          });
+          
+          // Get new configuration based on screen size
+          const newConfig = getArtboardConfig();
+          
+          // Update artboard and state machine if needed
+          if (riveInstance.artboard.name !== newConfig.artboard) {
+            riveInstance.setArtboard(newConfig.artboard);
+            // Stop previous state machine and start new one
+            riveInstance.stateMachineNames.forEach(name => riveInstance.stopStateMachine(name));
+            newConfig.stateMachines.forEach(name => riveInstance.startStateMachine(name));
+          }
+        }
+      }, 250); // Wait for 250ms after last resize event
     });
 
     console.log('Rive instance created successfully');
