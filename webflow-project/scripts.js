@@ -48,7 +48,7 @@ async function initRive() {
     const initialConfig = getArtboardConfig();
     
     // Create new Rive instance using the current API
-    const riveInstance = new rive.Rive({
+    let riveInstance = new rive.Rive({
       src: riveURL,
       canvas: canvas,
       artboard: initialConfig.artboard,
@@ -85,12 +85,27 @@ async function initRive() {
           // Get new configuration based on screen size
           const newConfig = getArtboardConfig();
           
-          // Update artboard and state machine if needed
-          if (riveInstance.artboard.name !== newConfig.artboard) {
-            riveInstance.setArtboard(newConfig.artboard);
-            // Stop previous state machine and start new one
-            riveInstance.stateMachineNames.forEach(name => riveInstance.stopStateMachine(name));
-            newConfig.stateMachines.forEach(name => riveInstance.startStateMachine(name));
+          try {
+            // Stop current animations
+            riveInstance.stop();
+            
+            // Create a new instance with the new artboard
+            riveInstance.cleanup();
+            
+            // Reinitialize with new configuration
+            riveInstance = new rive.Rive({
+              src: riveURL,
+              canvas: canvas,
+              artboard: newConfig.artboard,
+              stateMachines: newConfig.stateMachines,
+              autoplay: true,
+              layout: new rive.Layout({
+                fit: rive.Fit.fill,
+                alignment: rive.Alignment.center,
+              })
+            });
+          } catch (error) {
+            console.error('Error switching artboards:', error);
           }
         }
       }, 250); // Wait for 250ms after last resize event
