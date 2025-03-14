@@ -33,7 +33,7 @@ async function initRive() {
     // Initial size setup
     updateCanvasSize();
 
-    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67d3fce39c008225e95f8298_hero_animation.riv';
+    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67d3fe95bfee04d869ee7736_hero_animation-2.riv';
     
     // Function to determine which artboard to use
     const getArtboardConfig = () => {
