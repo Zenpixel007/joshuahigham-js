@@ -56,6 +56,17 @@ async function initRive() {
         
         // Ensure animation starts playing
         if (riveInstance) {
+          // Get the state machine
+          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+          if (stateMachine) {
+            // Start the state machine
+            stateMachine.forEach(input => {
+              if (input.type === rive.StateMachineInputType.Trigger) {
+                input.fire();
+              }
+            });
+          }
+          // Ensure the animation is playing
           riveInstance.play();
         }
       },
@@ -80,6 +91,14 @@ async function initRive() {
           });
           
           // Ensure animation is playing after resize
+          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+          if (stateMachine) {
+            stateMachine.forEach(input => {
+              if (input.type === rive.StateMachineInputType.Trigger) {
+                input.fire();
+              }
+            });
+          }
           riveInstance.play();
         }
       }, 250); // Wait for 250ms after last resize event
