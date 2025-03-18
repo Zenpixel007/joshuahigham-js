@@ -714,73 +714,6 @@ function initGsapAnimations() {
   });
 }
 
-// Initialize Swiper slider
-function initSwiper() {
-  const swiper = new Swiper('.swiper', {
-    // Enable centered slides
-    centeredSlides: true,
-    
-    // Responsive breakpoints
-    breakpoints: {
-      // Mobile and tablet
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 20,
-      },
-      // Desktop
-      992: {
-        slidesPerView: 3,
-        spaceBetween: 30,
-      }
-    },
-    
-    // Navigation
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    
-    // Pagination
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-    },
-    
-    // Enable smooth transition effects
-    effect: 'slide',
-    speed: 800,
-    
-    // Enable loop
-    loop: true,
-    
-    // Auto height
-    autoHeight: true,
-    
-    // Improve performance
-    preloadImages: false,
-    lazy: {
-      loadPrevNext: true,
-      loadPrevNextAmount: 2,
-    },
-    
-    // Accessibility
-    a11y: {
-      prevSlideMessage: 'Previous slide',
-      nextSlideMessage: 'Next slide',
-      firstSlideMessage: 'This is the first slide',
-      lastSlideMessage: 'This is the last slide',
-      paginationBulletMessage: 'Go to slide {{index}}',
-    },
-  });
-
-  // Update Swiper on window resize
-  window.addEventListener('resize', () => {
-    swiper.update();
-  });
-
-  return swiper;
-}
-
 document.addEventListener("DOMContentLoaded", function () {
   // Function to handle email link copying
   const emailLink = document.getElementById('email-link');
@@ -1166,7 +1099,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize Rive after a short delay to ensure DOM is ready
   setTimeout(initRive, 100);
-
-  // Initialize Swiper
-  initSwiper();
 });
