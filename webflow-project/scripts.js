@@ -141,7 +141,7 @@ function initSwiper() {
 // Create Swiper instance
 function createSwiper() {
   const swiper = new Swiper('.swiper', {
-    slidesPerView: 'auto',
+    slidesPerView: '3',
     centeredSlides: true,
     spaceBetween: 30,
     loop: true,
@@ -169,7 +169,7 @@ function createSwiper() {
         spaceBetween: 20
       },
       768: {
-        slidesPerView: 'auto',
+        slidesPerView: '1',
         spaceBetween: 30
       }
     }
@@ -185,20 +185,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 100); // Small delay to ensure everything is ready
 });
 
-// Function to reinitialize Calendly
-function initCalendly() {
-  // Remove existing Calendly script if it exists
-  const existingScript = document.querySelector('script[src*="calendly.com/assets/external/widget.js"]');
-  if (existingScript) {
-    existingScript.remove();
-  }
+// // Function to reinitialize Calendly
+// function initCalendly() {
+//   // Remove existing Calendly script if it exists
+//   const existingScript = document.querySelector('script[src*="calendly.com/assets/external/widget.js"]');
+//   if (existingScript) {
+//     existingScript.remove();
+//   }
   
-  // Create and append new Calendly script
-  const script = document.createElement('script');
-  script.src = "https://assets.calendly.com/assets/external/widget.js";
-  script.async = true;
-  document.body.appendChild(script);
-}
+//   // Create and append new Calendly script
+//   const script = document.createElement('script');
+//   script.src = "https://assets.calendly.com/assets/external/widget.js";
+//   script.async = true;
+//   document.body.appendChild(script);
+// }
 
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
 gsap.registerPlugin(ScrollTrigger);
