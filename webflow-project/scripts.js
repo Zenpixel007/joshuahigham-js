@@ -37,7 +37,7 @@ async function initRive() {
     // Initial size setup
     updateCanvasSize();
 
-    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67d937464a1a67225dce90f7_hero_animation-impact.riv';
+    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67d93cd357c01667189e043e_hero_animation-impact-2.riv';
     
     // Create new Rive instance using the current API
     let riveInstance = new rive.Rive({
