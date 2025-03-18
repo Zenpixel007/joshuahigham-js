@@ -21,13 +21,13 @@ async function initRive() {
     
     // Function to update canvas size
     const updateCanvasSize = () => {
-      // Set canvas size to viewport dimensions
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      // Set canvas size to match container dimensions
+      canvas.width = 1440;
+      canvas.height = 318;
       
-      // Update container size to match viewport
-      container.style.width = '100vw';
-      container.style.height = '100vh';
+      // Update container size to match
+      container.style.width = '1440px';
+      container.style.height = '318px';
     };
     
     // Initial size setup
@@ -35,27 +35,15 @@ async function initRive() {
 
     const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67d937464a1a67225dce90f7_hero_animation-impact.riv';
     
-    // Function to determine which artboard to use
-    const getArtboardConfig = () => {
-      const isMobile = window.innerWidth < 768;
-      return {
-        artboard: isMobile ? 'Mobile' : 'Desktop',
-        stateMachines: isMobile ? ['State Machine 1'] : ['BlobFollow']
-      };
-    };
-
-    // Get initial configuration
-    const initialConfig = getArtboardConfig();
-    
     // Create new Rive instance using the current API
     let riveInstance = new rive.Rive({
       src: riveURL,
       canvas: canvas,
-      artboard: initialConfig.artboard,
-      stateMachines: initialConfig.stateMachines,
+      artboard: 'Desktop',
+      stateMachines: ['State Machine 1'],
       autoplay: true,
       layout: new rive.Layout({
-        fit: rive.Fit.fill,
+        fit: rive.Fit.contain,
         alignment: rive.Alignment.center,
       }),
       onLoad: () => {
@@ -78,35 +66,9 @@ async function initRive() {
         if (riveInstance) {
           // Update layout
           riveInstance.layout = new rive.Layout({
-            fit: rive.Fit.fill,
+            fit: rive.Fit.contain,
             alignment: rive.Alignment.center,
           });
-          
-          // Get new configuration based on screen size
-          const newConfig = getArtboardConfig();
-          
-          try {
-            // Stop current animations
-            riveInstance.stop();
-            
-            // Create a new instance with the new artboard
-            riveInstance.cleanup();
-            
-            // Reinitialize with new configuration
-            riveInstance = new rive.Rive({
-              src: riveURL,
-              canvas: canvas,
-              artboard: newConfig.artboard,
-              stateMachines: newConfig.stateMachines,
-              autoplay: true,
-              layout: new rive.Layout({
-                fit: rive.Fit.fill,
-                alignment: rive.Alignment.center,
-              })
-            });
-          } catch (error) {
-            console.error('Error switching artboards:', error);
-          }
         }
       }, 250); // Wait for 250ms after last resize event
     });
