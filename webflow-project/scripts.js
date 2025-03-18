@@ -144,10 +144,11 @@ function createSwiper() {
     console.log("Creating Swiper instance...");
     const swiper = new Swiper('.swiper', {
       // Core settings for centering
-      slidesPerView: "auto",
+      slidesPerView: 5,
       centeredSlides: true,
-      initialSlide: 1,
+      initialSlide: 2,
       loop: true,
+      spaceBetween: -100, // Negative space to overlap slides
       
       // Navigation arrows
       navigation: {
@@ -162,18 +163,18 @@ function createSwiper() {
       breakpoints: {
         // Mobile (320px and up)
         320: {
-          slidesPerView: "auto",
-          spaceBetween: 20,
+          slidesPerView: 3,
+          spaceBetween: -50,
         },
         // Tablet (768px and up)
         768: {
-          slidesPerView: "auto",
-          spaceBetween: 30,
+          slidesPerView: 3,
+          spaceBetween: -80,
         },
         // Desktop (1024px and up)
         1024: {
-          slidesPerView: "auto",
-          spaceBetween: 30,
+          slidesPerView: 5,
+          spaceBetween: -100,
         }
       },
 
@@ -190,7 +191,6 @@ function createSwiper() {
         resize: function() {
           console.log('Swiper resized');
           updateSlideStyles();
-          centerActiveSlide();
         }
       }
     });
@@ -198,15 +198,14 @@ function createSwiper() {
     // Function to update slide styles
     function updateSlideStyles() {
       const slides = document.querySelectorAll('.swiper-slide');
-      const containerWidth = document.querySelector('.swiper').offsetWidth;
       
       slides.forEach((slide) => {
         // Reset all slides to default state
         slide.style.transform = 'scale(1)';
         slide.style.opacity = '0.3';
         slide.style.transition = 'all 0.3s ease';
-        // Set slide width based on container width
-        slide.style.width = Math.min(500, containerWidth * 0.8) + 'px';
+        slide.style.width = '400px';
+        slide.style.height = '220px';
       });
 
       // Style active slide
@@ -215,24 +214,8 @@ function createSwiper() {
         activeSlide.style.transform = 'scale(1.1)';
         activeSlide.style.opacity = '1';
         activeSlide.style.zIndex = '2';
-      }
-    }
-
-    // Function to ensure active slide is centered
-    function centerActiveSlide() {
-      const swiperContainer = document.querySelector('.swiper');
-      const activeSlide = document.querySelector('.swiper-slide-active');
-      
-      if (swiperContainer && activeSlide) {
-        const containerCenter = swiperContainer.offsetWidth / 2;
-        const slideCenter = activeSlide.offsetWidth / 2;
-        const offset = containerCenter - slideCenter;
-        
-        // Update wrapper position
-        const wrapper = document.querySelector('.swiper-wrapper');
-        if (wrapper) {
-          wrapper.style.transform = `translate3d(${offset}px, 0, 0)`;
-        }
+        // Add red glow to active slide
+        activeSlide.style.boxShadow = '0 0 40px rgba(255, 0, 0, 0.3)';
       }
     }
 
@@ -240,19 +223,12 @@ function createSwiper() {
     const swiperContainer = document.querySelector('.swiper');
     if (swiperContainer) {
       swiperContainer.style.overflow = 'visible';
-      swiperContainer.style.padding = '40px 0';
       swiperContainer.style.position = 'relative';
+      swiperContainer.style.padding = '40px 0';
     }
 
     // Initial styles
     updateSlideStyles();
-    centerActiveSlide();
-
-    // Add window resize listener for responsive adjustments
-    window.addEventListener('resize', () => {
-      updateSlideStyles();
-      centerActiveSlide();
-    });
 
     return swiper;
   } catch (error) {
