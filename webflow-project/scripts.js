@@ -111,10 +111,78 @@ async function initRive() {
   }
 }
 
-// When the DOM is ready, initialize Rive
+// Initialize Swiper
+function initSwiper() {
+  try {
+    console.log("Initializing Swiper...");
+    
+    // Check if Swiper library is loaded
+    if (typeof Swiper === 'undefined') {
+      console.warn('Swiper library not loaded. Loading now...');
+      const swiperCSS = document.createElement('link');
+      swiperCSS.rel = 'stylesheet';
+      swiperCSS.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+      document.head.appendChild(swiperCSS);
+
+      const swiperScript = document.createElement('script');
+      swiperScript.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+      swiperScript.onload = () => {
+        createSwiper();
+      };
+      document.head.appendChild(swiperScript);
+    } else {
+      createSwiper();
+    }
+  } catch (error) {
+    console.error('Failed to initialize Swiper:', error);
+  }
+}
+
+// Create Swiper instance
+function createSwiper() {
+  const swiper = new Swiper('.swiper', {
+    slidesPerView: 'auto',
+    centeredSlides: true,
+    spaceBetween: 30,
+    loop: true,
+    
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    
+    // Optional effects
+    effect: 'coverflow',
+    coverflowEffect: {
+      rotate: 0,
+      stretch: 0,
+      depth: 100,
+      modifier: 1,
+      slideShadows: false,
+    },
+    
+    // Responsive breakpoints
+    breakpoints: {
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 20
+      },
+      768: {
+        slidesPerView: 'auto',
+        spaceBetween: 30
+      }
+    }
+  });
+}
+
+// When the DOM is ready, initialize Rive and Swiper
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("DOM loaded, initializing Rive...");
-  setTimeout(initRive, 100); // Small delay to ensure everything is ready
+  console.log("DOM loaded, initializing Rive and Swiper...");
+  setTimeout(() => {
+    initRive();
+    initSwiper();
+  }, 100); // Small delay to ensure everything is ready
 });
 
 // Function to reinitialize Calendly
