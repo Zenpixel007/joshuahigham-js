@@ -111,137 +111,11 @@ async function initRive() {
   }
 }
 
-// Initialize Swiper
-function initSwiper() {
-  try {
-    console.log("Initializing Swiper...");
-    
-    // Check if Swiper library is loaded
-    if (typeof Swiper === 'undefined') {
-      console.warn('Swiper library not loaded. Loading now...');
-      const swiperCSS = document.createElement('link');
-      swiperCSS.rel = 'stylesheet';
-      swiperCSS.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-      document.head.appendChild(swiperCSS);
-
-      const swiperScript = document.createElement('script');
-      swiperScript.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-      swiperScript.onload = () => {
-        createSwiper();
-      };
-      document.head.appendChild(swiperScript);
-    } else {
-      createSwiper();
-    }
-  } catch (error) {
-    console.error('Failed to initialize Swiper:', error);
-  }
-}
-
-// Create Swiper instance
-function createSwiper() {
-  try {
-    console.log("Creating Swiper instance...");
-    const swiper = new Swiper('.swiper', {
-      // Core settings for centering
-      slidesPerView: 5,
-      centeredSlides: true,
-      initialSlide: 2,
-      loop: true,
-      spaceBetween: 20, // Negative space to overlap slides
-      
-      // Navigation arrows
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      
-      // Smooth sliding
-      speed: 800,
-      
-      // Responsive settings
-      breakpoints: {
-        // Mobile (320px and up)
-        320: {
-          slidesPerView: 3,
-          spaceBetween: 20,
-        },
-        // Tablet (768px and up)
-        768: {
-          slidesPerView: 3,
-          spaceBetween: 20,
-        },
-        // Desktop (1024px and up)
-        1024: {
-          slidesPerView: 5,
-          spaceBetween: 20,
-        }
-      },
-
-      // Events
-      on: {
-        init: function() {
-          console.log('Swiper initialized');
-          updateSlideStyles();
-        },
-        slideChange: function() {
-          console.log('Slide changed');
-          updateSlideStyles();
-        },
-        resize: function() {
-          console.log('Swiper resized');
-          updateSlideStyles();
-        }
-      }
-    });
-
-    // Function to update slide styles
-    function updateSlideStyles() {
-      const slides = document.querySelectorAll('.swiper-slide');
-      
-      slides.forEach((slide) => {
-        // Reset all slides to default state
-        slide.style.transform = 'scale(1)';
-        slide.style.opacity = '0.3';
-        slide.style.transition = 'all 0.3s ease';
-        slide.style.width = '400px';
-        slide.style.height = '220px';
-      });
-
-      // Style active slide
-      const activeSlide = document.querySelector('.swiper-slide-active');
-      if (activeSlide) {
-        activeSlide.style.transform = 'scale(1.1)';
-        activeSlide.style.opacity = '1';
-        activeSlide.style.zIndex = '2';
-        // Add red glow to active slide
-        activeSlide.style.boxShadow = '0 0 40px rgba(255, 0, 0, 0.3)';
-      }
-    }
-
-    // Add custom styles to the Swiper container
-    const swiperContainer = document.querySelector('.swiper');
-    if (swiperContainer) {
-      swiperContainer.style.overflow = 'visible';
-      swiperContainer.style.position = 'relative';
-      swiperContainer.style.padding = '40px 0';
-    }
-
-    // Initial styles
-    updateSlideStyles();
-
-    return swiper;
-  } catch (error) {
-    console.error('Failed to create Swiper:', error);
-  }
-}
-
-// When the DOM is ready, initialize Rive and Swiper
+// When the DOM is ready, initialize Rive
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("DOM loaded, initializing Rive and Swiper...");
+  console.log("DOM loaded, initializing Rive...");
   setTimeout(() => {
     initRive();
-    initSwiper();
   }, 100); // Small delay to ensure everything is ready
 });
 
@@ -840,6 +714,73 @@ function initGsapAnimations() {
   });
 }
 
+// Initialize Swiper slider
+function initSwiper() {
+  const swiper = new Swiper('.swiper', {
+    // Enable centered slides
+    centeredSlides: true,
+    
+    // Responsive breakpoints
+    breakpoints: {
+      // Mobile and tablet
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 20,
+      },
+      // Desktop
+      992: {
+        slidesPerView: 3,
+        spaceBetween: 30,
+      }
+    },
+    
+    // Navigation
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    
+    // Pagination
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    
+    // Enable smooth transition effects
+    effect: 'slide',
+    speed: 800,
+    
+    // Enable loop
+    loop: true,
+    
+    // Auto height
+    autoHeight: true,
+    
+    // Improve performance
+    preloadImages: false,
+    lazy: {
+      loadPrevNext: true,
+      loadPrevNextAmount: 2,
+    },
+    
+    // Accessibility
+    a11y: {
+      prevSlideMessage: 'Previous slide',
+      nextSlideMessage: 'Next slide',
+      firstSlideMessage: 'This is the first slide',
+      lastSlideMessage: 'This is the last slide',
+      paginationBulletMessage: 'Go to slide {{index}}',
+    },
+  });
+
+  // Update Swiper on window resize
+  window.addEventListener('resize', () => {
+    swiper.update();
+  });
+
+  return swiper;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Function to handle email link copying
   const emailLink = document.getElementById('email-link');
@@ -1225,4 +1166,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize Rive after a short delay to ensure DOM is ready
   setTimeout(initRive, 100);
+
+  // Initialize Swiper
+  initSwiper();
 });
