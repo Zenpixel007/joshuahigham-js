@@ -140,40 +140,96 @@ function initSwiper() {
 
 // Create Swiper instance
 function createSwiper() {
-  const swiper = new Swiper('.swiper', {
-    slidesPerView: 3,
-    centeredSlides: true,
-    spaceBetween: 30,
-    loop: true,
-    
-    // Navigation arrows
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    
-    // Optional effects
-    effect: 'coverflow',
-    coverflowEffect: {
-      rotate: 0,
-      stretch: 0,
-      depth: 100,
-      modifier: 1,
-      slideShadows: false,
-    },
-    
-    // Responsive breakpoints
-    breakpoints: {
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 20
+  try {
+    console.log("Creating Swiper instance...");
+    const swiper = new Swiper('.swiper', {
+      // Enable slide visibility outside container
+      watchSlidesProgress: true,
+      slidesPerView: "auto",
+      centeredSlides: true,
+      initialSlide: 1,
+      spaceBetween: 30,
+      loop: true,
+      
+      // Navigation arrows
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
       },
-      768: {
-        slidesPerView: 1,
-        spaceBetween: 30
+      
+      // Optional effects
+      effect: 'slide',
+      speed: 800,
+      
+      // Responsive breakpoints
+      breakpoints: {
+        // Mobile
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 20
+        },
+        // Tablet
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 30
+        },
+        // Desktop
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 30
+        }
+      },
+
+      // Events
+      on: {
+        init: function() {
+          console.log('Swiper initialized');
+          updateSlideStyles();
+        },
+        slideChange: function() {
+          console.log('Slide changed');
+          updateSlideStyles();
+        },
+        resize: function() {
+          console.log('Swiper resized');
+          updateSlideStyles();
+        }
+      }
+    });
+
+    // Function to update slide styles
+    function updateSlideStyles() {
+      const slides = document.querySelectorAll('.swiper-slide');
+      slides.forEach((slide, index) => {
+        // Reset all slides to default state
+        slide.style.transform = 'scale(1)';
+        slide.style.opacity = '0.3';
+        slide.style.transition = 'all 0.3s ease';
+      });
+
+      // Style active slide
+      const activeSlide = document.querySelector('.swiper-slide-active');
+      if (activeSlide) {
+        activeSlide.style.transform = 'scale(1.1)';
+        activeSlide.style.opacity = '1';
+        activeSlide.style.zIndex = '2';
       }
     }
-  });
+
+    // Add custom styles to the Swiper container
+    const swiperContainer = document.querySelector('.swiper');
+    if (swiperContainer) {
+      swiperContainer.style.overflow = 'visible';
+      swiperContainer.style.padding = '40px 0';
+    }
+
+    // Add styles to all slides initially
+    updateSlideStyles();
+
+    return swiper;
+  } catch (error) {
+    console.error('Failed to create Swiper:', error);
+  }
 }
 
 // When the DOM is ready, initialize Rive and Swiper
