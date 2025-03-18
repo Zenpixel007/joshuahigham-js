@@ -143,12 +143,10 @@ function createSwiper() {
   try {
     console.log("Creating Swiper instance...");
     const swiper = new Swiper('.swiper', {
-      // Enable slide visibility outside container
-      watchSlidesProgress: true,
+      // Core settings for centering
       slidesPerView: "auto",
       centeredSlides: true,
       initialSlide: 1,
-      spaceBetween: 30,
       loop: true,
       
       // Navigation arrows
@@ -157,26 +155,25 @@ function createSwiper() {
         prevEl: '.swiper-button-prev',
       },
       
-      // Optional effects
-      effect: 'slide',
+      // Smooth sliding
       speed: 800,
       
-      // Responsive breakpoints
+      // Responsive settings
       breakpoints: {
-        // Mobile
+        // Mobile (320px and up)
         320: {
-          slidesPerView: 1,
-          spaceBetween: 20
+          slidesPerView: "auto",
+          spaceBetween: 20,
         },
-        // Tablet
+        // Tablet (768px and up)
         768: {
-          slidesPerView: 2,
-          spaceBetween: 30
+          slidesPerView: "auto",
+          spaceBetween: 30,
         },
-        // Desktop
+        // Desktop (1024px and up)
         1024: {
-          slidesPerView: 3,
-          spaceBetween: 30
+          slidesPerView: "auto",
+          spaceBetween: 30,
         }
       },
 
@@ -193,6 +190,7 @@ function createSwiper() {
         resize: function() {
           console.log('Swiper resized');
           updateSlideStyles();
+          centerActiveSlide();
         }
       }
     });
@@ -200,11 +198,15 @@ function createSwiper() {
     // Function to update slide styles
     function updateSlideStyles() {
       const slides = document.querySelectorAll('.swiper-slide');
-      slides.forEach((slide, index) => {
+      const containerWidth = document.querySelector('.swiper').offsetWidth;
+      
+      slides.forEach((slide) => {
         // Reset all slides to default state
         slide.style.transform = 'scale(1)';
         slide.style.opacity = '0.3';
         slide.style.transition = 'all 0.3s ease';
+        // Set slide width based on container width
+        slide.style.width = Math.min(500, containerWidth * 0.8) + 'px';
       });
 
       // Style active slide
@@ -216,15 +218,41 @@ function createSwiper() {
       }
     }
 
+    // Function to ensure active slide is centered
+    function centerActiveSlide() {
+      const swiperContainer = document.querySelector('.swiper');
+      const activeSlide = document.querySelector('.swiper-slide-active');
+      
+      if (swiperContainer && activeSlide) {
+        const containerCenter = swiperContainer.offsetWidth / 2;
+        const slideCenter = activeSlide.offsetWidth / 2;
+        const offset = containerCenter - slideCenter;
+        
+        // Update wrapper position
+        const wrapper = document.querySelector('.swiper-wrapper');
+        if (wrapper) {
+          wrapper.style.transform = `translate3d(${offset}px, 0, 0)`;
+        }
+      }
+    }
+
     // Add custom styles to the Swiper container
     const swiperContainer = document.querySelector('.swiper');
     if (swiperContainer) {
       swiperContainer.style.overflow = 'visible';
       swiperContainer.style.padding = '40px 0';
+      swiperContainer.style.position = 'relative';
     }
 
-    // Add styles to all slides initially
+    // Initial styles
     updateSlideStyles();
+    centerActiveSlide();
+
+    // Add window resize listener for responsive adjustments
+    window.addEventListener('resize', () => {
+      updateSlideStyles();
+      centerActiveSlide();
+    });
 
     return swiper;
   } catch (error) {
