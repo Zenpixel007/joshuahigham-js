@@ -141,7 +141,7 @@ function initSwiper() {
 // Create Swiper instance
 function createSwiper() {
   const swiper = new Swiper('.swiper', {
-    slidesPerView: '3',
+    slidesPerView: 3,
     centeredSlides: true,
     spaceBetween: 30,
     loop: true,
@@ -169,7 +169,7 @@ function createSwiper() {
         spaceBetween: 20
       },
       768: {
-        slidesPerView: '1',
+        slidesPerView: 1,
         spaceBetween: 30
       }
     }
