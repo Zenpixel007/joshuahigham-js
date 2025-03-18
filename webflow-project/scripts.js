@@ -25,9 +25,13 @@ async function initRive() {
       canvas.width = 1440;
       canvas.height = 318;
       
-      // Update container size to match
-      container.style.width = '1440px';
+      // Update container size to match and center it
+      container.style.width = '100%';
       container.style.height = '318px';
+      container.style.display = 'flex';
+      container.style.justifyContent = 'center';
+      container.style.alignItems = 'center';
+      container.style.overflow = 'hidden';
     };
     
     // Initial size setup
@@ -49,6 +53,11 @@ async function initRive() {
       onLoad: () => {
         console.log('Rive animation loaded successfully');
         updateCanvasSize(); // Ensure correct size after loading
+        
+        // Ensure animation starts playing
+        if (riveInstance) {
+          riveInstance.play();
+        }
       },
       onError: (err) => {
         console.error('Error loading Rive animation:', err);
@@ -69,6 +78,9 @@ async function initRive() {
             fit: rive.Fit.contain,
             alignment: rive.Alignment.center,
           });
+          
+          // Ensure animation is playing after resize
+          riveInstance.play();
         }
       }, 250); // Wait for 250ms after last resize event
     });
