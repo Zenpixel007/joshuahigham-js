@@ -148,7 +148,7 @@ function createSwiper() {
       centeredSlides: true,
       initialSlide: 2,
       loop: true,
-      spaceBetween: -100, // Negative space to overlap slides
+      spaceBetween: 20, // Negative space to overlap slides
       
       // Navigation arrows
       navigation: {
@@ -164,17 +164,17 @@ function createSwiper() {
         // Mobile (320px and up)
         320: {
           slidesPerView: 3,
-          spaceBetween: -50,
+          spaceBetween: 20,
         },
         // Tablet (768px and up)
         768: {
           slidesPerView: 3,
-          spaceBetween: -80,
+          spaceBetween: 20,
         },
         // Desktop (1024px and up)
         1024: {
           slidesPerView: 5,
-          spaceBetween: -100,
+          spaceBetween: 20,
         }
       },
 
