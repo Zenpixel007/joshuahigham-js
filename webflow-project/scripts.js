@@ -7,18 +7,6 @@ console.log("checking if connected");
 // Initialize Rive animation
 async function initRive() {
   try {
-    // Check if Rive library is loaded
-    if (typeof rive === 'undefined') {
-      console.warn('Rive library not loaded. Loading now...');
-      await new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/@rive-app/canvas@2.7.3';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    }
-
     console.log("Attempting to initialize Rive...");
     const canvas = document.getElementById('rive-canvas');
     
