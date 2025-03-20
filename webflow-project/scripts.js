@@ -7,6 +7,27 @@ console.log("checking if connected");
 // Initialize Swiper
 function initSwiper() {
   try {
+    // Check if Swiper is loaded
+    if (typeof Swiper === 'undefined') {
+      console.warn('Swiper is not loaded yet. Waiting for it to load...');
+      // Wait for Swiper to be available
+      const checkSwiper = setInterval(() => {
+        if (typeof Swiper !== 'undefined') {
+          clearInterval(checkSwiper);
+          createSwiper();
+        }
+      }, 100);
+      return;
+    }
+    createSwiper();
+  } catch (error) {
+    console.error("Failed to initialize Swiper:", error);
+  }
+}
+
+// Separate function to create Swiper instance
+function createSwiper() {
+  try {
     const swiper = new Swiper(".wb-swiper", {
       slideClass: "wb-swiper_slide",
       wrapperClass: "wb-swiper_wrapper",
@@ -44,7 +65,7 @@ function initSwiper() {
     console.log("Swiper initialized successfully");
     return swiper;
   } catch (error) {
-    console.error("Failed to initialize Swiper:", error);
+    console.error("Failed to create Swiper instance:", error);
   }
 }
 
