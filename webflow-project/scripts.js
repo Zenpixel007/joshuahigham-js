@@ -121,6 +121,33 @@ function handleSlideAnimations(swiper) {
       opacity: 0,
       y: 20
     });
+
+    // Add hover animation for active slide
+    if (slide.classList.contains('swiper-slide-active')) {
+      const redBlur = document.getElementById('red-blur');
+      if (redBlur) {
+        // Create hover timeline
+        const hoverTl = gsap.timeline({ paused: true });
+        hoverTl.to(redBlur, {
+          scale: 1.25,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+
+        // Add event listeners
+        slide.addEventListener('mouseenter', () => {
+          // Only play hover animation if no other animation is running
+          if (!redBlur._gsap.isActive()) {
+            hoverTl.play();
+          }
+        });
+        slide.addEventListener('mouseleave', () => {
+          if (hoverTl.isActive()) {
+            hoverTl.reverse();
+          }
+        });
+      }
+    }
   });
 
   // Create timeline for active slide
@@ -290,9 +317,30 @@ async function initSwiper() {
             if (swiperElement) {
               swiperElement.classList.add('is-ready');
               
-              // Trigger the red-blur animation for the first slide
+              // Add hover animation for initial active slide
+              const activeSlide = this.slides[this.activeIndex];
               const redBlur = document.getElementById('red-blur');
-              if (redBlur) {
+              if (activeSlide && redBlur) {
+                const hoverTl = gsap.timeline({ paused: true });
+                hoverTl.to(redBlur, {
+                  scale: 1.25,
+                  duration: 0.3,
+                  ease: "power2.out"
+                });
+
+                activeSlide.addEventListener('mouseenter', () => {
+                  // Only play hover animation if no other animation is running
+                  if (!redBlur._gsap.isActive()) {
+                    hoverTl.play();
+                  }
+                });
+                activeSlide.addEventListener('mouseleave', () => {
+                  if (hoverTl.isActive()) {
+                    hoverTl.reverse();
+                  }
+                });
+
+                // Trigger the automatic red-blur animation
                 const swiperDelay = this.params.autoplay.delay / 1000;
                 const firstScaleTime = swiperDelay * 0.4875;
                 const secondScaleTime = swiperDelay * 0.8175;
@@ -324,6 +372,30 @@ async function initSwiper() {
         },
         slideChange: function() {
           handleSlideAnimations(this);
+          
+          // Update hover animation for new active slide
+          const activeSlide = this.slides[this.activeIndex];
+          const redBlur = document.getElementById('red-blur');
+          if (activeSlide && redBlur) {
+            const hoverTl = gsap.timeline({ paused: true });
+            hoverTl.to(redBlur, {
+              scale: 1.25,
+              duration: 0.3,
+              ease: "power2.out"
+            });
+
+            activeSlide.addEventListener('mouseenter', () => {
+              // Only play hover animation if no other animation is running
+              if (!redBlur._gsap.isActive()) {
+                hoverTl.play();
+              }
+            });
+            activeSlide.addEventListener('mouseleave', () => {
+              if (hoverTl.isActive()) {
+                hoverTl.reverse();
+              }
+            });
+          }
         },
         slideChangeTransitionStart: function() {
           // Hide all slides content
