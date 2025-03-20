@@ -61,7 +61,7 @@ async function initSwiper() {
         disableOnInteraction: true,
         pauseOnMouseEnter: true
       },
-      speed: 1000, // Keep transition speed at 1000ms (1s)
+      speed: 500, // Keep transition speed at 1000ms (1s)
       pagination: {
         el: ".wb-swiper_pagination",
         bulletClass: "wb-swiper_bullet",
