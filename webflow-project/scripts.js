@@ -57,7 +57,7 @@ async function initSwiper() {
       loop: true,
       loopAdditionalSlides: 2,
       autoplay: {
-        delay: 3000, // Reduced to 3000ms (3s) to account for the 1000ms transition
+        delay: 4000, // Reduced to 3000ms (3s) to account for the 1000ms transition
         disableOnInteraction: true,
         pauseOnMouseEnter: true
       },
