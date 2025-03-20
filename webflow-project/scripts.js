@@ -40,15 +40,10 @@ function loadSwiperJS() {
 // Function to animate counter
 function animateCounter(element, targetValue, duration = 1) {
   const startValue = 0;
+  const redBlur = document.getElementById('red-blur');
   
   // Create a timeline for the counter animation
   const tl = gsap.timeline();
-  
-  // Add initial styles to the element
-  gsap.set(element, {
-    filter: 'drop-shadow(0 0 0 rgba(239, 1, 7, 0))',
-    color: '#ef0107'
-  });
   
   // Animate the counter
   tl.fromTo(element, 
@@ -59,35 +54,33 @@ function animateCounter(element, targetValue, duration = 1) {
       snap: { innerHTML: 1 },
       ease: "power2.out"
     }
-  )
-  // First glow at 1:57 (1.95 seconds)
-  .to(element, {
-    filter: 'drop-shadow(0 0 8px rgba(239, 1, 7, 0.6))',
-    color: '#ff1a1a',
-    duration: 0.2,
-    ease: "power2.out"
-  }, 1.95)
-  // Return to normal color
-  .to(element, {
-    filter: 'drop-shadow(0 0 0 rgba(239, 1, 7, 0))',
-    color: '#ef0107',
-    duration: 0.2,
-    ease: "power2.out"
-  })
-  // Second, brighter glow at 3:16 (3.27 seconds)
-  .to(element, {
-    filter: 'drop-shadow(0 0 12px rgba(239, 1, 7, 0.8))',
-    color: '#ff3333',
-    duration: 0.2,
-    ease: "power2.out"
-  }, 3.27)
-  // Final return to normal color
-  .to(element, {
-    filter: 'drop-shadow(0 0 0 rgba(239, 1, 7, 0))',
-    color: '#ef0107',
-    duration: 0.2,
-    ease: "power2.out"
-  });
+  );
+
+  // If red-blur element exists, add scaling animations
+  if (redBlur) {
+    // First scale at 48.75% of the animation (1:57)
+    tl.to(redBlur, {
+      scale: 1.1,
+      duration: 0.2,
+      ease: "power2.out"
+    }, "48.75%")
+    .to(redBlur, {
+      scale: 1,
+      duration: 0.2,
+      ease: "power2.out"
+    })
+    // Second scale at 81.75% of the animation (3:16)
+    .to(redBlur, {
+      scale: 1.15,
+      duration: 0.2,
+      ease: "power2.out"
+    }, "81.75%")
+    .to(redBlur, {
+      scale: 1,
+      duration: 0.2,
+      ease: "power2.out"
+    });
+  }
 }
 
 // Function to handle slide animations
