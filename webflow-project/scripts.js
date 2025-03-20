@@ -58,8 +58,10 @@ async function initSwiper() {
       loopAdditionalSlides: 2,
       autoplay: {
         delay: 4000,
-        disableOnInteraction: true
+        disableOnInteraction: true,
+        pauseOnMouseEnter: true
       },
+      speed: 800, // Match the transition speed
       pagination: {
         el: ".wb-swiper_pagination",
         bulletClass: "wb-swiper_bullet",
@@ -84,6 +86,10 @@ async function initSwiper() {
         },
       },
     });
+
+    // Store the swiper instance globally for Rive to access
+    window.swiperInstance = swiper;
+    
     console.log("Swiper initialized successfully");
     return swiper;
   } catch (error) {
@@ -151,7 +157,7 @@ async function initRive() {
       canvas: canvas,
       artboard: 'Desktop',
       stateMachines: ['State Machine 1'],
-      autoplay: true,
+      autoplay: false, // Don't autoplay initially
       layout: new rive.Layout({
         fit: rive.Fit.contain,
         alignment: rive.Alignment.center,
@@ -172,8 +178,17 @@ async function initRive() {
               }
             });
           }
-          // Ensure the animation is playing
-          riveInstance.play();
+          
+          // Start the animation and sync with Swiper
+          if (window.swiperInstance) {
+            // Start Rive animation
+            riveInstance.play();
+            
+            // Set up a loop to restart Rive animation when Swiper changes slides
+            window.swiperInstance.on('slideChange', () => {
+              riveInstance.play();
+            });
+          }
         }
       },
       onError: (err) => {
