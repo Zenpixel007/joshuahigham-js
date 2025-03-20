@@ -523,6 +523,71 @@ function initGsapAnimations() {
   // Kill all ScrollTrigger instances before creating new ones
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
+  // Homepage Hero Animation
+  if (document.querySelector('.greeting-wrapper')) {
+    // Set initial states
+    gsap.set('.greeting-wrapper', {
+      opacity: 0,
+      y: 30
+    });
+    
+    gsap.set('.hero_h1-wrapper', {
+      opacity: 0,
+      y: 30
+    });
+    
+    gsap.set('.hero_button-wrapper', {
+      opacity: 0,
+      y: 30
+    });
+    
+    gsap.set('.rive', {
+      opacity: 0
+    });
+    
+    gsap.set('.hero_projects', {
+      opacity: 0
+    });
+
+    // Create the animation timeline
+    const heroTl = gsap.timeline({
+      defaults: { ease: "power2.out" }
+    });
+
+    // First sequence (immediate)
+    heroTl
+      .to('.greeting-wrapper', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8
+      })
+      .to('.hero_h1-wrapper', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8
+      }, "-=0.4")
+      .to('.hero_button-wrapper', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8
+      }, "-=0.4");
+
+    // Second sequence (delayed)
+    setTimeout(() => {
+      gsap.to('.rive', {
+        opacity: 1,
+        duration: 0.8,
+        ease: "power2.out"
+      });
+      
+      gsap.to('.hero_projects', {
+        opacity: 1,
+        duration: 0.8,
+        ease: "power2.out"
+      });
+    }, 2000); // 2 second delay
+  }
+
   // Project Hero Image Scale Animation
   if (document.querySelector('.project_hero-lower')) {
     // Set initial state
@@ -554,184 +619,7 @@ function initGsapAnimations() {
       });
   }
 
-  // // Hero Animation
-  // if (document.querySelector('.hero-animation_wrapper')) {
-  //   // Set initial states
-  //   gsap.set('.circle_hero.is-1', {
-  //     x: '-50vw',
-  //     opacity: 1
-  //   });
-    
-  //   gsap.set('.circle_hero.is-2', {
-  //     x: '50vw',
-  //     opacity: 1
-  //   });
-    
-  //   gsap.set('.circle_hero.is-3', {
-  //     scale: 0,
-  //     opacity: 0
-  //   });
-    
-  //   gsap.set('.hero-animation_text', {
-  //     opacity: 0,
-  //     y: 20
-  //   });
-
-  //   gsap.set('.section_hero-animation', {
-  //     opacity: 100
-  //   });
-
-  //   gsap.set('.hero-background', {
-  //     opacity: 0
-  //   });
-
-
-  //   // Create main timeline
-  //   const heroTl = gsap.timeline({
-  //     defaults: {
-  //       ease: "power2.inOut"
-  //     }
-  //   });
-
-  //   heroTl
-  //     // Move circles to center
-  //     .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-  //       x: '0vw',
-  //       duration: 1.5
-  //     })
-  //     // Hide initial circles and show center circle
-  //     .to(['.circle_hero.is-1', '.circle_hero.is-2'], {
-  //       opacity: 0,
-  //       duration: 0.1
-  //     })
-  //     .to('.circle_hero.is-3', {
-  //       opacity: 1,
-  //       scale: 1,
-  //       duration: 0.75
-  //     }, '-=0.75')
-  //     // Scale up center circle to fill viewport
-  //     .to('.circle_hero.is-3', {
-  //       scale: 20,
-  //       duration: 1,
-  //       delay: 0.5
-  //     })
-  //     // Animate in text
-  //     .to('.hero-animation_text', {
-  //       opacity: 1,
-  //       y: 0,
-  //       duration: 0.8
-  //     },'-=0.5')
-  //     // Hold for a moment
-  //     .to({}, {
-  //       duration: 0.5
-  //     })
-  //     // Scale down center circle
-  //     .to('.circle_hero.is-3', {
-  //       scale: 0,
-  //       duration: 1
-  //     })
-  //     // Fade out text
-  //     .to('.hero-animation_text', {
-  //       opacity: 0,
-  //       y: -20,
-  //       duration: 1
-  //     },'-=1')  
-  //     //Fade out Hero Animation Wrapper
-  //     .to('.section_hero-animation', {
-  //       autoAlpha: 0,
-  //       duration: .5
-  //     },'-=.5')
-  //     //Fade in Hero Background Image
-  //     .to('.hero-background', {
-  //       opacity: 1,
-  //       duration: 1
-  //     }, '-=.5')
-  //     // Slide in new elements with stagger
-  //     .from('.hero-slide-in', {
-  //       y: 50,
-  //       opacity: 0,
-  //       duration: 0.8,
-  //       stagger: {
-  //         amount: 0.5,    // Total amount of time to stagger over
-  //         ease: "power2.out"
-  //       },
-  //       ease: "power2.out"
-  //     }, '-=0.25');
-  // }
-
-  // // Hero Scroll Animation
-  // const heroScrollTl = gsap.timeline({
-  //   scrollTrigger: {
-  //     trigger: ".section_hero",
-  //     start: "top top",
-  //     end: "+=100%",
-  //     pin: true,           // Pin the section during animation
-  //     pinSpacing: true,    // Maintains the space in the document
-  //     scrub: 1,
-  //     anticipatePin: 1,    // Improves pin performance
-  //     invalidateOnRefresh: true,
-  //     // markers: true     // Uncomment for debugging
-  //   }
-  // });
-
-  // heroScrollTl
-  //   .to(".hero_layout-centered", {
-  //     opacity: 0,
-  //     duration: 0.3,
-  //     ease: "power2.inOut"
-  //   })
-  //   .to(".hero-background", {
-  //     opacity: 0,
-  //     scale: 1.1,
-  //     duration: 0.3,
-  //     ease: "power2.inOut"
-  //   }, "-=0.2");
-
-  // // CTA Scroll Animation
-  // const ctaScrollTl = gsap.timeline({
-  //   scrollTrigger: {
-  //     trigger: ".section_cta-centered",
-  //     start: "top top",
-  //     end: "+=100%",
-  //     pin: true,
-  //     pinSpacing: true,
-  //     scrub: 1,
-  //     anticipatePin: 1,
-  //     invalidateOnRefresh: true
-  //   }
-  // });
-
-  // // Set initial states
-  // gsap.set(".cta-background", {
-  //   opacity: 0,
-  //   scale: 0.9
-  // });
   
-  // gsap.set(".cta-slide-in", {
-  //   opacity: 0,
-  //   y: 30
-  // });
-
-  // ctaScrollTl
-  //   // Fade in and scale up the background
-  //   .to(".cta-background", {
-  //     opacity: 1,
-  //     scale: 1,
-  //     duration: 0.5,
-  //     ease: "power2.inOut"
-  //   })
-  //   // Animate in CTA elements with stagger
-  //   .to(".cta-slide-in", {
-  //     opacity: 1,
-  //     y: 0,
-  //     duration: 0.5,
-  //     stagger: {
-  //       amount: 0.3,
-  //       ease: "power2.out"
-  //     },
-  //     ease: "power2.out"
-  //   });
-
   // Footer Animation - Simple slide-up reveal
   const footer = document.querySelector(".footer");
   
