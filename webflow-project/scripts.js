@@ -1211,7 +1211,7 @@ document.addEventListener("DOMContentLoaded", function () {
           namespace: ["home", "work", "project", "contact"]
         },
         to: {
-          namespace: ["slide-over"]
+          namespace: ["slide-over", "home"]  // Add "home" to handle transitions to homepage
         },
         async leave(data) {
           // Store current scroll position
@@ -1273,6 +1273,16 @@ document.addEventListener("DOMContentLoaded", function () {
           // Ensure we stay at top of new page
           window.scrollTo(0, 0);
           
+          // Initialize Swiper if we're on the homepage
+          if (data.next.namespace === 'home') {
+            // Small delay to ensure DOM is ready
+            setTimeout(async () => {
+              await initSwiper();
+              // After Swiper is initialized, refresh ScrollTrigger
+              ScrollTrigger.refresh();
+            }, 100);
+          }
+          
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCustomCursor();
@@ -1282,6 +1292,9 @@ document.addEventListener("DOMContentLoaded", function () {
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCustomCursor();
+          if (data.next.namespace === 'home') {
+            await initSwiper();
+          }
         }
       }
     ],
@@ -1313,19 +1326,29 @@ document.addEventListener("DOMContentLoaded", function () {
     gsap.killTweensOf("*");
   });
 
-  barba.hooks.after(() => {
+  barba.hooks.after((data) => {
     // Re-enable scrolling
     document.body.style.overflow = '';
     
     // Ensure we're at top of page
     window.scrollTo(0, 0);
     
-    // Refresh ScrollTrigger and reinitialize animations
-    ScrollTrigger.refresh(true);
+    // Initialize Swiper if we're on the homepage
+    if (data.next.namespace === 'home') {
+      // Small delay to ensure DOM is ready
+      setTimeout(async () => {
+        await initSwiper();
+        // After Swiper is initialized, refresh ScrollTrigger
+        ScrollTrigger.refresh(true);
+      }, 100);
+    } else {
+      // For other pages, just refresh ScrollTrigger
+      ScrollTrigger.refresh(true);
+    }
+    
     initGsapAnimations();
     initCustomCursor();
     initRive();
-    initSwiper();
     
     // Reinitialize Webflow interactions
     reinitializeWebflowInteractions();
