@@ -215,6 +215,22 @@ const swiperStyles = `
 .wb-swiper_slide.swiper-slide-active {  
   opacity: 1 !important;
 }
+
+/* Hide swiper-show elements for non-active slides */
+.wb-swiper_slide:not(.swiper-slide-active) #swiper-show {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Show swiper-show elements only for active slide */
+.wb-swiper_slide.swiper-slide-active #swiper-show {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
 `;
 
 // Create and append style element
