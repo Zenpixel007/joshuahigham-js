@@ -157,6 +157,52 @@ function handleSlideAnimations(swiper) {
   }
 }
 
+// Add Swiper styles
+const swiperStyles = `
+.wb-swiper {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.wb-swiper.is-ready {
+  opacity: 1;
+  visibility: visible;
+}
+
+.wb-swiper_slide {
+  opacity: 0.2;
+  transition-property: transform, opacity;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
+
+.wb-swiper_slide.swiper-slide-active {  
+  opacity: 1 !important;
+}
+
+/* Hide swiper-show elements for non-active slides */
+.wb-swiper_slide:not(.swiper-slide-active) #swiper-show {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Show swiper-show elements only for active slide */
+.wb-swiper_slide.swiper-slide-active #swiper-show {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+`;
+
+// Create and append style element
+const styleSheet = document.createElement("style");
+styleSheet.textContent = swiperStyles;
+document.head.appendChild(styleSheet);
+
 // Initialize Swiper
 async function initSwiper() {
   try {
@@ -206,7 +252,46 @@ async function initSwiper() {
       },
       on: {
         init: function() {
+          // Set initial states
           handleSlideAnimations(this);
+          
+          // After a short delay, show the Swiper and trigger first slide animations
+          setTimeout(() => {
+            const swiperElement = document.querySelector('.wb-swiper');
+            if (swiperElement) {
+              swiperElement.classList.add('is-ready');
+              
+              // Trigger the red-blur animation for the first slide
+              const redBlur = document.getElementById('red-blur');
+              if (redBlur) {
+                const swiperDelay = this.params.autoplay.delay / 1000;
+                const firstScaleTime = swiperDelay * 0.4875;
+                const secondScaleTime = swiperDelay * 0.8175;
+                
+                gsap.timeline()
+                  .to(redBlur, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                  }, firstScaleTime)
+                  .to(redBlur, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                  })
+                  .to(redBlur, {
+                    scale: 1.15,
+                    duration: 0.2,
+                    ease: "power2.out"
+                  }, secondScaleTime)
+                  .to(redBlur, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                  });
+              }
+            }
+          }, 100);
         },
         slideChange: function() {
           handleSlideAnimations(this);
@@ -220,12 +305,11 @@ async function initSwiper() {
                 opacity: 0,
                 visibility: 'hidden',
                 display: 'none',
-                pointerEvents: 'none' // Prevent interaction with hidden slides
+                pointerEvents: 'none'
               });
             }
           });
         },
-        // Add observer for slide visibility changes
         observerUpdate: function() {
           handleSlideAnimations(this);
         }
@@ -241,41 +325,6 @@ async function initSwiper() {
     console.error("Failed to initialize Swiper:", error);
   }
 }
-
-// Add Swiper styles
-const swiperStyles = `
-.wb-swiper_slide {
-  opacity: 0.2;
-  transition-property: transform, opacity;
-  transition-duration: 0.3s;
-  transition-timing-function: ease-in-out;
-}
-
-.wb-swiper_slide.swiper-slide-active {  
-  opacity: 1 !important;
-}
-
-/* Hide swiper-show elements for non-active slides */
-.wb-swiper_slide:not(.swiper-slide-active) #swiper-show {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* Show swiper-show elements only for active slide */
-.wb-swiper_slide.swiper-slide-active #swiper-show {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-`;
-
-// Create and append style element
-const styleSheet = document.createElement("style");
-styleSheet.textContent = swiperStyles;
-document.head.appendChild(styleSheet);
 
 // Initialize Rive animation
 async function initRive() {
