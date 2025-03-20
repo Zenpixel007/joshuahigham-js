@@ -103,19 +103,25 @@ function handleSlideAnimations(swiper) {
     const stat = slide.querySelector('#swiper-stat');
     const button = slide.querySelector('#swiper-button');
     
-    // Set initial states
+    // Set initial states for elements while preserving layout
     gsap.set([clientName, stat, button], {
       opacity: 0,
-      y: 20
+      y: 20,
+      position: 'relative' // Use relative positioning to maintain flex layout
     });
     
-    // Hide all slides content initially
-    gsap.set(show, {
-      opacity: 0,
-      visibility: 'hidden',
-      display: 'none',
-      pointerEvents: 'none' // Prevent interaction with hidden slides
-    });
+    // Hide all slides content initially while preserving flex layout
+    if (show) {
+      gsap.set(show, {
+        opacity: 0,
+        visibility: 'hidden',
+        display: 'flex', // Keep flex display
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100%',
+        pointerEvents: 'none'
+      });
+    }
   });
 
   // Create timeline for active slide
@@ -131,23 +137,30 @@ function handleSlideAnimations(swiper) {
     defaults: { ease: "power2.out" }
   });
 
-  // Show content first
-  tl.set(show, {
-    visibility: 'visible',
-    display: 'block',
-    pointerEvents: 'auto', // Re-enable interaction for active slide
-    opacity: 0
-  })
-  .to(show, {
-    opacity: 1,
-    duration: 0.5
-  })
-  // Animate other elements with stagger
-  .to([clientName, stat, button], {
+  // Show content first while maintaining layout
+  if (show) {
+    tl.set(show, {
+      visibility: 'visible',
+      display: 'flex', // Keep flex display
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      height: '100%',
+      opacity: 0,
+      pointerEvents: 'auto'
+    })
+    .to(show, {
+      opacity: 1,
+      duration: 0.5
+    });
+  }
+
+  // Animate other elements with stagger while preserving layout
+  tl.to([clientName, stat, button], {
     opacity: 1,
     y: 0,
     duration: 0.5,
-    stagger: 0.1
+    stagger: 0.1,
+    position: 'relative'
   }, "-=0.3");
 
   // Animate counter if element exists
@@ -304,7 +317,10 @@ async function initSwiper() {
               gsap.set(show, {
                 opacity: 0,
                 visibility: 'hidden',
-                display: 'none',
+                display: 'flex', // Keep flex display
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '100%',
                 pointerEvents: 'none'
               });
             }
