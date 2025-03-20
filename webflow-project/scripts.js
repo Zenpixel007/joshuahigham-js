@@ -61,13 +61,13 @@ function animateCounter(element, targetValue, duration = 1) {
   )
   // Add first glow at 1:57 (1.95 seconds)
   .to(element, {
-    filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
+    filter: 'drop-shadow(0 0 8px rgba(138, 16, 16, 0.62))',
     duration: 0.2,
     ease: "power2.out"
   }, 1.95)
   // Add second, brighter glow at 3:16 (3.27 seconds)
   .to(element, {
-    filter: 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.8))',
+    filter: 'drop-shadow(0 0 12px rgba(233, 70, 70, 0.8))',
     duration: 0.2,
     ease: "power2.out"
   }, 3.27);
