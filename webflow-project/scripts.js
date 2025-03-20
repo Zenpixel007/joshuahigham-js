@@ -56,25 +56,32 @@ function animateCounter(element, targetValue, duration = 1) {
     }
   );
 
-  // If red-blur element exists, add scaling animations
-  if (redBlur) {
-    // First scale at 48.75% of the animation (1:57)
+  // If red-blur element exists and Swiper instance exists, add scaling animations
+  if (redBlur && window.swiperInstance) {
+    // Get the Swiper's autoplay delay (in seconds)
+    const swiperDelay = window.swiperInstance.params.autoplay.delay / 1000;
+    
+    // Calculate the timing for the scaling animations based on Swiper delay
+    const firstScaleTime = swiperDelay * 0.4875; // 48.75% of Swiper delay
+    const secondScaleTime = swiperDelay * 0.8175; // 81.75% of Swiper delay
+    
+    // First scale at 48.75% of Swiper delay
     tl.to(redBlur, {
       scale: 1.1,
       duration: 0.2,
       ease: "power2.out"
-    }, "48.75%")
+    }, firstScaleTime)
     .to(redBlur, {
       scale: 1,
       duration: 0.2,
       ease: "power2.out"
     })
-    // Second scale at 81.75% of the animation (3:16)
+    // Second scale at 81.75% of Swiper delay
     .to(redBlur, {
       scale: 1.15,
       duration: 0.2,
       ease: "power2.out"
-    }, "81.75%")
+    }, secondScaleTime)
     .to(redBlur, {
       scale: 1,
       duration: 0.2,
