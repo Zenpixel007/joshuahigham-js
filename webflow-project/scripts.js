@@ -40,7 +40,17 @@ function loadSwiperJS() {
 // Function to animate counter
 function animateCounter(element, targetValue, duration = 1) {
   const startValue = 0;
-  gsap.fromTo(element, 
+  
+  // Create a timeline for the counter animation
+  const tl = gsap.timeline();
+  
+  // Add initial glow styles to the element
+  gsap.set(element, {
+    filter: 'drop-shadow(0 0 0 rgba(255, 255, 255, 0))'
+  });
+  
+  // Animate the counter
+  tl.fromTo(element, 
     { innerHTML: startValue + '%' },
     {
       innerHTML: targetValue + '%',
@@ -48,7 +58,19 @@ function animateCounter(element, targetValue, duration = 1) {
       snap: { innerHTML: 1 },
       ease: "power2.out"
     }
-  );
+  )
+  // Add first glow at 1:57 (1.95 seconds)
+  .to(element, {
+    filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
+    duration: 0.2,
+    ease: "power2.out"
+  }, 1.95)
+  // Add second, brighter glow at 3:16 (3.27 seconds)
+  .to(element, {
+    filter: 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.8))',
+    duration: 0.2,
+    ease: "power2.out"
+  }, 3.27);
 }
 
 // Function to handle slide animations
