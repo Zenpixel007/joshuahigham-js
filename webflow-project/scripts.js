@@ -7,105 +7,120 @@ console.log("checking if connected");
 // Initialize Rive animation
 async function initRive() {
   try {
-    console.log("Attempting to initialize Rive...");
-    const canvas = document.getElementById('rive-canvas');
+    console.log("Attempting to initialize Rive animations...");
     
-    if (!canvas) {
-      console.warn('Rive canvas element not found');
-      return;
-    }
-    console.log("Canvas found, setting up dimensions...");
-
-    // Set canvas size to match container
-    const container = canvas.parentElement;
-    
-    // Function to update canvas size
-    const updateCanvasSize = () => {
-      // Set canvas size to match container dimensions
-      canvas.width = 2000;
-      canvas.height = 215;
+    // Function to create a Rive instance with specific configuration
+    const createRiveInstance = (canvasId, artboardName) => {
+      const canvas = document.getElementById(canvasId);
       
-      // Update container size to match and center it
-      container.style.width = '100%';
-      container.style.height = '215px';
-      container.style.display = 'flex';
-      container.style.justifyContent = 'center';
-      container.style.alignItems = 'center';
-      container.style.overflow = 'hidden';
-    };
-    
-    // Initial size setup
-    updateCanvasSize();
-
-    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbd32d0f401013bd056807_hero-tunnel-animation-resize.riv';
-    
-    // Create new Rive instance using the current API
-    let riveInstance = new rive.Rive({
-      src: riveURL,
-      canvas: canvas,
-      artboard: 'Desktop',
-      stateMachines: ['State Machine 1'],
-      autoplay: true,
-      layout: new rive.Layout({
-        fit: rive.Fit.contain,
-        alignment: rive.Alignment.center,
-      }),
-      onLoad: () => {
-        console.log('Rive animation loaded successfully');
-        updateCanvasSize(); // Ensure correct size after loading
-        
-        // Ensure animation starts playing
-        if (riveInstance) {
-          // Get the state machine
-          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
-          if (stateMachine) {
-            // Start the state machine
-            stateMachine.forEach(input => {
-              if (input.type === rive.StateMachineInputType.Trigger) {
-                input.fire();
-              }
-            });
-          }
-          // Ensure the animation is playing
-          riveInstance.play();
-        }
-      },
-      onError: (err) => {
-        console.error('Error loading Rive animation:', err);
+      if (!canvas) {
+        console.warn(`Rive canvas element with ID '${canvasId}' not found`);
+        return null;
       }
-    });
+      console.log(`Canvas ${canvasId} found, setting up dimensions...`);
 
-    // Handle window resize
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      updateCanvasSize();
+      // Set canvas size to match container
+      const container = canvas.parentElement;
       
-      // Debounce the resize event
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        if (riveInstance) {
-          // Update layout
-          riveInstance.layout = new rive.Layout({
-            fit: rive.Fit.contain,
-            alignment: rive.Alignment.center,
-          });
-          
-          // Ensure animation is playing after resize
-          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
-          if (stateMachine) {
-            stateMachine.forEach(input => {
-              if (input.type === rive.StateMachineInputType.Trigger) {
-                input.fire();
-              }
-            });
-          }
-          riveInstance.play();
-        }
-      }, 250); // Wait for 250ms after last resize event
-    });
+      // Function to update canvas size
+      const updateCanvasSize = () => {
+        // Set dimensions based on canvas ID
+        const dimensions = canvasId === 'rive-canvas-secondary' 
+          ? { width: 192, height: 121 }
+          : { width: 2000, height: 215 };
+        
+        // Set canvas size to match container dimensions
+        canvas.width = dimensions.width;
+        canvas.height = dimensions.height;
+        
+        // Update container size to match and center it
+        container.style.width = '100%';
+        container.style.height = `${dimensions.height}px`;
+        container.style.display = 'flex';
+        container.style.justifyContent = 'center';
+        container.style.alignItems = 'center';
+        container.style.overflow = 'hidden';
+      };
+      
+      // Initial size setup
+      updateCanvasSize();
 
-    console.log('Rive instance created successfully');
-    return riveInstance;
+      const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbdb468bcf93bb5365c64d_hero_animation_combined.riv';
+      
+      // Create new Rive instance using the current API
+      let riveInstance = new rive.Rive({
+        src: riveURL,
+        canvas: canvas,
+        artboard: artboardName,
+        stateMachines: ['State Machine 1'],
+        autoplay: true,
+        layout: new rive.Layout({
+          fit: rive.Fit.contain,
+          alignment: rive.Alignment.center,
+        }),
+        onLoad: () => {
+          console.log(`Rive animation loaded successfully for ${canvasId}`);
+          updateCanvasSize(); // Ensure correct size after loading
+          
+          // Ensure animation starts playing
+          if (riveInstance) {
+            // Get the state machine
+            const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+            if (stateMachine) {
+              // Start the state machine
+              stateMachine.forEach(input => {
+                if (input.type === rive.StateMachineInputType.Trigger) {
+                  input.fire();
+                }
+              });
+            }
+            // Ensure the animation is playing
+            riveInstance.play();
+          }
+        },
+        onError: (err) => {
+          console.error(`Error loading Rive animation for ${canvasId}:`, err);
+        }
+      });
+
+      // Handle window resize
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        updateCanvasSize();
+        
+        // Debounce the resize event
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (riveInstance) {
+            // Update layout
+            riveInstance.layout = new rive.Layout({
+              fit: rive.Fit.contain,
+              alignment: rive.Alignment.center,
+            });
+            
+            // Ensure animation is playing after resize
+            const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+            if (stateMachine) {
+              stateMachine.forEach(input => {
+                if (input.type === rive.StateMachineInputType.Trigger) {
+                  input.fire();
+                }
+              });
+            }
+            riveInstance.play();
+          }
+        }, 250); // Wait for 250ms after last resize event
+      });
+
+      return riveInstance;
+    };
+
+    // Initialize both Rive instances
+    const mainRiveInstance = createRiveInstance('rive-canvas', 'Desktop');
+    const secondaryRiveInstance = createRiveInstance('rive-canvas-secondary', 'Impact Blur');
+
+    console.log('Rive instances created successfully');
+    return { mainRiveInstance, secondaryRiveInstance };
   } catch (error) {
     console.error('Failed to initialize Rive:', error);
   }
