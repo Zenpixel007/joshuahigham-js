@@ -1070,6 +1070,21 @@ function initGsapAnimations() {
   });
 }
 
+// Function to reinitialize Webflow interactions
+function reinitializeWebflowInteractions() {
+  // Check if Webflow is loaded
+  if (window.Webflow) {
+    // Reinitialize all interactions
+    window.Webflow.ready();
+    window.Webflow.require('ix2').init();
+    
+    // Reinitialize any custom interactions
+    if (window.Webflow.require) {
+      window.Webflow.require('ix2').init();
+    }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize Swiper
   initSwiper();
@@ -1116,7 +1131,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize Barba
   barba.init({
-    debug: true, // Helps with debugging
+    debug: true,
     preventRunning: true,
     transitions: [
       {
@@ -1442,7 +1457,10 @@ document.addEventListener("DOMContentLoaded", function () {
     initCalendly();
     initCustomCursor();
     initRive();
-    initSwiper(); // Reinitialize Swiper after page transition
+    initSwiper();
+    
+    // Reinitialize Webflow interactions
+    reinitializeWebflowInteractions();
   });
 
   // Remove individual reinitializations from transition enter functions
