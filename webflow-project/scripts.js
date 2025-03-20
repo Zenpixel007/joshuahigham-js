@@ -124,29 +124,30 @@ function handleSlideAnimations(swiper) {
 
     // Add hover animation for active slide
     if (slide.classList.contains('swiper-slide-active')) {
-      const redBlur = document.getElementById('red-blur');
-      if (redBlur) {
+      const redBlurHover = document.getElementById('red-blur-hover');
+      if (redBlurHover) {
+        // Set initial state of hover element
+        gsap.set(redBlurHover, {
+          scale: 0,
+          opacity: 0
+        });
+
         // Create hover timeline
         const hoverTl = gsap.timeline({ paused: true });
-        hoverTl.to(redBlur, {
-          scale: 1.25,
-          duration: 0.3,
-          ease: "power2.out"
-        });
+        hoverTl
+          .to(redBlurHover, {
+            scale: 1.25,
+            opacity: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          });
 
         // Add event listeners
         slide.addEventListener('mouseenter', () => {
-          // Only play hover animation if no other animation is running
-          const activeAnimations = gsap.getTweensOf(redBlur);
-          const isAnimating = activeAnimations.some(tween => tween.isActive());
-          if (!isAnimating || (isAnimating && activeAnimations.every(tween => tween.vars.scale === 1))) {
-            hoverTl.play();
-          }
+          hoverTl.play();
         });
         slide.addEventListener('mouseleave', () => {
-          if (hoverTl.isActive()) {
-            hoverTl.reverse();
-          }
+          hoverTl.reverse();
         });
       }
     }
@@ -321,55 +322,60 @@ async function initSwiper() {
               
               // Add hover animation for initial active slide
               const activeSlide = this.slides[this.activeIndex];
-              const redBlur = document.getElementById('red-blur');
-              if (activeSlide && redBlur) {
+              const redBlurHover = document.getElementById('red-blur-hover');
+              if (activeSlide && redBlurHover) {
+                // Set initial state of hover element
+                gsap.set(redBlurHover, {
+                  scale: 0,
+                  opacity: 0
+                });
+
+                // Create hover timeline
                 const hoverTl = gsap.timeline({ paused: true });
-                hoverTl.to(redBlur, {
-                  scale: 1.25,
-                  duration: 0.3,
-                  ease: "power2.out"
-                });
-
-                activeSlide.addEventListener('mouseenter', () => {
-                  // Only play hover animation if no other animation is running
-                  const activeAnimations = gsap.getTweensOf(redBlur);
-                  const isAnimating = activeAnimations.some(tween => tween.isActive());
-                  if (!isAnimating || (isAnimating && activeAnimations.every(tween => tween.vars.scale === 1))) {
-                    hoverTl.play();
-                  }
-                });
-                activeSlide.addEventListener('mouseleave', () => {
-                  if (hoverTl.isActive()) {
-                    hoverTl.reverse();
-                  }
-                });
-
-                // Trigger the automatic red-blur animation
-                const swiperDelay = this.params.autoplay.delay / 1000;
-                const firstScaleTime = swiperDelay * 0.4875;
-                const secondScaleTime = swiperDelay * 0.8175;
-                
-                gsap.timeline()
-                  .to(redBlur, {
-                    scale: 1.1,
-                    duration: 0.2,
-                    ease: "power2.out"
-                  }, firstScaleTime)
-                  .to(redBlur, {
-                    scale: 1,
-                    duration: 0.2,
-                    ease: "power2.out"
-                  })
-                  .to(redBlur, {
-                    scale: 1.15,
-                    duration: 0.2,
-                    ease: "power2.out"
-                  }, secondScaleTime)
-                  .to(redBlur, {
-                    scale: 1,
-                    duration: 0.2,
+                hoverTl
+                  .to(redBlurHover, {
+                    scale: 1.25,
+                    opacity: 1,
+                    duration: 0.3,
                     ease: "power2.out"
                   });
+
+                activeSlide.addEventListener('mouseenter', () => {
+                  hoverTl.play();
+                });
+                activeSlide.addEventListener('mouseleave', () => {
+                  hoverTl.reverse();
+                });
+
+                // Trigger the automatic red-blur animation (original element)
+                const redBlur = document.getElementById('red-blur');
+                if (redBlur) {
+                  const swiperDelay = this.params.autoplay.delay / 1000;
+                  const firstScaleTime = swiperDelay * 0.4875;
+                  const secondScaleTime = swiperDelay * 0.8175;
+                  
+                  gsap.timeline()
+                    .to(redBlur, {
+                      scale: 1.1,
+                      duration: 0.2,
+                      ease: "power2.out"
+                    }, firstScaleTime)
+                    .to(redBlur, {
+                      scale: 1,
+                      duration: 0.2,
+                      ease: "power2.out"
+                    })
+                    .to(redBlur, {
+                      scale: 1.15,
+                      duration: 0.2,
+                      ease: "power2.out"
+                    }, secondScaleTime)
+                    .to(redBlur, {
+                      scale: 1,
+                      duration: 0.2,
+                      ease: "power2.out"
+                    });
+                }
               }
             }
           }, 100);
@@ -379,27 +385,29 @@ async function initSwiper() {
           
           // Update hover animation for new active slide
           const activeSlide = this.slides[this.activeIndex];
-          const redBlur = document.getElementById('red-blur');
-          if (activeSlide && redBlur) {
-            const hoverTl = gsap.timeline({ paused: true });
-            hoverTl.to(redBlur, {
-              scale: 1.25,
-              duration: 0.3,
-              ease: "power2.out"
+          const redBlurHover = document.getElementById('red-blur-hover');
+          if (activeSlide && redBlurHover) {
+            // Reset hover element state
+            gsap.set(redBlurHover, {
+              scale: 0,
+              opacity: 0
             });
 
+            // Create hover timeline
+            const hoverTl = gsap.timeline({ paused: true });
+            hoverTl
+              .to(redBlurHover, {
+                scale: 1.25,
+                opacity: 1,
+                duration: 0.3,
+                ease: "power2.out"
+              });
+
             activeSlide.addEventListener('mouseenter', () => {
-              // Only play hover animation if no other animation is running
-              const activeAnimations = gsap.getTweensOf(redBlur);
-              const isAnimating = activeAnimations.some(tween => tween.isActive());
-              if (!isAnimating || (isAnimating && activeAnimations.every(tween => tween.vars.scale === 1))) {
-                hoverTl.play();
-              }
+              hoverTl.play();
             });
             activeSlide.addEventListener('mouseleave', () => {
-              if (hoverTl.isActive()) {
-                hoverTl.reverse();
-              }
+              hoverTl.reverse();
             });
           }
         },
