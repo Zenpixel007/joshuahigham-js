@@ -22,12 +22,12 @@ async function initRive() {
     // Function to update canvas size
     const updateCanvasSize = () => {
       // Set canvas size to match container dimensions
-      canvas.width = 1440;
-      canvas.height = 318;
+      canvas.width = 2000;
+      canvas.height = 215;
       
       // Update container size to match and center it
       container.style.width = '100%';
-      container.style.height = '318px';
+      container.style.height = '215px';
       container.style.display = 'flex';
       container.style.justifyContent = 'center';
       container.style.alignItems = 'center';
@@ -37,7 +37,7 @@ async function initRive() {
     // Initial size setup
     updateCanvasSize();
 
-    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67d990e238a0fe204f932761_hero_impact_animation-larger.riv';
+    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbd32d0f401013bd056807_hero-tunnel-animation-resize.riv';
     
     // Create new Rive instance using the current API
     let riveInstance = new rive.Rive({
