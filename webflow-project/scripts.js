@@ -103,25 +103,24 @@ function handleSlideAnimations(swiper) {
     const stat = slide.querySelector('#swiper-stat');
     const button = slide.querySelector('#swiper-button');
     
-    // Set initial states for elements while preserving layout
+    if (show) {
+      // Force layout properties with !important
+      show.style.cssText = `
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        opacity: 0;
+        visibility: hidden;
+      `;
+    }
+    
+    // Set initial states for elements
     gsap.set([clientName, stat, button], {
       opacity: 0,
-      y: 20,
-      position: 'relative' // Use relative positioning to maintain flex layout
+      y: 20
     });
-    
-    // Hide all slides content initially while preserving flex layout
-    if (show) {
-      gsap.set(show, {
-        opacity: 0,
-        visibility: 'hidden',
-        display: 'flex', // Keep flex display
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        height: '100%',
-        pointerEvents: 'none'
-      });
-    }
   });
 
   // Create timeline for active slide
@@ -137,30 +136,43 @@ function handleSlideAnimations(swiper) {
     defaults: { ease: "power2.out" }
   });
 
-  // Show content first while maintaining layout
+  // Show content first
   if (show) {
-    tl.set(show, {
-      visibility: 'visible',
-      display: 'flex', // Keep flex display
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      height: '100%',
-      opacity: 0,
-      pointerEvents: 'auto'
-    })
-    .to(show, {
+    // Force layout properties for active slide
+    show.style.cssText = `
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      height: 100% !important;
+      min-height: 100% !important;
+      visibility: visible;
+      opacity: 0;
+    `;
+
+    tl.to(show, {
       opacity: 1,
-      duration: 0.5
+      duration: 0.5,
+      onComplete: () => {
+        // Ensure layout is maintained after animation
+        show.style.cssText = `
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: space-between !important;
+          height: 100% !important;
+          min-height: 100% !important;
+          visibility: visible;
+          opacity: 1;
+        `;
+      }
     });
   }
 
-  // Animate other elements with stagger while preserving layout
+  // Animate other elements with stagger
   tl.to([clientName, stat, button], {
     opacity: 1,
     y: 0,
     duration: 0.5,
-    stagger: 0.1,
-    position: 'relative'
+    stagger: 0.1
   }, "-=0.3");
 
   // Animate counter if element exists
@@ -188,6 +200,7 @@ const swiperStyles = `
   transition-property: transform, opacity;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
+  height: 100%;
 }
 
 .wb-swiper_slide.swiper-slide-active {  
@@ -196,7 +209,6 @@ const swiperStyles = `
 
 /* Hide swiper-show elements for non-active slides */
 .wb-swiper_slide:not(.swiper-slide-active) #swiper-show {
-  display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
@@ -204,7 +216,11 @@ const swiperStyles = `
 
 /* Show swiper-show elements only for active slide */
 .wb-swiper_slide.swiper-slide-active #swiper-show {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  height: 100% !important;
+  min-height: 100% !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
