@@ -4,30 +4,52 @@
 //This is a test to see if it is conected to the webflow project
 console.log("checking if connected");
 
-// Initialize Swiper
-function initSwiper() {
-  try {
-    // Check if Swiper is loaded
-    if (typeof Swiper === 'undefined') {
-      console.warn('Swiper is not loaded yet. Waiting for it to load...');
-      // Wait for Swiper to be available
-      const checkSwiper = setInterval(() => {
-        if (typeof Swiper !== 'undefined') {
-          clearInterval(checkSwiper);
-          createSwiper();
-        }
-      }, 100);
+// Function to load Swiper CSS
+function loadSwiperCSS() {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector('link[href*="swiper-bundle.min.css"]')) {
+      resolve();
       return;
     }
-    createSwiper();
-  } catch (error) {
-    console.error("Failed to initialize Swiper:", error);
-  }
+    
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+    link.onload = resolve;
+    link.onerror = reject;
+    document.head.appendChild(link);
+  });
 }
 
-// Separate function to create Swiper instance
-function createSwiper() {
+// Function to load Swiper JS
+function loadSwiperJS() {
+  return new Promise((resolve, reject) => {
+    if (window.Swiper) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+    script.onload = resolve;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
+// Initialize Swiper
+async function initSwiper() {
   try {
+    // Load Swiper CSS and JS
+    await Promise.all([
+      loadSwiperCSS(),
+      loadSwiperJS()
+    ]);
+
+    // Wait a short moment to ensure Swiper is fully loaded
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Create Swiper instance
     const swiper = new Swiper(".wb-swiper", {
       slideClass: "wb-swiper_slide",
       wrapperClass: "wb-swiper_wrapper",
@@ -65,7 +87,7 @@ function createSwiper() {
     console.log("Swiper initialized successfully");
     return swiper;
   } catch (error) {
-    console.error("Failed to create Swiper instance:", error);
+    console.error("Failed to initialize Swiper:", error);
   }
 }
 
