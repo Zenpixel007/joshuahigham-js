@@ -181,24 +181,25 @@ async function initRive() {
           
           // Start the animation and sync with Swiper
           if (window.swiperInstance) {
-            // Start Rive animation
-            riveInstance.play();
+            // Function to restart Rive animation
+            const restartRiveAnimation = () => {
+              console.log('Restarting Rive animation');
+              riveInstance.stop();
+              // Small delay to ensure clean restart
+              setTimeout(() => {
+                riveInstance.play();
+              }, 50);
+            };
+
+            // Start initial animation
+            restartRiveAnimation();
             
-            // Set up a loop to restart Rive animation when Swiper changes slides
-            window.swiperInstance.on('slideChange', () => {
-              // Reset and restart Rive animation
-              riveInstance.stop();
-              riveInstance.play();
-            });
-
-            // Set up a loop to restart Rive animation when Swiper starts autoplay
-            window.swiperInstance.on('autoplayStart', () => {
-              riveInstance.stop();
-              riveInstance.play();
-            });
-
-            // Set up a loop to stop Rive animation when Swiper stops autoplay
+            // Set up event listeners for Swiper
+            window.swiperInstance.on('slideChange', restartRiveAnimation);
+            window.swiperInstance.on('slideChangeTransitionStart', restartRiveAnimation);
+            window.swiperInstance.on('autoplayStart', restartRiveAnimation);
             window.swiperInstance.on('autoplayStop', () => {
+              console.log('Stopping Rive animation');
               riveInstance.stop();
             });
           }
