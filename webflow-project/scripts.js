@@ -26,7 +26,7 @@ async function initRive() {
       const updateCanvasSize = () => {
         // Set dimensions based on canvas ID
         const dimensions = canvasId === 'rive-canvas-secondary' 
-          ? { width: 192, height: 121 }
+          ? { width: 254, height: 52 }
           : { width: 2000, height: 215 };
         
         // Set canvas size to match container dimensions
@@ -45,7 +45,7 @@ async function initRive() {
       // Initial size setup
       updateCanvasSize();
 
-      const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbdb468bcf93bb5365c64d_hero_animation_combined.riv';
+      const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbe70e53d41b91baf7d102_hero-combinedd.riv';
       
       // Create new Rive instance using the current API
       let riveInstance = new rive.Rive({
