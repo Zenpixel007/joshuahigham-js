@@ -41,9 +41,9 @@ function loadSwiperJS() {
 function animateCounter(element, targetValue, duration = 1) {
   const startValue = 0;
   gsap.fromTo(element, 
-    { innerHTML: startValue },
+    { innerHTML: startValue + '%' },
     {
-      innerHTML: targetValue,
+      innerHTML: targetValue + '%',
       duration: duration,
       snap: { innerHTML: 1 },
       ease: "power2.out"
@@ -70,12 +70,12 @@ function handleSlideAnimations(swiper) {
       y: 20
     });
     
-    if (!slide.classList.contains('swiper-slide-active')) {
-      gsap.set(show, {
-        opacity: 0,
-        visibility: 'hidden'
-      });
-    }
+    // Hide all slides content initially
+    gsap.set(show, {
+      opacity: 0,
+      visibility: 'hidden',
+      display: 'none' // Add display none to ensure complete hiding
+    });
   });
 
   // Create timeline for active slide
@@ -94,6 +94,7 @@ function handleSlideAnimations(swiper) {
   // Show content first
   tl.set(show, {
     visibility: 'visible',
+    display: 'block', // Show the element
     opacity: 0
   })
   .to(show, {
@@ -176,7 +177,8 @@ async function initSwiper() {
             if (show) {
               gsap.set(show, {
                 opacity: 0,
-                visibility: 'hidden'
+                visibility: 'hidden',
+                display: 'none' // Add display none to ensure complete hiding
               });
             }
           });
