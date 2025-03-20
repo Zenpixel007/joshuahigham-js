@@ -157,7 +157,7 @@ async function initRive() {
       canvas: canvas,
       artboard: 'Desktop',
       stateMachines: ['State Machine 1'],
-      autoplay: false, // Don't autoplay initially
+      autoplay: true, // Enable autoplay
       layout: new rive.Layout({
         fit: rive.Fit.contain,
         alignment: rive.Alignment.center,
@@ -187,7 +187,18 @@ async function initRive() {
               riveInstance.stop();
               // Small delay to ensure clean restart
               setTimeout(() => {
+                // Reset the animation to the beginning
+                riveInstance.reset();
+                // Start playing
                 riveInstance.play();
+                // Fire the state machine trigger again
+                if (stateMachine) {
+                  stateMachine.forEach(input => {
+                    if (input.type === rive.StateMachineInputType.Trigger) {
+                      input.fire();
+                    }
+                  });
+                }
               }, 50);
             };
 
