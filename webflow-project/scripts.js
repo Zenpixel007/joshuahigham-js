@@ -37,6 +37,84 @@ function loadSwiperJS() {
   });
 }
 
+// Function to animate counter
+function animateCounter(element, targetValue, duration = 1) {
+  const startValue = 0;
+  gsap.fromTo(element, 
+    { innerHTML: startValue },
+    {
+      innerHTML: targetValue,
+      duration: duration,
+      snap: { innerHTML: 1 },
+      ease: "power2.out"
+    }
+  );
+}
+
+// Function to handle slide animations
+function handleSlideAnimations(swiper) {
+  // Get all slides
+  const slides = swiper.slides;
+  
+  // Set initial states for all slides
+  slides.forEach(slide => {
+    const show = slide.querySelector('#swiper-show');
+    const clientName = slide.querySelector('#swiper-client-name');
+    const percent = slide.querySelector('#swiper-percent');
+    const stat = slide.querySelector('#swiper-stat');
+    const button = slide.querySelector('#swiper-button');
+    
+    // Set initial states
+    gsap.set([clientName, stat, button], {
+      opacity: 0,
+      y: 20
+    });
+    
+    if (!slide.classList.contains('swiper-slide-active')) {
+      gsap.set(show, {
+        opacity: 0,
+        visibility: 'hidden'
+      });
+    }
+  });
+
+  // Create timeline for active slide
+  const activeSlide = swiper.slides[swiper.activeIndex];
+  const show = activeSlide.querySelector('#swiper-show');
+  const clientName = activeSlide.querySelector('#swiper-client-name');
+  const percent = activeSlide.querySelector('#swiper-percent');
+  const stat = activeSlide.querySelector('#swiper-stat');
+  const button = activeSlide.querySelector('#swiper-button');
+
+  // Create timeline
+  const tl = gsap.timeline({
+    defaults: { ease: "power2.out" }
+  });
+
+  // Show content first
+  tl.set(show, {
+    visibility: 'visible',
+    opacity: 0
+  })
+  .to(show, {
+    opacity: 1,
+    duration: 0.5
+  })
+  // Animate other elements with stagger
+  .to([clientName, stat, button], {
+    opacity: 1,
+    y: 0,
+    duration: 0.5,
+    stagger: 0.1
+  }, "-=0.3");
+
+  // Animate counter if element exists
+  if (percent) {
+    const targetValue = parseInt(percent.getAttribute('data-target') || '0');
+    animateCounter(percent, targetValue, 1);
+  }
+}
+
 // Initialize Swiper
 async function initSwiper() {
   try {
@@ -57,11 +135,11 @@ async function initSwiper() {
       loop: true,
       loopAdditionalSlides: 2,
       autoplay: {
-        delay: 4000, // Reduced to 3000ms (3s) to account for the 1000ms transition
+        delay: 4000,
         disableOnInteraction: true,
         pauseOnMouseEnter: true
       },
-      speed: 500, // Keep transition speed at 1000ms (1s)
+      speed: 500,
       pagination: {
         el: ".wb-swiper_pagination",
         bulletClass: "wb-swiper_bullet",
@@ -72,7 +150,6 @@ async function initSwiper() {
         nextEl: `[wb-swiper="next"]`,
         prevEl: `[wb-swiper="previous"]`,
       },
-      // Enable draggable functionality
       simulateTouch: true,
       grabCursor: true,
       breakpoints: {
@@ -85,6 +162,26 @@ async function initSwiper() {
           spaceBetween: 12,
         },
       },
+      on: {
+        init: function() {
+          handleSlideAnimations(this);
+        },
+        slideChange: function() {
+          handleSlideAnimations(this);
+        },
+        slideChangeTransitionStart: function() {
+          // Hide all slides content
+          this.slides.forEach(slide => {
+            const show = slide.querySelector('#swiper-show');
+            if (show) {
+              gsap.set(show, {
+                opacity: 0,
+                visibility: 'hidden'
+              });
+            }
+          });
+        }
+      }
     });
 
     // Store the swiper instance globally for Rive to access
