@@ -4,6 +4,69 @@
 //This is a test to see if it is conected to the webflow project
 console.log("checking if connected");
 
+// Initialize Swiper
+function initSwiper() {
+  try {
+    const swiper = new Swiper(".wb-swiper", {
+      slideClass: "wb-swiper_slide",
+      wrapperClass: "wb-swiper_wrapper",
+      centeredSlides: true,
+      loop: true,
+      loopAdditionalSlides: 2,
+      autoplay: {
+        delay: 4000,
+        disableOnInteraction: true
+      },
+      pagination: {
+        el: ".wb-swiper_pagination",
+        bulletClass: "wb-swiper_bullet",
+        bulletActiveClass: "is-active",
+        clickable: true,
+      },
+      navigation: {
+        nextEl: `[wb-swiper="next"]`,
+        prevEl: `[wb-swiper="previous"]`,
+      },
+      // Enable draggable functionality
+      simulateTouch: true,
+      grabCursor: true,
+      breakpoints: {
+        480: {
+          slidesPerView: "auto",
+          spaceBetween: 36,
+        },
+        320: {
+          slidesPerView: "auto",
+          spaceBetween: 12,
+        },
+      },
+    });
+    console.log("Swiper initialized successfully");
+    return swiper;
+  } catch (error) {
+    console.error("Failed to initialize Swiper:", error);
+  }
+}
+
+// Add Swiper styles
+const swiperStyles = `
+.wb-swiper_slide {
+  opacity: 0.2;
+  transition-property: transform, opacity;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
+
+.wb-swiper_slide.swiper-slide-active {  
+  opacity: 1 !important;
+}
+`;
+
+// Create and append style element
+const styleSheet = document.createElement("style");
+styleSheet.textContent = swiperStyles;
+document.head.appendChild(styleSheet);
+
 // Initialize Rive animation
 async function initRive() {
   try {
@@ -715,6 +778,9 @@ function initGsapAnimations() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  // Initialize Swiper
+  initSwiper();
+
   // Function to handle email link copying
   const emailLink = document.getElementById('email-link');
   if (emailLink) {
@@ -1083,6 +1149,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initCalendly();
     initCustomCursor();
     initRive();
+    initSwiper(); // Reinitialize Swiper after page transition
   });
 
   // Remove individual reinitializations from transition enter functions
