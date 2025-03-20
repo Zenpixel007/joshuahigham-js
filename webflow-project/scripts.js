@@ -326,9 +326,28 @@ async function initSwiper() {
   }
 }
 
+// Function to load Rive script
+function loadRiveScript() {
+  return new Promise((resolve, reject) => {
+    if (window.rive) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@rive-app/webgl2@latest';
+    script.onload = resolve;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
 // Initialize Rive animation
 async function initRive() {
   try {
+    // Load Rive script first
+    await loadRiveScript();
+    
     console.log("Attempting to initialize Rive...");
     const canvas = document.getElementById('rive-canvas');
     
@@ -1326,21 +1345,28 @@ document.addEventListener("DOMContentLoaded", function () {
     gsap.killTweensOf("*");
   });
 
-  barba.hooks.after((data) => {
+  barba.hooks.after(async (data) => {
     // Re-enable scrolling
     document.body.style.overflow = '';
     
     // Ensure we're at top of page
     window.scrollTo(0, 0);
     
-    // Initialize Swiper if we're on the homepage
+    // Initialize components based on namespace
     if (data.next.namespace === 'home') {
       // Small delay to ensure DOM is ready
-      setTimeout(async () => {
-        await initSwiper();
-        // After Swiper is initialized, refresh ScrollTrigger
-        ScrollTrigger.refresh(true);
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Initialize Swiper first
+      const swiper = await initSwiper();
+      
+      // Only initialize Rive after Swiper is ready
+      if (swiper) {
+        await initRive();
+      }
+      
+      // After both are initialized, refresh ScrollTrigger
+      ScrollTrigger.refresh(true);
     } else {
       // For other pages, just refresh ScrollTrigger
       ScrollTrigger.refresh(true);
@@ -1348,7 +1374,6 @@ document.addEventListener("DOMContentLoaded", function () {
     
     initGsapAnimations();
     initCustomCursor();
-    initRive();
     
     // Reinitialize Webflow interactions
     reinitializeWebflowInteractions();
@@ -1366,6 +1391,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Initialize Rive after a short delay to ensure DOM is ready
-  setTimeout(initRive, 100);
+  // Initialize components for first page load
+  if (document.querySelector('.wb-swiper')) {
+    setTimeout(async () => {
+      const swiper = await initSwiper();
+      if (swiper) {
+        await initRive();
+      }
+    }, 100);
+  }
 });
