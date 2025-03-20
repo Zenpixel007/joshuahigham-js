@@ -57,11 +57,11 @@ async function initSwiper() {
       loop: true,
       loopAdditionalSlides: 2,
       autoplay: {
-        delay: 4000,
+        delay: 3000, // Reduced to 3000ms (3s) to account for the 1000ms transition
         disableOnInteraction: true,
         pauseOnMouseEnter: true
       },
-      speed: 800, // Match the transition speed
+      speed: 1000, // Keep transition speed at 1000ms (1s)
       pagination: {
         el: ".wb-swiper_pagination",
         bulletClass: "wb-swiper_bullet",
@@ -186,7 +186,20 @@ async function initRive() {
             
             // Set up a loop to restart Rive animation when Swiper changes slides
             window.swiperInstance.on('slideChange', () => {
+              // Reset and restart Rive animation
+              riveInstance.stop();
               riveInstance.play();
+            });
+
+            // Set up a loop to restart Rive animation when Swiper starts autoplay
+            window.swiperInstance.on('autoplayStart', () => {
+              riveInstance.stop();
+              riveInstance.play();
+            });
+
+            // Set up a loop to stop Rive animation when Swiper stops autoplay
+            window.swiperInstance.on('autoplayStop', () => {
+              riveInstance.stop();
             });
           }
         }
