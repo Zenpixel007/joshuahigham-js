@@ -137,7 +137,9 @@ function handleSlideAnimations(swiper) {
         // Add event listeners
         slide.addEventListener('mouseenter', () => {
           // Only play hover animation if no other animation is running
-          if (!redBlur._gsap.isActive()) {
+          const activeAnimations = gsap.getTweensOf(redBlur);
+          const isAnimating = activeAnimations.some(tween => tween.isActive());
+          if (!isAnimating || (isAnimating && activeAnimations.every(tween => tween.vars.scale === 1))) {
             hoverTl.play();
           }
         });
@@ -330,7 +332,9 @@ async function initSwiper() {
 
                 activeSlide.addEventListener('mouseenter', () => {
                   // Only play hover animation if no other animation is running
-                  if (!redBlur._gsap.isActive()) {
+                  const activeAnimations = gsap.getTweensOf(redBlur);
+                  const isAnimating = activeAnimations.some(tween => tween.isActive());
+                  if (!isAnimating || (isAnimating && activeAnimations.every(tween => tween.vars.scale === 1))) {
                     hoverTl.play();
                   }
                 });
@@ -386,7 +390,9 @@ async function initSwiper() {
 
             activeSlide.addEventListener('mouseenter', () => {
               // Only play hover animation if no other animation is running
-              if (!redBlur._gsap.isActive()) {
+              const activeAnimations = gsap.getTweensOf(redBlur);
+              const isAnimating = activeAnimations.some(tween => tween.isActive());
+              if (!isAnimating || (isAnimating && activeAnimations.every(tween => tween.vars.scale === 1))) {
                 hoverTl.play();
               }
             });
