@@ -74,7 +74,8 @@ function handleSlideAnimations(swiper) {
     gsap.set(show, {
       opacity: 0,
       visibility: 'hidden',
-      display: 'none' // Add display none to ensure complete hiding
+      display: 'none',
+      pointerEvents: 'none' // Prevent interaction with hidden slides
     });
   });
 
@@ -94,7 +95,8 @@ function handleSlideAnimations(swiper) {
   // Show content first
   tl.set(show, {
     visibility: 'visible',
-    display: 'block', // Show the element
+    display: 'block',
+    pointerEvents: 'auto', // Re-enable interaction for active slide
     opacity: 0
   })
   .to(show, {
@@ -178,10 +180,15 @@ async function initSwiper() {
               gsap.set(show, {
                 opacity: 0,
                 visibility: 'hidden',
-                display: 'none' // Add display none to ensure complete hiding
+                display: 'none',
+                pointerEvents: 'none' // Prevent interaction with hidden slides
               });
             }
           });
+        },
+        // Add observer for slide visibility changes
+        observerUpdate: function() {
+          handleSlideAnimations(this);
         }
       }
     });
