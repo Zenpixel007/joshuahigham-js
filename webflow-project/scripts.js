@@ -678,45 +678,23 @@ function initGsapAnimations() {
 
   // Text Animation with SplitType
   const textElement = document.querySelector('#text-animate');
-  const aboutParagraphs = document.querySelectorAll('.about-p');
   
-  if (textElement || aboutParagraphs.length > 0) {
+  if (textElement) {
     loadSplitType().then(() => {
-      // Create an array to hold all elements to animate
-      const elementsToAnimate = [];
+      // Split the text into words
+      const splitText = new SplitType(textElement, { types: 'words' });
+      const words = splitText.words;
       
-      // Handle text-animate element if it exists
-      if (textElement) {
-        // Split the text into words
-        const splitText = new SplitType(textElement, { types: 'words' });
-        const words = splitText.words;
-        
-        // Set initial state for words
-        gsap.set(words, {
-          opacity: 0.2,
-          y: 20
-        });
-        
-        // Add words to elements array
-        elementsToAnimate.push(...words);
-      }
+      // Set initial state for words
+      gsap.set(words, {
+        opacity: 0.2,
+        y: 20
+      });
       
-      // Handle about-p elements
-      if (aboutParagraphs.length > 0) {
-        // Set initial state for paragraphs
-        gsap.set(aboutParagraphs, {
-          opacity: 0,
-          y: 20
-        });
-        
-        // Add paragraphs to elements array
-        elementsToAnimate.push(...aboutParagraphs);
-      }
-      
-      // Create the scroll-triggered animation for all elements
-      gsap.to(elementsToAnimate, {
+      // Create the scroll-triggered animation
+      gsap.to(words, {
         scrollTrigger: {
-          trigger: textElement || aboutParagraphs[0],
+          trigger: textElement,
           start: 'top 80%',
           end: 'top 20%',
           scrub: 0.5,
