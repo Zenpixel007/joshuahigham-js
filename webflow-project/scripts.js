@@ -725,7 +725,7 @@ function initGsapAnimations() {
         opacity: 1,
         y: 0,
         stagger: {
-          amount: 0.5,
+          amount: 2,
           from: 'start'
         },
         ease: 'power2.out'
