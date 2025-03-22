@@ -705,7 +705,7 @@ function initGsapAnimations() {
       if (aboutParagraphs.length > 0) {
         // Set initial state for paragraphs
         gsap.set(aboutParagraphs, {
-          opacity: 0.2,
+          opacity: 0,
           y: 20
         });
         
