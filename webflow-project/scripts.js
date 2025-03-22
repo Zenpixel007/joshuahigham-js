@@ -4,6 +4,9 @@
 //This is a test to see if it is conected to the webflow project
 console.log("checking if connected");
 
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
+
 // Function to load Swiper CSS
 function loadSwiperCSS() {
   return new Promise((resolve, reject) => {
@@ -1134,8 +1137,30 @@ function reinitializeWebflowInteractions() {
 
 // When the DOM is ready, initialize everything
 document.addEventListener("DOMContentLoaded", function () {
-  // Initialize Swiper
-  initSwiper();
+  // Initialize GSAP animations first
+  initGsapAnimations();
+  initCustomCursor();
+
+  // Initialize Swiper and Rive with proper timing
+  if (document.querySelector('.wb-swiper')) {
+    // Small delay to ensure DOM is fully ready
+    setTimeout(async () => {
+      try {
+        // Initialize Swiper first
+        const swiper = await initSwiper();
+        
+        // Only initialize Rive after Swiper is ready
+        if (swiper) {
+          await initRive();
+          
+          // Refresh ScrollTrigger after both are initialized
+          ScrollTrigger.refresh(true);
+        }
+      } catch (error) {
+        console.error('Error initializing components:', error);
+      }
+    }, 100);
+  }
 
   // Function to handle email link copying
   const emailLink = document.getElementById('email-link');
@@ -1171,19 +1196,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-  }
-
-  // Initialize GSAP animations for the first page load
-  initGsapAnimations();
-  initCustomCursor();
-
-  // Initialize components for first page load
-  if (document.querySelector('.wb-swiper')) {
-    setTimeout(async () => {
-      const swiper = await initSwiper();
-      if (swiper) {
-        await initRive();
-      }
-    }, 100);
   }
 });
