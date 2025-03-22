@@ -460,144 +460,9 @@ function loadRiveScript() {
   });
 }
 
-// Initialize Rive animation
-async function initRive() {
-  try {
-    // Load Rive script first
-    await loadRiveScript();
-    
-    console.log("Attempting to initialize Rive...");
-    const canvas = document.getElementById('rive-canvas');
-    
-    if (!canvas) {
-      console.warn('Rive canvas element not found');
-      return;
-    }
-    console.log("Canvas found, setting up dimensions...");
-
-    // Set canvas size to match container
-    const container = canvas.parentElement;
-    
-    // Function to update canvas size
-    const updateCanvasSize = () => {
-      // Set canvas size to match container dimensions
-      canvas.width = 2000;
-      canvas.height = 237;
-      
-      // Update container size to match and center it
-      container.style.width = '100%';
-      container.style.height = '237px';
-      container.style.display = 'flex';
-      container.style.justifyContent = 'center';
-      container.style.alignItems = 'center';
-      container.style.overflow = 'hidden';
-    };
-    
-    // Initial size setup
-    updateCanvasSize();
-
-    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbf8c5ba7b3233ad825130_fuckingwork.riv';
-    
-    // Create new Rive instance using the current API
-    let riveInstance = new rive.Rive({
-      src: riveURL,
-      canvas: canvas,
-      artboard: 'Desktop',
-      stateMachines: ['State Machine 1'],
-      autoplay: true,
-      layout: new rive.Layout({
-        fit: rive.Fit.contain,
-        alignment: rive.Alignment.center,
-      }),
-      onLoad: () => {
-        console.log('Rive animation loaded successfully');
-        updateCanvasSize();
-        
-        if (riveInstance && window.swiperInstance) {
-          // Get the state machine
-          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
-          
-          // Function to restart Rive animation with debouncing
-          let restartTimeout;
-          const restartRiveAnimation = () => {
-            clearTimeout(restartTimeout);
-            restartTimeout = setTimeout(() => {
-              console.log('Restarting Rive animation');
-              riveInstance.stop();
-              riveInstance.reset();
-              riveInstance.play();
-              
-              if (stateMachine) {
-                stateMachine.forEach(input => {
-                  if (input.type === rive.StateMachineInputType.Trigger) {
-                    input.fire();
-                  }
-                });
-              }
-            }, 50);
-          };
-
-          // Start initial animation
-          restartRiveAnimation();
-          
-          // Set up event listeners for Swiper with proper timing
-          window.swiperInstance.on('slideChangeTransitionStart', () => {
-            riveInstance.stop();
-          });
-          
-          window.swiperInstance.on('slideChangeTransitionEnd', restartRiveAnimation);
-          
-          window.swiperInstance.on('autoplayStart', restartRiveAnimation);
-          window.swiperInstance.on('autoplayStop', () => {
-            console.log('Stopping Rive animation');
-            riveInstance.stop();
-          });
-        }
-      },
-      onError: (err) => {
-        console.error('Error loading Rive animation:', err);
-      }
-    });
-
-    // Handle window resize
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      updateCanvasSize();
-      
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        if (riveInstance) {
-          riveInstance.layout = new rive.Layout({
-            fit: rive.Fit.contain,
-            alignment: rive.Alignment.center,
-          });
-          
-          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
-          if (stateMachine) {
-            stateMachine.forEach(input => {
-              if (input.type === rive.StateMachineInputType.Trigger) {
-                input.fire();
-              }
-            });
-          }
-          riveInstance.play();
-        }
-      }, 250);
-    });
-
-    console.log('Rive instance created successfully');
-    return riveInstance;
-  } catch (error) {
-    console.error('Failed to initialize Rive:', error);
-  }
-}
-
 // When the DOM is ready, initialize Rive
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM loaded, initializing Rive...");
-  setTimeout(() => {
-    initRive();
-  }, 100); // Small delay to ensure everything is ready
 });
 
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
@@ -1194,3 +1059,179 @@ document.addEventListener("DOMContentLoaded", function () {
   initGsapAnimations();
   initCustomCursor();
 });
+
+// Update the Rive initialization function
+async function initRive() {
+  try {
+    // Load Rive script first
+    await loadRiveScript();
+    
+    console.log("Attempting to initialize Rive...");
+    const canvas = document.getElementById('rive-canvas');
+    
+    if (!canvas) {
+      console.warn('Rive canvas element not found');
+      return;
+    }
+    console.log("Canvas found, setting up dimensions...");
+
+    // Set canvas size to match container
+    const container = canvas.parentElement;
+    
+    // Function to update canvas size
+    const updateCanvasSize = () => {
+      // Set canvas size to match container dimensions
+      canvas.width = 2000;
+      canvas.height = 237;
+      
+      // Update container size to match and center it
+      container.style.width = '100%';
+      container.style.height = '237px';
+      container.style.display = 'flex';
+      container.style.justifyContent = 'center';
+      container.style.alignItems = 'center';
+      container.style.overflow = 'hidden';
+    };
+    
+    // Initial size setup
+    updateCanvasSize();
+
+    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbf8c5ba7b3233ad825130_fuckingwork.riv';
+    
+    // Create new Rive instance using the current API
+    let riveInstance = new rive.Rive({
+      src: riveURL,
+      canvas: canvas,
+      artboard: 'Desktop',
+      stateMachines: ['State Machine 1'],
+      autoplay: true,
+      layout: new rive.Layout({
+        fit: rive.Fit.contain,
+        alignment: rive.Alignment.center,
+      }),
+      onLoad: () => {
+        console.log('Rive animation loaded successfully');
+        updateCanvasSize();
+        
+        if (riveInstance && window.swiperInstance) {
+          // Get the state machine
+          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+          
+          // Function to restart Rive animation with proper timing
+          const restartRiveAnimation = () => {
+            console.log('Restarting Rive animation');
+            riveInstance.stop();
+            riveInstance.reset();
+            
+            // Small delay to ensure clean restart
+            setTimeout(() => {
+              riveInstance.play();
+              
+              if (stateMachine) {
+                stateMachine.forEach(input => {
+                  if (input.type === rive.StateMachineInputType.Trigger) {
+                    input.fire();
+                  }
+                });
+              }
+            }, 50);
+          };
+
+          // Start initial animation
+          restartRiveAnimation();
+          
+          // Set up event listeners for Swiper with proper timing
+          window.swiperInstance.on('slideChangeTransitionStart', () => {
+            console.log('Slide change starting, stopping Rive');
+            riveInstance.stop();
+          });
+          
+          window.swiperInstance.on('slideChangeTransitionEnd', () => {
+            console.log('Slide change complete, restarting Rive');
+            restartRiveAnimation();
+          });
+          
+          window.swiperInstance.on('autoplayStart', () => {
+            console.log('Autoplay starting, restarting Rive');
+            restartRiveAnimation();
+          });
+          
+          window.swiperInstance.on('autoplayStop', () => {
+            console.log('Autoplay stopping, stopping Rive');
+            riveInstance.stop();
+          });
+
+          // Sync red blur animation with Rive
+          const redBlur = document.getElementById('red-blur');
+          if (redBlur) {
+            const swiperDelay = window.swiperInstance.params.autoplay.delay / 1000;
+            const firstScaleTime = swiperDelay * 0.4875;
+            const secondScaleTime = swiperDelay * 0.8175;
+            
+            // Create a timeline for the red blur animation
+            const redBlurTl = gsap.timeline({
+              repeat: -1,
+              repeatDelay: swiperDelay - 1 // Adjust timing to match Swiper delay
+            });
+            
+            redBlurTl
+              .to(redBlur, {
+                scale: 1.1,
+                duration: 0.2,
+                ease: "power2.out"
+              }, firstScaleTime)
+              .to(redBlur, {
+                scale: 1,
+                duration: 0.2,
+                ease: "power2.out"
+              })
+              .to(redBlur, {
+                scale: 1.15,
+                duration: 0.2,
+                ease: "power2.out"
+              }, secondScaleTime)
+              .to(redBlur, {
+                scale: 1,
+                duration: 0.2,
+                ease: "power2.out"
+              });
+          }
+        }
+      },
+      onError: (err) => {
+        console.error('Error loading Rive animation:', err);
+      }
+    });
+
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      updateCanvasSize();
+      
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (riveInstance) {
+          riveInstance.layout = new rive.Layout({
+            fit: rive.Fit.contain,
+            alignment: rive.Alignment.center,
+          });
+          
+          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+          if (stateMachine) {
+            stateMachine.forEach(input => {
+              if (input.type === rive.StateMachineInputType.Trigger) {
+                input.fire();
+              }
+            });
+          }
+          riveInstance.play();
+        }
+      }, 250);
+    });
+
+    console.log('Rive instance created successfully');
+    return riveInstance;
+  } catch (error) {
+    console.error('Failed to initialize Rive:', error);
+  }
+}
