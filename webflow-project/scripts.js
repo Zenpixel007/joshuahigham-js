@@ -656,9 +656,59 @@ function initCustomCursor() {
   }
 }
 
+// Function to load SplitType
+function loadSplitType() {
+  return new Promise((resolve, reject) => {
+    if (window.SplitType) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/split-type';
+    script.onload = resolve;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
 function initGsapAnimations() {
   // Kill all ScrollTrigger instances before creating new ones
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+  // Text Animation with SplitType
+  const textElement = document.querySelector('#text-animate');
+  if (textElement) {
+    loadSplitType().then(() => {
+      // Split the text into characters
+      const splitText = new SplitType(textElement, { types: 'chars' });
+      const chars = splitText.chars;
+      
+      // Set initial state
+      gsap.set(chars, {
+        opacity: 0.2,
+        y: 20
+      });
+      
+      // Create the scroll-triggered animation
+      gsap.to(chars, {
+        scrollTrigger: {
+          trigger: textElement,
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: 0.5,
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 1,
+        y: 0,
+        stagger: {
+          amount: 0.5,
+          from: 'start'
+        },
+        ease: 'power2.out'
+      });
+    }).catch(error => console.error('Failed to load SplitType:', error));
+  }
 
   // Homepage Hero Animation
   if (document.querySelector('.greeting-wrapper')) {
