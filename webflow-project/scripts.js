@@ -1203,6 +1203,7 @@ document.addEventListener("DOMContentLoaded", function () {
         to: {
           namespace: ["*"]
         },
+        sync: true,
         async leave(data) {
           // Store current scroll position
           const scrollPos = window.scrollY;
@@ -1276,15 +1277,6 @@ document.addEventListener("DOMContentLoaded", function () {
           ScrollTrigger.refresh();
           initGsapAnimations();
           initCustomCursor();
-        },
-        async once(data) {
-          // Simplified once animation for homepage
-          ScrollTrigger.refresh();
-          initGsapAnimations();
-          initCustomCursor();
-          if (data.next.namespace === 'home') {
-            await initSwiper();
-          }
         }
       }
     ],
