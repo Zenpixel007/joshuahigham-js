@@ -463,6 +463,9 @@ function loadRiveScript() {
 // When the DOM is ready, initialize Rive
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM loaded, initializing Rive...");
+  setTimeout(() => {
+    initRive();
+  }, 100); // Small delay to ensure everything is ready
 });
 
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
@@ -1060,7 +1063,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initCustomCursor();
 });
 
-// Update the Rive initialization function
+// Initialize Rive animation
 async function initRive() {
   try {
     // Load Rive script first
@@ -1117,14 +1120,14 @@ async function initRive() {
           // Get the state machine
           const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
           
-          // Function to restart Rive animation with proper timing
+          // Function to restart Rive animation with debouncing
+          let restartTimeout;
           const restartRiveAnimation = () => {
-            console.log('Restarting Rive animation');
-            riveInstance.stop();
-            riveInstance.reset();
-            
-            // Small delay to ensure clean restart
-            setTimeout(() => {
+            clearTimeout(restartTimeout);
+            restartTimeout = setTimeout(() => {
+              console.log('Restarting Rive animation');
+              riveInstance.stop();
+              riveInstance.reset();
               riveInstance.play();
               
               if (stateMachine) {
@@ -1142,60 +1145,16 @@ async function initRive() {
           
           // Set up event listeners for Swiper with proper timing
           window.swiperInstance.on('slideChangeTransitionStart', () => {
-            console.log('Slide change starting, stopping Rive');
             riveInstance.stop();
           });
           
-          window.swiperInstance.on('slideChangeTransitionEnd', () => {
-            console.log('Slide change complete, restarting Rive');
-            restartRiveAnimation();
-          });
+          window.swiperInstance.on('slideChangeTransitionEnd', restartRiveAnimation);
           
-          window.swiperInstance.on('autoplayStart', () => {
-            console.log('Autoplay starting, restarting Rive');
-            restartRiveAnimation();
-          });
-          
+          window.swiperInstance.on('autoplayStart', restartRiveAnimation);
           window.swiperInstance.on('autoplayStop', () => {
-            console.log('Autoplay stopping, stopping Rive');
+            console.log('Stopping Rive animation');
             riveInstance.stop();
           });
-
-          // Sync red blur animation with Rive
-          const redBlur = document.getElementById('red-blur');
-          if (redBlur) {
-            const swiperDelay = window.swiperInstance.params.autoplay.delay / 1000;
-            const firstScaleTime = swiperDelay * 0.4875;
-            const secondScaleTime = swiperDelay * 0.8175;
-            
-            // Create a timeline for the red blur animation
-            const redBlurTl = gsap.timeline({
-              repeat: -1,
-              repeatDelay: swiperDelay - 1 // Adjust timing to match Swiper delay
-            });
-            
-            redBlurTl
-              .to(redBlur, {
-                scale: 1.1,
-                duration: 0.2,
-                ease: "power2.out"
-              }, firstScaleTime)
-              .to(redBlur, {
-                scale: 1,
-                duration: 0.2,
-                ease: "power2.out"
-              })
-              .to(redBlur, {
-                scale: 1.15,
-                duration: 0.2,
-                ease: "power2.out"
-              }, secondScaleTime)
-              .to(redBlur, {
-                scale: 1,
-                duration: 0.2,
-                ease: "power2.out"
-              });
-          }
         }
       },
       onError: (err) => {
