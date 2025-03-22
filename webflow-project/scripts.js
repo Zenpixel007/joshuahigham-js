@@ -460,6 +460,150 @@ function loadRiveScript() {
   });
 }
 
+// Initialize Rive animation
+async function initRive() {
+  try {
+    // Load Rive script first
+    await loadRiveScript();
+    
+    console.log("Attempting to initialize Rive...");
+    const canvas = document.getElementById('rive-canvas');
+    
+    if (!canvas) {
+      console.warn('Rive canvas element not found');
+      return;
+    }
+    console.log("Canvas found, setting up dimensions...");
+
+    // Set canvas size to match container
+    const container = canvas.parentElement;
+    
+    // Function to update canvas size
+    const updateCanvasSize = () => {
+      // Set canvas size to match container dimensions
+      canvas.width = 2000;
+      canvas.height = 237;
+      
+      // Update container size to match and center it
+      container.style.width = '100%';
+      container.style.height = '237px';
+      container.style.display = 'flex';
+      container.style.justifyContent = 'center';
+      container.style.alignItems = 'center';
+      container.style.overflow = 'hidden';
+    };
+    
+    // Initial size setup
+    updateCanvasSize();
+
+    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbf8c5ba7b3233ad825130_fuckingwork.riv';
+    
+    // Create new Rive instance using the current API
+    let riveInstance = new rive.Rive({
+      src: riveURL,
+      canvas: canvas,
+      artboard: 'Desktop',
+      stateMachines: ['State Machine 1'],
+      autoplay: true, // Enable autoplay
+      layout: new rive.Layout({
+        fit: rive.Fit.contain,
+        alignment: rive.Alignment.center,
+      }),
+      onLoad: () => {
+        console.log('Rive animation loaded successfully');
+        updateCanvasSize(); // Ensure correct size after loading
+        
+        // Ensure animation starts playing
+        if (riveInstance) {
+          // Get the state machine
+          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+          if (stateMachine) {
+            // Start the state machine
+            stateMachine.forEach(input => {
+              if (input.type === rive.StateMachineInputType.Trigger) {
+                input.fire();
+              }
+            });
+          }
+          
+          // Start the animation and sync with Swiper
+          if (window.swiperInstance) {
+            // Function to restart Rive animation
+            const restartRiveAnimation = () => {
+              console.log('Restarting Rive animation');
+              riveInstance.stop();
+              // Small delay to ensure clean restart
+              setTimeout(() => {
+                // Reset the animation to the beginning
+                riveInstance.reset();
+                // Start playing
+                riveInstance.play();
+                // Fire the state machine trigger again
+                if (stateMachine) {
+                  stateMachine.forEach(input => {
+                    if (input.type === rive.StateMachineInputType.Trigger) {
+                      input.fire();
+                    }
+                  });
+                }
+              }, 50);
+            };
+
+            // Start initial animation
+            restartRiveAnimation();
+            
+            // Set up event listeners for Swiper
+            window.swiperInstance.on('slideChange', restartRiveAnimation);
+            window.swiperInstance.on('slideChangeTransitionStart', restartRiveAnimation);
+            window.swiperInstance.on('autoplayStart', restartRiveAnimation);
+            window.swiperInstance.on('autoplayStop', () => {
+              console.log('Stopping Rive animation');
+              riveInstance.stop();
+            });
+          }
+        }
+      },
+      onError: (err) => {
+        console.error('Error loading Rive animation:', err);
+      }
+    });
+
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      updateCanvasSize();
+      
+      // Debounce the resize event
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (riveInstance) {
+          // Update layout
+          riveInstance.layout = new rive.Layout({
+            fit: rive.Fit.contain,
+            alignment: rive.Alignment.center,
+          });
+          
+          // Ensure animation is playing after resize
+          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
+          if (stateMachine) {
+            stateMachine.forEach(input => {
+              if (input.type === rive.StateMachineInputType.Trigger) {
+                input.fire();
+              }
+            });
+          }
+          riveInstance.play();
+        }
+      }, 250); // Wait for 250ms after last resize event
+    });
+
+    console.log('Rive instance created successfully');
+    return riveInstance;
+  } catch (error) {
+    console.error('Failed to initialize Rive:', error);
+  }
+}
+
 // When the DOM is ready, initialize Rive
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM loaded, initializing Rive...");
@@ -534,21 +678,20 @@ function initGsapAnimations() {
 
   // Text Animation with SplitType
   const textElement = document.querySelector('#text-animate');
-  
   if (textElement) {
     loadSplitType().then(() => {
-      // Split the text into words
-      const splitText = new SplitType(textElement, { types: 'words' });
-      const words = splitText.words;
+      // Split the text into characters
+      const splitText = new SplitType(textElement, { types: 'chars' });
+      const chars = splitText.chars;
       
-      // Set initial state for words
-      gsap.set(words, {
+      // Set initial state
+      gsap.set(chars, {
         opacity: 0.2,
         y: 20
       });
       
       // Create the scroll-triggered animation
-      gsap.to(words, {
+      gsap.to(chars, {
         scrollTrigger: {
           trigger: textElement,
           start: 'top 80%',
@@ -1003,24 +1146,8 @@ function reinitializeWebflowInteractions() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Initialize components for first page load
-  if (document.querySelector('.wb-swiper')) {
-    // Single initialization with proper sequencing
-    setTimeout(async () => {
-      try {
-        // Initialize Swiper first
-        const swiper = await initSwiper();
-        if (swiper) {
-          // Wait for Swiper to be fully ready
-          await new Promise(resolve => setTimeout(resolve, 500));
-          // Then initialize Rive
-          await initRive();
-        }
-      } catch (error) {
-        console.error('Failed to initialize components:', error);
-      }
-    }, 100);
-  }
+  // Initialize Swiper
+  initSwiper();
 
   // Function to handle email link copying
   const emailLink = document.getElementById('email-link');
@@ -1061,136 +1188,384 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize GSAP animations for the first page load
   initGsapAnimations();
   initCustomCursor();
-});
 
-// Initialize Rive animation
-async function initRive() {
-  try {
-    // Load Rive script first
-    await loadRiveScript();
-    
-    console.log("Attempting to initialize Rive...");
-    const canvas = document.getElementById('rive-canvas');
-    
-    if (!canvas) {
-      console.warn('Rive canvas element not found');
-      return;
-    }
-    console.log("Canvas found, setting up dimensions...");
+  // Initialize Barba
+  barba.init({
+    debug: true,
+    preventRunning: true,
+    transitions: [
+      {
+        name: "contact-transition",
+        to: {
+          namespace: ["contact"]
+        },
+        priority: 2,
+        async leave(data) {
+          // Create and append the transition circle if it doesn't exist
+          let transitionCircle = document.querySelector('.transition-circle');
+          if (!transitionCircle) {
+            transitionCircle = document.createElement('div');
+            transitionCircle.className = 'transition-circle';
+            document.body.appendChild(transitionCircle);
+            
+            // Add styles to the circle
+            gsap.set(transitionCircle, {
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              backgroundColor: '#FF0000',
+              transform: 'translate(-50%, -50%) scale(0)',
+              zIndex: 9999
+            });
+          }
 
-    // Set canvas size to match container
-    const container = canvas.parentElement;
-    
-    // Function to update canvas size
-    const updateCanvasSize = () => {
-      // Set canvas size to match container dimensions
-      canvas.width = 2000;
-      canvas.height = 237;
-      
-      // Update container size to match and center it
-      container.style.width = '100%';
-      container.style.height = '237px';
-      container.style.display = 'flex';
-      container.style.justifyContent = 'center';
-      container.style.alignItems = 'center';
-      container.style.overflow = 'hidden';
-    };
-    
-    // Initial size setup
-    updateCanvasSize();
-
-    const riveURL = 'https://cdn.prod.website-files.com/67a1da359110aff234167390/67dbf8c5ba7b3233ad825130_fuckingwork.riv';
-    
-    // Create new Rive instance using the current API
-    let riveInstance = new rive.Rive({
-      src: riveURL,
-      canvas: canvas,
-      artboard: 'Desktop',
-      stateMachines: ['State Machine 1'],
-      autoplay: true,
-      layout: new rive.Layout({
-        fit: rive.Fit.contain,
-        alignment: rive.Alignment.center,
-      }),
-      onLoad: () => {
-        console.log('Rive animation loaded successfully');
-        updateCanvasSize();
-        
-        if (riveInstance && window.swiperInstance) {
-          // Get the state machine
-          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
-          
-          // Function to restart Rive animation with debouncing
-          let restartTimeout;
-          const restartRiveAnimation = () => {
-            clearTimeout(restartTimeout);
-            restartTimeout = setTimeout(() => {
-              console.log('Restarting Rive animation');
-              riveInstance.stop();
-              riveInstance.reset();
-              riveInstance.play();
-              
-              if (stateMachine) {
-                stateMachine.forEach(input => {
-                  if (input.type === rive.StateMachineInputType.Trigger) {
-                    input.fire();
-                  }
-                });
-              }
-            }, 50);
-          };
-
-          // Start initial animation
-          restartRiveAnimation();
-          
-          // Set up event listeners for Swiper with proper timing
-          window.swiperInstance.on('slideChangeTransitionStart', () => {
-            riveInstance.stop();
+          // Store current scroll position and fix the container
+          const scrollPos = window.scrollY;
+          gsap.set(data.current.container, {
+            position: 'fixed',
+            width: '100%',
+            top: -scrollPos,
+            left: 0
           });
+
+          // Prevent scroll during transition
+          document.body.style.overflow = 'hidden';
+
+          // Create the leave animation timeline
+          const tl = gsap.timeline();
           
-          window.swiperInstance.on('slideChangeTransitionEnd', restartRiveAnimation);
+          // Scale up the circle to cover the screen
+          await tl.to(transitionCircle, {
+            scale: 100,
+            duration: 1,
+            ease: "power2.inOut"
+          });
+        },
+        async enter(data) {
+          const transitionCircle = document.querySelector('.transition-circle');
           
-          window.swiperInstance.on('autoplayStart', restartRiveAnimation);
-          window.swiperInstance.on('autoplayStop', () => {
-            console.log('Stopping Rive animation');
-            riveInstance.stop();
+          // Prepare new page
+          gsap.set(data.next.container, {
+            position: 'fixed',
+            top: '0',
+            left: 0,
+            width: '100%',
+            opacity: 0,
+            zIndex: 1
+          });
+
+          // Create enter animation timeline
+          const tl = gsap.timeline();
+
+          // Fade in the new content
+          tl.to(data.next.container, {
+            opacity: 1,
+            duration: 0.5
+          });
+
+          // Clean up the transition
+          tl.to(transitionCircle, {
+            opacity: 0,
+            duration: 0.3,
+            onComplete: () => {
+              // Remove the transition circle
+              transitionCircle.remove();
+              
+              // Reset container properties
+              gsap.set([data.current.container, data.next.container], {
+                clearProps: 'all'
+              });
+              
+              // Re-enable scrolling
+              document.body.style.overflow = '';
+              
+              // Ensure we're at top of new page
+              window.scrollTo(0, 0);
+              
+              // Refresh ScrollTrigger and reinitialize animations
+              ScrollTrigger.refresh();
+              initGsapAnimations();
+              initCustomCursor();
+            }
           });
         }
       },
-      onError: (err) => {
-        console.error('Error loading Rive animation:', err);
-      }
-    });
-
-    // Handle window resize
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      updateCanvasSize();
-      
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        if (riveInstance) {
-          riveInstance.layout = new rive.Layout({
-            fit: rive.Fit.contain,
-            alignment: rive.Alignment.center,
+      {
+        name: "work-to-project",
+        from: {
+          namespace: ["home", "work"]
+        },
+        to: {
+          namespace: ["project"]
+        },
+        custom: ({ trigger }) => {
+          return trigger && trigger.classList && trigger.classList.contains('work_item');
+        },
+        async leave(data) {
+          const clickedItem = data.trigger;
+          const allWorkItems = document.querySelectorAll('.work_item');
+          
+          // Get the clicked item's position and dimensions
+          const rect = clickedItem.getBoundingClientRect();
+          const viewportCenter = {
+            x: window.innerWidth / 2 - rect.width / 2,
+            y: window.innerHeight / 2 - rect.height / 2
+          };
+          
+          // Calculate the transform needed to center the clicked item
+          const moveX = viewportCenter.x - rect.left;
+          const moveY = viewportCenter.y - rect.top;
+          
+          // Create timeline for the transition
+          const tl = gsap.timeline();
+          
+          // Fade out all other work items
+          tl.to([...allWorkItems].filter(item => item !== clickedItem), {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.inOut"
           });
           
-          const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
-          if (stateMachine) {
-            stateMachine.forEach(input => {
-              if (input.type === rive.StateMachineInputType.Trigger) {
-                input.fire();
-              }
-            });
-          }
-          riveInstance.play();
+          // Move clicked item to center and scale it up
+          tl.to(clickedItem, {
+            x: moveX,
+            y: moveY,
+            scale: 1.2,
+            duration: 0.8,
+            ease: "power2.inOut"
+          }, "-=0.3");
+          
+          // Fade out the centered item
+          tl.to(clickedItem, {
+            opacity: 0,
+            duration: 0.3,
+            ease: "power2.inOut"
+          });
+          
+          await tl;
+          
+          // Set up for slide-over transition
+          gsap.set(data.current.container, {
+            position: 'fixed',
+            width: '100%',
+            top: -window.scrollY,
+            left: 0
+          });
+          
+          document.body.style.overflow = 'hidden';
+        },
+        async enter(data) {
+          // Prepare new page to slide in from bottom
+          gsap.set(data.next.container, {
+            position: 'fixed',
+            top: '100%',
+            left: 0,
+            width: '100%',
+            zIndex: 10,
+            visibility: 'visible'
+          });
+          
+          // Slide new page up
+          await gsap.to(data.next.container, {
+            duration: 0.8,
+            top: '0%',
+            ease: "power3.inOut"
+          });
+          
+          // Reset container properties
+          gsap.set([data.current.container, data.next.container], {
+            clearProps: 'all'
+          });
+          
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+          
+          // Ensure we're at top of new page
+          window.scrollTo(0, 0);
+          
+          ScrollTrigger.refresh();
+          initGsapAnimations();
+          initCustomCursor();
         }
-      }, 250);
-    });
+      },
+      {
+        name: "slide-over",
+        priority: 1,
+        from: {
+          namespace: ["home", "work", "project", "contact"]
+        },
+        to: {
+          namespace: ["slide-over", "home"]  // Add "home" to handle transitions to homepage
+        },
+        async leave(data) {
+          // Store current scroll position
+          const scrollPos = window.scrollY;
+          
+          // Keep current page fixed in place
+          gsap.set(data.current.container, {
+            position: 'fixed',
+            width: '100%',
+            top: -scrollPos,
+            left: 0
+          });
+          
+          // Prevent scroll during transition
+          document.body.style.overflow = 'hidden';
+          
+          return gsap.to(data.current.container, {
+            duration: 0,
+            opacity: 1
+          });
+        },
+        async enter(data) {
+          // Force the next container to start at top
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          
+          // Set initial states for hero elements in the new page
+          gsap.set([".hero-box", ".fade-in"], {
+            opacity: 0,
+            y: 50
+          });
+          
+          // Prepare new page to slide in from bottom
+          gsap.set(data.next.container, {
+            position: 'fixed',
+            top: '100%',
+            left: 0,
+            width: '100%',
+            zIndex: 10,
+            visibility: 'visible'
+          });
+          
+          // Slide new page up
+          await gsap.to(data.next.container, {
+            duration: 0.8,
+            top: '0%',
+            ease: "power3.inOut"
+          });
 
-    console.log('Rive instance created successfully');
-    return riveInstance;
-  } catch (error) {
-    console.error('Failed to initialize Rive:', error);
+          // Reset container properties and scroll behavior
+          gsap.set([data.current.container, data.next.container], {
+            clearProps: 'all'
+          });
+          
+          // Re-enable scrolling
+          document.body.style.overflow = '';
+          
+          // Ensure we stay at top of new page
+          window.scrollTo(0, 0);
+          
+          // Initialize Swiper if we're on the homepage
+          if (data.next.namespace === 'home') {
+            // Small delay to ensure DOM is ready
+            setTimeout(async () => {
+              await initSwiper();
+              // After Swiper is initialized, refresh ScrollTrigger
+              ScrollTrigger.refresh();
+            }, 100);
+          }
+          
+          ScrollTrigger.refresh();
+          initGsapAnimations();
+          initCustomCursor();
+        },
+        async once(data) {
+          // Simplified once animation for homepage
+          ScrollTrigger.refresh();
+          initGsapAnimations();
+          initCustomCursor();
+          if (data.next.namespace === 'home') {
+            await initSwiper();
+          }
+        }
+      }
+    ],
+    views: [
+      {
+        namespace: '*',
+        beforeEnter(data) {
+          // Kill all existing ScrollTrigger instances
+          ScrollTrigger.getAll().forEach(st => st.kill());
+          
+          // Kill all GSAP animations
+          gsap.killTweensOf("*");
+          
+          // Initialize new animations
+          initGsapAnimations();
+          initCustomCursor();
+          
+          // Scroll to top
+          window.scrollTo(0, 0);
+        }
+      }
+    ]
+  });
+
+  // Additional Barba hooks for proper cleanup and initialization
+  barba.hooks.beforeLeave(() => {
+    // Kill all ScrollTrigger instances before leaving
+    ScrollTrigger.getAll().forEach(st => st.kill());
+    gsap.killTweensOf("*");
+  });
+
+  barba.hooks.after(async (data) => {
+    // Re-enable scrolling
+    document.body.style.overflow = '';
+    
+    // Ensure we're at top of page
+    window.scrollTo(0, 0);
+    
+    // Initialize components based on namespace
+    if (data.next.namespace === 'home') {
+      // Small delay to ensure DOM is ready
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Initialize Swiper first
+      const swiper = await initSwiper();
+      
+      // Only initialize Rive after Swiper is ready
+      if (swiper) {
+        await initRive();
+      }
+      
+      // After both are initialized, refresh ScrollTrigger
+      ScrollTrigger.refresh(true);
+    } else {
+      // For other pages, just refresh ScrollTrigger
+      ScrollTrigger.refresh(true);
+    }
+    
+    initGsapAnimations();
+    initCustomCursor();
+    
+    // Reinitialize Webflow interactions
+    reinitializeWebflowInteractions();
+  });
+
+  // Remove individual reinitializations from transition enter functions
+  const transitions = barba.transitions;
+  transitions.forEach(transition => {
+    if (transition.enter) {
+      const originalEnter = transition.enter;
+      transition.enter = async function(data) {
+        await originalEnter.call(this, data);
+        // Don't reinitialize here as it's handled by hooks
+      };
+    }
+  });
+
+  // Initialize components for first page load
+  if (document.querySelector('.wb-swiper')) {
+    setTimeout(async () => {
+      const swiper = await initSwiper();
+      if (swiper) {
+        await initRive();
+      }
+    }, 100);
   }
-}
+});
