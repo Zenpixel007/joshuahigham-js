@@ -1342,18 +1342,6 @@ document.addEventListener("DOMContentLoaded", function () {
     reinitializeWebflowInteractions();
   });
 
-  // Remove individual reinitializations from transition enter functions
-  const transitions = barba.transitions;
-  transitions.forEach(transition => {
-    if (transition.enter) {
-      const originalEnter = transition.enter;
-      transition.enter = async function(data) {
-        await originalEnter.call(this, data);
-        // Don't reinitialize here as it's handled by hooks
-      };
-    }
-  });
-
   // Initialize components for first page load
   if (document.querySelector('.wb-swiper')) {
     setTimeout(async () => {
