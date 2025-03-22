@@ -463,9 +463,6 @@ function loadRiveScript() {
 // When the DOM is ready, initialize Rive
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOM loaded, initializing Rive...");
-  setTimeout(() => {
-    initRive();
-  }, 100); // Small delay to ensure everything is ready
 });
 
 // 1. Register the ScrollTrigger plugin (only needs to be done once in your script).
