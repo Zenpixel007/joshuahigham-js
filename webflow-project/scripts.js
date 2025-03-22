@@ -686,19 +686,10 @@ function initGsapAnimations() {
       
       // Get the container that has the 100vh height
       const container = document.querySelector('.about-heading-container');
-      const headingWrapper = document.querySelector('.hero-about_heading');
       
-      if (!container || !headingWrapper) return;
+      if (!container) return;
       
-      // Set initial state for the wrapper and chars
-      gsap.set(headingWrapper, {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        xPercent: -50,
-        yPercent: -50
-      });
-      
+      // Set initial state for the chars
       gsap.set(chars, {
         opacity: 0.2,
         y: 20
@@ -710,7 +701,7 @@ function initGsapAnimations() {
           trigger: container,
           start: 'top top',
           end: 'bottom top',
-          pin: headingWrapper,
+          pin: textElement,
           pinSpacing: true,
           scrub: 1,
           markers: false,
