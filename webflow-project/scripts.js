@@ -684,28 +684,56 @@ function initGsapAnimations() {
       const splitText = new SplitType(textElement, { types: 'chars' });
       const chars = splitText.chars;
       
-      // Set initial state
+      // Get the container that has the 100vh height
+      const container = document.querySelector('.about-heading-container');
+      const headingWrapper = document.querySelector('.hero-about_heading');
+      
+      if (!container || !headingWrapper) return;
+      
+      // Set initial state for the wrapper and chars
+      gsap.set(headingWrapper, {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        xPercent: -50,
+        yPercent: -50
+      });
+      
       gsap.set(chars, {
         opacity: 0.2,
         y: 20
       });
       
-      // Create the scroll-triggered animation
-      gsap.to(chars, {
+      // Create a timeline for the animation
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: textElement,
-          start: 'top 80%',
-          end: 'top 20%',
-          scrub: 0.5,
-          toggleActions: 'play none none reverse'
-        },
+          trigger: container,
+          start: 'top top',
+          end: 'bottom top',
+          pin: headingWrapper,
+          pinSpacing: true,
+          scrub: 1,
+          markers: false,
+          invalidateOnRefresh: true
+        }
+      });
+      
+      // Add the character animations to the timeline
+      tl.to(chars, {
         opacity: 1,
         y: 0,
         stagger: {
           amount: 0.5,
           from: 'start'
         },
-        ease: 'power2.out'
+        ease: 'none'
+      });
+
+      // Handle resize to ensure smooth animations
+      ScrollTrigger.addEventListener('refreshInit', () => {
+        // Refresh SplitType on resize to maintain proper layout
+        splitText.revert();
+        splitText.split();
       });
     }).catch(error => console.error('Failed to load SplitType:', error));
   }
