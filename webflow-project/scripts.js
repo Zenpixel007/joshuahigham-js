@@ -678,88 +678,36 @@ function initGsapAnimations() {
 
   // Text Animation with SplitType
   const textElement = document.querySelector('#text-animate');
-  console.log('Text element found:', textElement);
-  
   if (textElement) {
     loadSplitType().then(() => {
-      console.log('SplitType loaded successfully');
-      
       // Split the text into characters
       const splitText = new SplitType(textElement, { types: 'chars' });
       const chars = splitText.chars;
-      console.log('Characters split:', chars.length);
       
-      // Get the container that has the 100vh height
-      const container = document.querySelector('.about-heading-container');
-      console.log('Container found:', container);
-      
-      if (!container) {
-        console.warn('Container not found');
-        return;
-      }
-      
-      // Set initial state for the container and text element
-      gsap.set(container, {
-        position: 'relative',
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      });
-      
-      gsap.set(textElement, {
-        position: 'relative',
-        textAlign: 'center',
-        width: '100%'
-      });
-      
-      // Set initial state for the chars
+      // Set initial state
       gsap.set(chars, {
         opacity: 0.2,
         y: 20
       });
       
-      // Create a timeline for the animation
-      const tl = gsap.timeline({
+      // Create the scroll-triggered animation
+      gsap.to(chars, {
         scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: 'bottom top',
-          pin: textElement,
-          pinSpacing: true,
-          scrub: 1,
-          markers: false,
-          invalidateOnRefresh: true,
-          onEnter: () => console.log('ScrollTrigger entered'),
-          onLeave: () => console.log('ScrollTrigger left'),
-          onEnterBack: () => console.log('ScrollTrigger entered back'),
-          onLeaveBack: () => console.log('ScrollTrigger left back')
-        }
-      });
-      
-      // Add the character animations to the timeline
-      tl.to(chars, {
+          trigger: textElement,
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: 0.5,
+          toggleActions: 'play none none reverse'
+        },
         opacity: 1,
         y: 0,
         stagger: {
           amount: 0.5,
           from: 'start'
         },
-        ease: 'none'
-      });
-
-      console.log('Animation timeline created');
-
-      // Handle resize to ensure smooth animations
-      ScrollTrigger.addEventListener('refreshInit', () => {
-        console.log('Refreshing SplitType');
-        // Refresh SplitType on resize to maintain proper layout
-        splitText.revert();
-        splitText.split();
+        ease: 'power2.out'
       });
     }).catch(error => console.error('Failed to load SplitType:', error));
-  } else {
-    console.warn('Text element not found');
   }
 
   // Homepage Hero Animation
