@@ -680,18 +680,18 @@ function initGsapAnimations() {
   const textElement = document.querySelector('#text-animate');
   if (textElement) {
     loadSplitType().then(() => {
-      // Split the text into words instead of characters
-      const splitText = new SplitType(textElement, { types: 'words' });
-      const words = splitText.words;
+      // Split the text into characters
+      const splitText = new SplitType(textElement, { types: 'chars' });
+      const chars = splitText.chars;
       
       // Set initial state
-      gsap.set(words, {
+      gsap.set(chars, {
         opacity: 0.2,
         y: 20
       });
       
       // Create the scroll-triggered animation
-      gsap.to(words, {
+      gsap.to(chars, {
         scrollTrigger: {
           trigger: textElement,
           start: 'top 80%',
@@ -709,7 +709,6 @@ function initGsapAnimations() {
       });
     }).catch(error => console.error('Failed to load SplitType:', error));
   }
-}
 
   // Homepage Hero Animation
   if (document.querySelector('.greeting-wrapper')) {
