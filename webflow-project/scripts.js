@@ -684,44 +684,28 @@ function initGsapAnimations() {
       const splitText = new SplitType(textElement, { types: 'chars' });
       const chars = splitText.chars;
       
-      // Get the container that has the 100vh height
-      const scrollContainer = document.querySelector('.about-heading-container');
-      
-      if (!scrollContainer) return;
-      
       // Set initial state
       gsap.set(chars, {
         opacity: 0.2,
-        y: 20,
-        rotateX: 45
+        y: 20
       });
       
       // Create the scroll-triggered animation
       gsap.to(chars, {
         scrollTrigger: {
-          trigger: scrollContainer,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-          markers: false,
-          pin: false, // The parent already handles pinning
-          invalidateOnRefresh: true
+          trigger: textElement,
+          start: 'top 80%',
+          end: 'top 20%',
+          scrub: 0.5,
+          toggleActions: 'play none none reverse'
         },
         opacity: 1,
         y: 0,
-        rotateX: 0,
         stagger: {
-          amount: 0.3,
+          amount: 0.5,
           from: 'start'
         },
-        ease: 'none' // Using none for smoother scrubbing
-      });
-
-      // Handle resize to ensure smooth animations
-      ScrollTrigger.addEventListener('refreshInit', () => {
-        // Refresh SplitType on resize to maintain proper layout
-        splitText.revert();
-        splitText.split();
+        ease: 'power2.out'
       });
     }).catch(error => console.error('Failed to load SplitType:', error));
   }
