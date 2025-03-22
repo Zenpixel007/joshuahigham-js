@@ -1196,80 +1196,44 @@ document.addEventListener("DOMContentLoaded", function () {
     preventRunning: true,
     transitions: [
       {
-        name: "default-transition",
+        name: "fade-transition",
         from: {
           namespace: ["*"]
         },
         to: {
           namespace: ["*"]
         },
-        sync: true,
+        sync: false,
         async leave(data) {
-          // Store current scroll position
-          const scrollPos = window.scrollY;
-          
-          // Keep current page fixed in place
-          gsap.set(data.current.container, {
-            position: 'fixed',
-            width: '100%',
-            top: -scrollPos,
-            left: 0
-          });
-          
-          // Prevent scroll during transition
-          document.body.style.overflow = 'hidden';
-          
-          return gsap.to(data.current.container, {
-            duration: 0,
-            opacity: 1
+          // Fade out current page
+          await gsap.to(data.current.container, {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.inOut"
           });
         },
         async enter(data) {
-          // Force the next container to start at top
+          // Reset scroll position
           window.scrollTo(0, 0);
           document.documentElement.scrollTop = 0;
           document.body.scrollTop = 0;
           
-          // Set initial states for hero elements in the new page
-          gsap.set([".hero-box", ".fade-in"], {
-            opacity: 0,
-            y: 50
-          });
-          
-          // Prepare new page to slide in from bottom
+          // Set initial state
           gsap.set(data.next.container, {
-            position: 'fixed',
-            top: '100%',
-            left: 0,
-            width: '100%',
-            zIndex: 10,
-            visibility: 'visible'
+            opacity: 0
           });
           
-          // Slide new page up
+          // Fade in new page
           await gsap.to(data.next.container, {
-            duration: 0.8,
-            top: '0%',
-            ease: "power3.inOut"
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.inOut"
           });
-
-          // Reset container properties and scroll behavior
-          gsap.set([data.current.container, data.next.container], {
-            clearProps: 'all'
-          });
-          
-          // Re-enable scrolling
-          document.body.style.overflow = '';
-          
-          // Ensure we stay at top of new page
-          window.scrollTo(0, 0);
           
           // Initialize Swiper if we're on the homepage
           if (data.next.namespace === 'home') {
-            // Small delay to ensure DOM is ready
             setTimeout(async () => {
               await initSwiper();
-              // After Swiper is initialized, refresh ScrollTrigger
               ScrollTrigger.refresh();
             }, 100);
           }
@@ -1309,9 +1273,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   barba.hooks.after(async (data) => {
-    // Re-enable scrolling
-    document.body.style.overflow = '';
-    
     // Ensure we're at top of page
     window.scrollTo(0, 0);
     
