@@ -504,63 +504,54 @@ async function initRive() {
       canvas: canvas,
       artboard: 'Desktop',
       stateMachines: ['State Machine 1'],
-      autoplay: true, // Enable autoplay
+      autoplay: true,
       layout: new rive.Layout({
         fit: rive.Fit.contain,
         alignment: rive.Alignment.center,
       }),
       onLoad: () => {
         console.log('Rive animation loaded successfully');
-        updateCanvasSize(); // Ensure correct size after loading
+        updateCanvasSize();
         
-        // Ensure animation starts playing
-        if (riveInstance) {
+        if (riveInstance && window.swiperInstance) {
           // Get the state machine
           const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
-          if (stateMachine) {
-            // Start the state machine
-            stateMachine.forEach(input => {
-              if (input.type === rive.StateMachineInputType.Trigger) {
-                input.fire();
-              }
-            });
-          }
           
-          // Start the animation and sync with Swiper
-          if (window.swiperInstance) {
-            // Function to restart Rive animation
-            const restartRiveAnimation = () => {
+          // Function to restart Rive animation with debouncing
+          let restartTimeout;
+          const restartRiveAnimation = () => {
+            clearTimeout(restartTimeout);
+            restartTimeout = setTimeout(() => {
               console.log('Restarting Rive animation');
               riveInstance.stop();
-              // Small delay to ensure clean restart
-              setTimeout(() => {
-                // Reset the animation to the beginning
-                riveInstance.reset();
-                // Start playing
-                riveInstance.play();
-                // Fire the state machine trigger again
-                if (stateMachine) {
-                  stateMachine.forEach(input => {
-                    if (input.type === rive.StateMachineInputType.Trigger) {
-                      input.fire();
-                    }
-                  });
-                }
-              }, 50);
-            };
+              riveInstance.reset();
+              riveInstance.play();
+              
+              if (stateMachine) {
+                stateMachine.forEach(input => {
+                  if (input.type === rive.StateMachineInputType.Trigger) {
+                    input.fire();
+                  }
+                });
+              }
+            }, 50);
+          };
 
-            // Start initial animation
-            restartRiveAnimation();
-            
-            // Set up event listeners for Swiper
-            window.swiperInstance.on('slideChange', restartRiveAnimation);
-            window.swiperInstance.on('slideChangeTransitionStart', restartRiveAnimation);
-            window.swiperInstance.on('autoplayStart', restartRiveAnimation);
-            window.swiperInstance.on('autoplayStop', () => {
-              console.log('Stopping Rive animation');
-              riveInstance.stop();
-            });
-          }
+          // Start initial animation
+          restartRiveAnimation();
+          
+          // Set up event listeners for Swiper with proper timing
+          window.swiperInstance.on('slideChangeTransitionStart', () => {
+            riveInstance.stop();
+          });
+          
+          window.swiperInstance.on('slideChangeTransitionEnd', restartRiveAnimation);
+          
+          window.swiperInstance.on('autoplayStart', restartRiveAnimation);
+          window.swiperInstance.on('autoplayStop', () => {
+            console.log('Stopping Rive animation');
+            riveInstance.stop();
+          });
         }
       },
       onError: (err) => {
@@ -573,17 +564,14 @@ async function initRive() {
     window.addEventListener('resize', () => {
       updateCanvasSize();
       
-      // Debounce the resize event
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         if (riveInstance) {
-          // Update layout
           riveInstance.layout = new rive.Layout({
             fit: rive.Fit.contain,
             alignment: rive.Alignment.center,
           });
           
-          // Ensure animation is playing after resize
           const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
           if (stateMachine) {
             stateMachine.forEach(input => {
@@ -594,7 +582,7 @@ async function initRive() {
           }
           riveInstance.play();
         }
-      }, 250); // Wait for 250ms after last resize event
+      }, 250);
     });
 
     console.log('Rive instance created successfully');
@@ -1147,8 +1135,24 @@ function reinitializeWebflowInteractions() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Initialize Swiper
-  initSwiper();
+  // Initialize components for first page load
+  if (document.querySelector('.wb-swiper')) {
+    // Single initialization with proper sequencing
+    setTimeout(async () => {
+      try {
+        // Initialize Swiper first
+        const swiper = await initSwiper();
+        if (swiper) {
+          // Wait for Swiper to be fully ready
+          await new Promise(resolve => setTimeout(resolve, 500));
+          // Then initialize Rive
+          await initRive();
+        }
+      } catch (error) {
+        console.error('Failed to initialize components:', error);
+      }
+    }, 100);
+  }
 
   // Function to handle email link copying
   const emailLink = document.getElementById('email-link');
@@ -1189,14 +1193,4 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize GSAP animations for the first page load
   initGsapAnimations();
   initCustomCursor();
-
-  // Initialize components for first page load
-  if (document.querySelector('.wb-swiper')) {
-    setTimeout(async () => {
-      const swiper = await initSwiper();
-      if (swiper) {
-        await initRive();
-      }
-    }, 100);
-  }
 });
