@@ -1117,24 +1117,20 @@ async function initRive() {
           // Get the state machine
           const stateMachine = riveInstance.stateMachineInputs('State Machine 1');
           
-          // Function to restart Rive animation with debouncing
-          let restartTimeout;
+          // Function to restart Rive animation with proper timing
           const restartRiveAnimation = () => {
-            clearTimeout(restartTimeout);
-            restartTimeout = setTimeout(() => {
-              console.log('Restarting Rive animation');
-              riveInstance.stop();
-              riveInstance.reset();
-              riveInstance.play();
-              
-              if (stateMachine) {
-                stateMachine.forEach(input => {
-                  if (input.type === rive.StateMachineInputType.Trigger) {
-                    input.fire();
-                  }
-                });
-              }
-            }, 50);
+            console.log('Restarting Rive animation');
+            riveInstance.stop();
+            riveInstance.reset();
+            riveInstance.play();
+            
+            if (stateMachine) {
+              stateMachine.forEach(input => {
+                if (input.type === rive.StateMachineInputType.Trigger) {
+                  input.fire();
+                }
+              });
+            }
           };
 
           // Start initial animation
@@ -1142,16 +1138,64 @@ async function initRive() {
           
           // Set up event listeners for Swiper with proper timing
           window.swiperInstance.on('slideChangeTransitionStart', () => {
+            console.log('Slide change transition start');
             riveInstance.stop();
           });
           
-          window.swiperInstance.on('slideChangeTransitionEnd', restartRiveAnimation);
+          window.swiperInstance.on('slideChangeTransitionEnd', () => {
+            console.log('Slide change transition end');
+            restartRiveAnimation();
+          });
           
-          window.swiperInstance.on('autoplayStart', restartRiveAnimation);
+          window.swiperInstance.on('autoplayStart', () => {
+            console.log('Autoplay start');
+            restartRiveAnimation();
+          });
+          
           window.swiperInstance.on('autoplayStop', () => {
-            console.log('Stopping Rive animation');
+            console.log('Autoplay stop');
             riveInstance.stop();
           });
+
+          // Create a timeline for the red blur animation that matches Swiper's delay
+          const redBlur = document.getElementById('red-blur');
+          if (redBlur) {
+            const swiperDelay = window.swiperInstance.params.autoplay.delay / 1000; // Convert to seconds
+            const firstScaleTime = swiperDelay * 0.4875; // 48.75% of Swiper delay
+            const secondScaleTime = swiperDelay * 0.8175; // 81.75% of Swiper delay
+            
+            // Create a repeating timeline for the red blur animation
+            const redBlurTl = gsap.timeline({
+              repeat: -1,
+              repeatDelay: 0
+            });
+
+            // Add the scaling animations
+            redBlurTl
+              .to(redBlur, {
+                scale: 1.1,
+                duration: 0.2,
+                ease: "power2.out"
+              }, firstScaleTime)
+              .to(redBlur, {
+                scale: 1,
+                duration: 0.2,
+                ease: "power2.out"
+              })
+              .to(redBlur, {
+                scale: 1.15,
+                duration: 0.2,
+                ease: "power2.out"
+              }, secondScaleTime)
+              .to(redBlur, {
+                scale: 1,
+                duration: 0.2,
+                ease: "power2.out"
+              });
+
+            // Store the timeline globally for cleanup if needed
+            window.redBlurTimeline = redBlurTl;
+          }
         }
       },
       onError: (err) => {
