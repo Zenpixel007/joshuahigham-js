@@ -1196,7 +1196,7 @@ document.addEventListener("DOMContentLoaded", function () {
     preventRunning: true,
     transitions: [
       {
-        name: "slide-over",
+        name: "default-transition",
         from: {
           namespace: ["*"]
         },
