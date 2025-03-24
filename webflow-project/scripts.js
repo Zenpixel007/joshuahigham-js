@@ -767,6 +767,67 @@ function initGsapAnimations() {
     }, 2000); // 2 second delay
   }
 
+  // Project Next Section Expansion Animation
+  const projectNextSection = document.querySelector('.section_project-next');
+  const nextProjectWrapper = document.querySelector('.next-project_wrapper');
+  
+  if (projectNextSection && nextProjectWrapper) {
+    // Set initial states
+    gsap.set(nextProjectWrapper, {
+      width: '100%',
+      maxWidth: '80rem',
+      height: '40rem',
+      position: 'relative',
+      zIndex: 1
+    });
+
+    // Create the expansion animation
+    gsap.to(nextProjectWrapper, {
+      scrollTrigger: {
+        trigger: projectNextSection,
+        start: 'top center',
+        end: 'bottom center',
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        toggleActions: 'play none none reverse'
+      },
+      width: '100vw',
+      maxWidth: '100vw',
+      height: '100vh',
+      duration: 1,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        // Ensure content stays centered during animation
+        gsap.set(nextProjectWrapper, {
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        });
+      }
+    });
+
+    // Animate the content for better visual effect
+    const nextProjectContent = document.querySelector('.next-project_content');
+    const nextProjectImg = document.querySelector('.next-project_img');
+
+    if (nextProjectContent && nextProjectImg) {
+      gsap.to([nextProjectContent, nextProjectImg], {
+        scrollTrigger: {
+          trigger: projectNextSection,
+          start: 'top center',
+          end: 'bottom center',
+          scrub: 1,
+          toggleActions: 'play none none reverse'
+        },
+        scale: 1.1,
+        duration: 1,
+        ease: 'power2.inOut'
+      });
+    }
+  }
 
   // Footer Animation - Simple slide-up reveal
   const footer = document.querySelector(".footer");
