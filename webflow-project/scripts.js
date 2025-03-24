@@ -786,7 +786,7 @@ function initGsapAnimations() {
       scrollTrigger: {
         trigger: projectNextSection,
         start: 'center center',
-        end: 'center center',
+        end: 'bottom center',
         scrub: 1,
         pin: true,
         anticipatePin: 1,
