@@ -767,35 +767,6 @@ function initGsapAnimations() {
     }, 2000); // 2 second delay
   }
 
-  // Project Hero Image Scale Animation
-  if (document.querySelector('.project_hero-lower')) {
-    // Set initial state
-    gsap.set('.project_main-img', {
-      width: '50%',
-      maxWidth: '50%'
-    });
-
-    const projectHeroTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.project_hero-lower',
-        start: 'top top',
-        end: '+=100%',
-        pin: true,
-        pinSpacing: true,
-        scrub: 1,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      }
-    });
-
-    projectHeroTl
-      .to('.project_main-img', {
-        width: '100%',
-        maxWidth: '100%',
-        duration: 1,
-        ease: 'none'
-      });
-  }
 
   // Footer Animation - Simple slide-up reveal
   const footer = document.querySelector(".footer");
