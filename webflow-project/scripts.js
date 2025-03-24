@@ -823,7 +823,7 @@ function initGsapAnimations() {
           scrub: 1,
           toggleActions: 'play none none reverse'
         },
-        scale: 1.1,
+        scale: 1,
         duration: 1,
         ease: 'power2.inOut'
       });
