@@ -786,7 +786,7 @@ function initGsapAnimations() {
       scrollTrigger: {
         trigger: projectNextSection,
         start: 'center center', // Start when wrapper reaches center
-        end: '+=200%', // End after scrolling 200% (full height of sticky wrapper)
+        end: '+=100%', // End after scrolling 200% (full height of sticky wrapper)
         scrub: 1,
         pin: true,
         anticipatePin: 1,
@@ -819,7 +819,7 @@ function initGsapAnimations() {
         scrollTrigger: {
           trigger: projectNextSection,
           start: 'center center', // Match main animation start
-          end: '+=200%', // Match main animation end
+          end: '+=100%', // Match main animation end
           scrub: 1,
           toggleActions: 'play none none reverse'
         },
