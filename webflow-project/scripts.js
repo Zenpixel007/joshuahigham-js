@@ -785,8 +785,8 @@ function initGsapAnimations() {
     gsap.to(nextProjectWrapper, {
       scrollTrigger: {
         trigger: projectNextSection,
-        start: 'center center',
-        end: 'center center',
+        start: 'top center',
+        end: '+=100%',
         scrub: 1,
         pin: true,
         anticipatePin: 1,
@@ -819,8 +819,8 @@ function initGsapAnimations() {
       gsap.to([nextProjectContent, nextProjectImg], {
         scrollTrigger: {
           trigger: projectNextSection,
-          start: 'center center',
-          end: 'center center',
+          start: 'top center',
+          end: '+=100%',
           scrub: 1,
           toggleActions: 'play none none reverse'
         },
