@@ -785,8 +785,8 @@ function initGsapAnimations() {
     gsap.to(nextProjectWrapper, {
       scrollTrigger: {
         trigger: projectNextSection,
-        start: 'center center',
-        end: 'bottom bottom',
+        start: 'center center', // Start when wrapper reaches center
+        end: '+=200%', // End after scrolling 200% (full height of sticky wrapper)
         scrub: 1,
         pin: true,
         anticipatePin: 1,
@@ -803,7 +803,6 @@ function initGsapAnimations() {
       onUpdate: () => {
         // Ensure content stays centered during animation
         gsap.set(nextProjectWrapper, {
-          // margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -819,12 +818,12 @@ function initGsapAnimations() {
       gsap.to([nextProjectContent, nextProjectImg], {
         scrollTrigger: {
           trigger: projectNextSection,
-          start: 'center center',
-          end: '+=100%',
+          start: 'center center', // Match main animation start
+          end: '+=200%', // Match main animation end
           scrub: 1,
           toggleActions: 'play none none reverse'
         },
-        scale: 1,
+        scale: 1.1,
         duration: 1,
         ease: 'power2.inOut'
       });
