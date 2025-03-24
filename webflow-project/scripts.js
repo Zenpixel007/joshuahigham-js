@@ -785,8 +785,8 @@ function initGsapAnimations() {
     gsap.to(nextProjectWrapper, {
       scrollTrigger: {
         trigger: projectNextSection,
-        start: 'top center',
-        end: '+=100%',
+        start: 'center center',
+        end: 'center center',
         scrub: 1,
         pin: true,
         anticipatePin: 1,
@@ -803,7 +803,7 @@ function initGsapAnimations() {
       onUpdate: () => {
         // Ensure content stays centered during animation
         gsap.set(nextProjectWrapper, {
-          margin: '0 auto',
+          // margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -819,12 +819,12 @@ function initGsapAnimations() {
       gsap.to([nextProjectContent, nextProjectImg], {
         scrollTrigger: {
           trigger: projectNextSection,
-          start: 'top center',
+          start: 'center center',
           end: '+=100%',
           scrub: 1,
           toggleActions: 'play none none reverse'
         },
-        scale: 1.1,
+        scale: 1,
         duration: 1,
         ease: 'power2.inOut'
       });
