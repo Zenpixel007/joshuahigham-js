@@ -785,15 +785,22 @@ function initGsapAnimations() {
     gsap.to(nextProjectWrapper, {
       scrollTrigger: {
         trigger: projectNextSection,
-        start: 'center center', // Start when wrapper reaches center
-        end: '+=100%', // End after scrolling 200% (full height of sticky wrapper)
+        start: 'center center',
+        end: '+=100%',
         scrub: 1,
         pin: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         toggleActions: 'play none none reverse',
         pinSpacing: true,
-        pinType: 'transform'
+        pinType: 'fixed',
+        fastScrollEnd: true,
+        preventOverlaps: true,
+        onUpdate: (self) => {
+          if (window.innerWidth <= 768) {
+            self.progress = Math.min(Math.max(self.progress, 0), 1);
+          }
+        }
       },
       width: '100vw',
       maxWidth: '100vw',
@@ -801,11 +808,14 @@ function initGsapAnimations() {
       duration: 1,
       ease: 'power2.inOut',
       onUpdate: () => {
-        // Ensure content stays centered during animation
         gsap.set(nextProjectWrapper, {
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
         });
       }
     });
@@ -818,14 +828,25 @@ function initGsapAnimations() {
       gsap.to([nextProjectContent, nextProjectImg], {
         scrollTrigger: {
           trigger: projectNextSection,
-          start: 'center center', // Match main animation start
-          end: '+=100%', // Match main animation end
+          start: 'center center',
+          end: '+=100%',
           scrub: 1,
-          toggleActions: 'play none none reverse'
+          toggleActions: 'play none none reverse',
+          fastScrollEnd: true,
+          preventOverlaps: true
         },
-        scale: 1,
+        scale: 1.1,
         duration: 1,
         ease: 'power2.inOut'
+      });
+    }
+
+    // Add mobile-specific optimizations
+    if (window.innerWidth <= 768) {
+      gsap.set(nextProjectWrapper, {
+        willChange: 'transform',
+        backfaceVisibility: 'hidden',
+        perspective: 1000
       });
     }
   }
