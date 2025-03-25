@@ -788,7 +788,7 @@ function initGsapAnimations() {
         start: 'center center',
         end: '+=100%',
         scrub: 1,
-        pin: true
+        // pin: true
       },
       width: '100vw',
       maxWidth: '100vw',
