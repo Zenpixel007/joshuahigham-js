@@ -770,6 +770,8 @@ function initGsapAnimations() {
   // Project Next Section Expansion Animation
   const projectNextSection = document.querySelector('.section_project-next');
   const nextProjectWrapper = document.querySelector('.next-project_wrapper');
+  const containerLarge = document.querySelector('.container-large.next-project');
+  const nextProjectImg = document.querySelector('.next-project_img');
   
   if (projectNextSection && nextProjectWrapper) {
     // Set initial states
@@ -781,26 +783,41 @@ function initGsapAnimations() {
       zIndex: 1
     });
 
+    // Ensure container-large maintains its position
+    if (containerLarge) {
+      gsap.set(containerLarge, {
+        position: 'relative',
+        zIndex: 2
+      });
+    }
+
+    // Ensure image fills properly
+    if (nextProjectImg) {
+      gsap.set(nextProjectImg, {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover'
+      });
+    }
+
     // Create the expansion animation
     gsap.to(nextProjectWrapper, {
       scrollTrigger: {
         trigger: projectNextSection,
         start: 'center center',
-        end: '+=100%',
+        end: '+=200%', // Full height of sticky wrapper
         scrub: 1,
         pin: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         toggleActions: 'play none none reverse',
         pinSpacing: true,
-        pinType: 'fixed',
+        pinType: 'transform', // Changed back to transform for better performance
         fastScrollEnd: true,
-        preventOverlaps: true,
-        onUpdate: (self) => {
-          if (window.innerWidth <= 768) {
-            self.progress = Math.min(Math.max(self.progress, 0), 1);
-          }
-        }
+        preventOverlaps: true
       },
       width: '100vw',
       maxWidth: '100vw',
@@ -808,28 +825,22 @@ function initGsapAnimations() {
       duration: 1,
       ease: 'power2.inOut',
       onUpdate: () => {
+        // Ensure content stays centered during animation
         gsap.set(nextProjectWrapper, {
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
+          justifyContent: 'center'
         });
       }
     });
 
     // Animate the content for better visual effect
-    const nextProjectContent = document.querySelector('.next-project_content');
-    const nextProjectImg = document.querySelector('.next-project_img');
-
-    if (nextProjectContent && nextProjectImg) {
-      gsap.to([nextProjectContent, nextProjectImg], {
+    if (containerLarge && nextProjectImg) {
+      gsap.to([containerLarge, nextProjectImg], {
         scrollTrigger: {
           trigger: projectNextSection,
           start: 'center center',
-          end: '+=100%',
+          end: '+=200%',
           scrub: 1,
           toggleActions: 'play none none reverse',
           fastScrollEnd: true,
