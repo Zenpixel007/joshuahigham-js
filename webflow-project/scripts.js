@@ -808,7 +808,7 @@ function initGsapAnimations() {
       scrollTrigger: {
         trigger: projectNextSection,
         start: 'center center',
-        end: '+=200%', // Full height of sticky wrapper
+        end: '+=100%', // Full height of sticky wrapper
         scrub: 1,
         pin: true,
         anticipatePin: 1,
@@ -840,7 +840,7 @@ function initGsapAnimations() {
         scrollTrigger: {
           trigger: projectNextSection,
           start: 'center center',
-          end: '+=200%',
+          end: '+=100%',
           scrub: 1,
           toggleActions: 'play none none reverse',
           fastScrollEnd: true,
