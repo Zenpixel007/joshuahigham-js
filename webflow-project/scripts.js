@@ -842,34 +842,34 @@ function initGsapAnimations() {
     }, '-=0.3');
   }
 
-  // Footer Animation - Simple slide-up reveal
-  const footer = document.querySelector(".footer");
+  // // Footer Animation - Simple slide-up reveal
+  // const footer = document.querySelector(".footer");
   
-  if (footer) {
-    // Set initial state
-    gsap.set(footer, {
-      yPercent: 15,
-      opacity: 0
-    });
+  // if (footer) {
+  //   // Set initial state
+  //   gsap.set(footer, {
+  //     yPercent: 15,
+  //     opacity: 0
+  //   });
 
-    // Create a timeline for footer animation
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: footer,
-        start: "top bottom",
-        end: "top center",
-        scrub: 0.5,
-        invalidateOnRefresh: true,
-        toggleActions: "play none none reverse"
-      }
-    })
-    .to(footer, {
-      yPercent: 0,
-      opacity: 1,
-      ease: "power2.out",
-      duration: 1
-    });
-  }
+  //   // Create a timeline for footer animation
+  //   gsap.timeline({
+  //     scrollTrigger: {
+  //       trigger: footer,
+  //       start: "top bottom",
+  //       end: "top center",
+  //       scrub: 0.5,
+  //       invalidateOnRefresh: true,
+  //       toggleActions: "play none none reverse"
+  //     }
+  //   })
+  //   .to(footer, {
+  //     yPercent: 0,
+  //     opacity: 1,
+  //     ease: "power2.out",
+  //     duration: 1
+  //   });
+  // }
 
   // ScrollTrigger "Slide-In" Animation
   gsap.utils.toArray(".slide-in").forEach((el) => {
