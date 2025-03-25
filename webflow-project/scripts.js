@@ -767,100 +767,33 @@ function initGsapAnimations() {
     }, 2000); // 2 second delay
   }
 
-  // // Project Next Section Expansion Animation
-  // const projectNextSection = document.querySelector('.section_project-next');
-  // const nextProjectWrapper = document.querySelector('.next-project_wrapper');
-  // const containerLarge = document.querySelector('.container-large.next-project');
-  // const nextProjectImg = document.querySelector('.next-project_img');
+  // Project Next Section Expansion Animation
+  const projectNextSection = document.querySelector('.section_project-next');
+  const nextProjectWrapper = document.querySelector('.next-project_wrapper');
   
-  // if (projectNextSection && nextProjectWrapper) {
-  //   // Set initial states
-  //   gsap.set(nextProjectWrapper, {
-  //     width: '100%',
-  //     maxWidth: '80rem',
-  //     height: '40rem',
-  //     position: 'relative',
-  //     zIndex: 1
-  //   });
+  if (projectNextSection && nextProjectWrapper) {
+    // Set initial state
+    gsap.set(nextProjectWrapper, {
+      width: '100%',
+      maxWidth: '80rem',
+      height: '40rem'
+    });
 
-  //   // Ensure container-large maintains its position
-  //   if (containerLarge) {
-  //     gsap.set(containerLarge, {
-  //       position: 'relative',
-  //       zIndex: 2
-  //     });
-  //   }
-
-  //   // Ensure image fills properly
-  //   if (nextProjectImg) {
-  //     gsap.set(nextProjectImg, {
-  //       position: 'absolute',
-  //       top: 0,
-  //       left: 0,
-  //       width: '100%',
-  //       height: '100%',
-  //       objectFit: 'cover'
-  //     });
-  //   }
-
-  //   // Create the expansion animation
-  //   gsap.to(nextProjectWrapper, {
-  //     scrollTrigger: {
-  //       trigger: projectNextSection,
-  //       start: 'center center',
-  //       end: '+=100%', // Full height of sticky wrapper
-  //       scrub: 1,
-  //       pin: true,
-  //       anticipatePin: 1,
-  //       invalidateOnRefresh: true,
-  //       toggleActions: 'play none none reverse',
-  //       pinSpacing: true,
-  //       pinType: 'transform', // Changed back to transform for better performance
-  //       fastScrollEnd: true,
-  //       preventOverlaps: true
-  //     },
-  //     width: '100vw',
-  //     maxWidth: '100vw',
-  //     height: '100vh',
-  //     duration: 1,
-  //     ease: 'power2.inOut',
-  //     onUpdate: () => {
-  //       // Ensure content stays centered during animation
-  //       gsap.set(nextProjectWrapper, {
-  //         display: 'flex',
-  //         alignItems: 'center',
-  //         justifyContent: 'center'
-  //       });
-  //     }
-  //   });
-
-  //   // Animate the content for better visual effect
-  //   if (containerLarge && nextProjectImg) {
-  //     gsap.to([containerLarge, nextProjectImg], {
-  //       scrollTrigger: {
-  //         trigger: projectNextSection,
-  //         start: 'center center',
-  //         end: '+=100%',
-  //         scrub: 1,
-  //         toggleActions: 'play none none reverse',
-  //         fastScrollEnd: true,
-  //         preventOverlaps: true
-  //       },
-  //       scale: 1.1,
-  //       duration: 1,
-  //       ease: 'power2.inOut'
-  //     });
-  //   }
-
-  //   // Add mobile-specific optimizations
-  //   if (window.innerWidth <= 768) {
-  //     gsap.set(nextProjectWrapper, {
-  //       willChange: 'transform',
-  //       backfaceVisibility: 'hidden',
-  //       perspective: 1000
-  //     });
-  //   }
-  // }
+    // Create the expansion animation
+    gsap.to(nextProjectWrapper, {
+      scrollTrigger: {
+        trigger: projectNextSection,
+        start: 'center center',
+        end: '+=200%',
+        scrub: 1,
+        pin: true
+      },
+      width: '100vw',
+      maxWidth: '100vw',
+      height: '100vh',
+      ease: 'none'
+    });
+  }
 
   // Footer Animation - Simple slide-up reveal
   const footer = document.querySelector(".footer");
