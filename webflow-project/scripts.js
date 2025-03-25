@@ -774,11 +774,12 @@ function initGsapAnimations() {
   if (projectNextSection && nextProjectWrapper) {
     // Set initial state
     gsap.set(nextProjectWrapper, {
-      width: '100%',
+      width: '70vw',
       maxWidth: '80rem',
       height: '40rem',
       marginLeft: '2.5rem',
-      marginRight: '2.5rem'
+      marginRight: '2.5rem',
+      borderRadius: '1rem'
     });
 
     // Create the expansion animation
@@ -795,6 +796,7 @@ function initGsapAnimations() {
       height: '100vh',
       marginLeft: '0rem',
       marginRight: '0rem',
+      borderRadius: '0rem',
       ease: 'none'
     });
   }
