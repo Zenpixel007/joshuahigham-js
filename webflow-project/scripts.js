@@ -801,7 +801,7 @@ function initGsapAnimations() {
       scrollTrigger: {
         trigger: projectNextSection,
         start: 'center center',
-        end: '+=150%',
+        end: '+=100%',
         scrub: 1,
         // pin: true
       }
