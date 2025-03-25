@@ -849,8 +849,7 @@ function initGsapAnimations() {
     // Set initial state - start from below the viewport
     gsap.set(footer, {
       yPercent: -100, // Changed from 15 to -100 to start from below
-      opacity: 0,
-      zIndex: -1 // Ensure footer starts below main wrapper
+      zIndex: 1 // Ensure footer starts below main wrapper
     });
 
     // Create a timeline for footer animation
@@ -866,8 +865,6 @@ function initGsapAnimations() {
     })
     .to(footer, {
       yPercent: 0,
-      opacity: 1,
-      zIndex: 5, // Bring footer above main wrapper when fully visible
       ease: "power2.out",
       duration: 1
     });
