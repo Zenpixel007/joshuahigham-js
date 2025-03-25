@@ -774,9 +774,9 @@ function initGsapAnimations() {
   if (projectNextSection && nextProjectWrapper) {
     // Set initial state
     gsap.set(nextProjectWrapper, {
-      width: '70vw',
+      width: '80vw',
       maxWidth: '80rem',
-      height: '40rem',
+      height: '50vh',
       marginLeft: '2.5rem',
       marginRight: '2.5rem',
       borderRadius: '1rem'
