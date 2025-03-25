@@ -770,9 +770,13 @@ function initGsapAnimations() {
   // Project Next Section Expansion Animation
   const projectNextSection = document.querySelector('.section_project-next');
   const nextProjectWrapper = document.querySelector('.next-project_wrapper');
+  const nextProjectOverlay = document.querySelector('.next-project_overlay');
+  const nextProjectTop = document.querySelector('.next-project_top');
+  const nextProjectBottomLeft = document.querySelector('.next-project_bottom_left');
+  const nextProjectBottomRight = document.querySelector('.next-project_bottom_right');
   
   if (projectNextSection && nextProjectWrapper) {
-    // Set initial state
+    // Set initial states
     gsap.set(nextProjectWrapper, {
       width: '80vw',
       maxWidth: '80rem',
@@ -782,15 +786,29 @@ function initGsapAnimations() {
       borderRadius: '1rem'
     });
 
-    // Create the expansion animation
-    gsap.to(nextProjectWrapper, {
+    // Set initial states for overlay and text elements
+    gsap.set(nextProjectOverlay, {
+      opacity: 0
+    });
+
+    gsap.set([nextProjectTop, nextProjectBottomLeft, nextProjectBottomRight], {
+      opacity: 0,
+      y: 20
+    });
+
+    // Create the expansion animation timeline
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: projectNextSection,
         start: 'center center',
         end: '+=100%',
         scrub: 1,
         // pin: true
-      },
+      }
+    });
+
+    // Add animations to the timeline
+    tl.to(nextProjectWrapper, {
       width: '100vw',
       maxWidth: '100vw',
       height: '100vh',
@@ -798,7 +816,30 @@ function initGsapAnimations() {
       marginRight: '0rem',
       borderRadius: '0rem',
       ease: 'none'
-    });
+    })
+    .to(nextProjectOverlay, {
+      opacity: 0.7,
+      duration: 1,
+      ease: 'none'
+    }, '-=0.5') // Start slightly before the expansion completes
+    .to(nextProjectTop, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.3')
+    .to(nextProjectBottomLeft, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.3')
+    .to(nextProjectBottomRight, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.3');
   }
 
   // Footer Animation - Simple slide-up reveal
