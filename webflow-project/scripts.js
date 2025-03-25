@@ -776,7 +776,9 @@ function initGsapAnimations() {
     gsap.set(nextProjectWrapper, {
       width: '100%',
       maxWidth: '80rem',
-      height: '40rem'
+      height: '40rem',
+      marginLeft: '2.5rem',
+      marginRight: '2.5rem'
     });
 
     // Create the expansion animation
@@ -786,11 +788,13 @@ function initGsapAnimations() {
         start: 'center center',
         end: '+=100%',
         scrub: 1,
-        // pin: true
+        pin: true
       },
       width: '100vw',
       maxWidth: '100vw',
       height: '100vh',
+      marginLeft: '0rem',
+      marginRight: '0rem',
       ease: 'none'
     });
   }
