@@ -848,8 +848,7 @@ function initGsapAnimations() {
   if (footer) {
     // Set initial state - start from below the viewport
     gsap.set(footer, {
-      yPercent: -100, // Changed from 15 to -100 to start from below
-      zIndex: 1 // Ensure footer starts below main wrapper
+      yPercent: 100, // Changed from 15 to -100 to start from below
     });
 
     // Create a timeline for footer animation
