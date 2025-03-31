@@ -456,7 +456,7 @@ function loadRiveScript() {
     }
     
     const script = document.createElement('script');
-    script.src = 'https://unpkg.com/@rive-app/webgl2@2.26.6/rive.js';
+    script.src = 'https://unpkg.com/@rive-app/webgl2@latest';
     script.onload = resolve;
     script.onerror = reject;
     document.body.appendChild(script);
